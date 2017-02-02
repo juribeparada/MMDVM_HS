@@ -28,7 +28,6 @@
 
 #define bitRead(value, bit) (((value) >> (bit)) & 0x01)
 
-void dlybit(void);
 void Send_AD7021_control(void);
 void Send_REG0_RX(void);
 void Send_REG0_TX(void);

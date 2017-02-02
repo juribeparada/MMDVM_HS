@@ -73,6 +73,12 @@ void CIO::delay_rx() {
   delayMicroseconds(1);
 }
 
+void CIO::dlybit(void)
+{
+  volatile unsigned int delay;
+  delayMicroseconds(1);
+}
+
 void CIO::Init()
 {
 #if defined (__STM32F1__) 

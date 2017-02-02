@@ -73,12 +73,14 @@ public:
   void  ifConf();
   void  ifInit();
 
+  // Misc functions
+  void  dlybit(void);
+  void  delay_rx(void);
+   
 private:
   bool      m_started;
   CBitRB    m_rxBuffer;
   CBitRB    m_txBuffer;
-
-  void  delay_rx(void);
 
 };
 

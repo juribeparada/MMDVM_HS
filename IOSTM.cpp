@@ -85,6 +85,12 @@ void CIO::delay_rx() {
   for(delay = 0;delay<512;delay++);
 }
 
+void CIO::dlybit(void)
+{
+  volatile unsigned int delay;
+  for(delay = 0;delay<5;delay++);
+}
+
 void CIO::Init()
 {
   // USB Conf IO:

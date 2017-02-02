@@ -1,6 +1,9 @@
 /*
  *   Copyright (C) 2016 by Jim McLaughlin KI6ZUM
  *   Copyright (C) 2016, 2017 by Andy Uribe CA6JAU
+ * 
+ *   Some of the code is based on work of Guus Van Dooren PE1PLM:
+ *   https://github.com/ki6zum/gmsk-dstar/blob/master/firmware/dvmega/dvmega.ino
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -29,12 +32,6 @@
 volatile uint32_t  AD7021_control_byte;
 volatile int       AD7021_counter;
 
-void dlybit(void)
-{
-  volatile unsigned int delay;
-  for(delay = 0;delay<5;delay++);
-}
-
 void Send_AD7021_control()
 {
   for(AD7021_counter = 31; AD7021_counter >= 0; AD7021_counter--) {
@@ -43,14 +40,14 @@ void Send_AD7021_control()
     else
       io.SDATA_pin(LOW);
      
+    io.dlybit();
     io.SCLK_pin(HIGH);
-    dlybit();
+    io.dlybit();
     io.SCLK_pin(LOW);
-    dlybit();
   }
   
   io.SLE_pin(HIGH);
-  dlybit();
+  io.dlybit();
   io.SLE_pin(LOW);    
   io.SDATA_pin(LOW);
 }
