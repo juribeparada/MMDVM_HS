@@ -99,21 +99,16 @@ void CIO::Init()
   pinMode(PIN_P25_LED, OUTPUT);
   pinMode(PIN_PTT_LED, OUTPUT);
   pinMode(PIN_COS_LED, OUTPUT);
+
 }
 
-void CIO::ifInit()
+void CIO::startInt()
 {
-  m_started = true;
-
 #if defined (__STM32F1__)
   attachInterrupt(PIN_TXRX_CLK, EXT_IRQHandler, RISING);
 #else
   attachInterrupt(digitalPinToInterrupt(PIN_TXRX_CLK), EXT_IRQHandler, RISING);
 #endif
- 
-  ifConf();
-  delay_rx();;
-  setRX();
 }
 
 void CIO::SCLK_pin(bool on) 

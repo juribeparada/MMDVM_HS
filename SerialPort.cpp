@@ -1,6 +1,7 @@
 /*
  *   Copyright (C) 2013,2015,2016 by Jonathan Naylor G4KLX
  *   Copyright (C) 2016 by Colin Durbridge G4EML
+ *   Copyright (C) 2016, 2017 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -227,7 +228,7 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
   
   dmrDMORX.setColorCode(colorCode);
 
-  io.ifInit();
+  io.start();
 
   return 0U;
 }

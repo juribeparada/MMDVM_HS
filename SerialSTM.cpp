@@ -41,10 +41,10 @@ USART2 - TXD PA2  - RXD PA3
 
 */
 
-#if defined(STM32_USART1_HOST)
-
 #define TX_SERIAL_FIFO_SIZE 256U
 #define RX_SERIAL_FIFO_SIZE 256U
+
+#if defined(STM32_USART1_HOST)
 
 extern "C" {
   void USART1_IRQHandler();
@@ -174,8 +174,8 @@ void InitUSART1(int speed)
   // USART IRQ init
   NVIC_InitStructure.NVIC_IRQChannel    = USART1_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 1;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 0;
   NVIC_Init(&NVIC_InitStructure);
 
   // Configure USART as alternate function
@@ -363,8 +363,8 @@ void InitUSART2(int speed)
   // USART IRQ init
   NVIC_InitStructure.NVIC_IRQChannel    = USART2_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 1;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 3;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 0;
   NVIC_Init(&NVIC_InitStructure);
 
   // Configure USART as alternate function
@@ -498,7 +498,7 @@ void CSerialPort::writeInt(uint8_t n, const uint8_t* data, uint16_t length, bool
         usbserial.flush();
       break;
     #endif
-  #if defined(SERIAL_REPEATER)
+    #if defined(SERIAL_REPEATER)
     case 3U:
       WriteUSART2(data, length);
       if (flush)

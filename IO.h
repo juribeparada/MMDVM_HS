@@ -71,7 +71,8 @@ public:
   void  setTX();
   void  setRX();
   void  ifConf();
-  void  ifInit();
+  void  start();
+  void  startInt();
 
   // Misc functions
   void  dlybit(void);

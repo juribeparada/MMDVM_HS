@@ -78,6 +78,9 @@ void CIO::process()
 void CIO::interrupt()
 {
   uint8_t bit = 0;
+  
+  if (!m_started)
+    return;
 
   if(m_tx) {
     m_txBuffer.get(bit);
@@ -96,6 +99,23 @@ void CIO::interrupt()
     m_rxBuffer.put(bit);
   }
 
+}
+
+void CIO::start()
+{ 
+  if (m_started)
+    return;
+  
+  ifConf();
+  
+  delay_rx();
+  setRX();
+  
+  startInt();
+    
+  m_started = true;
+  
+  setMode();
 }
 
 void CIO::write(uint8_t* data, uint16_t length)

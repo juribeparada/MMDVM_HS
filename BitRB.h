@@ -1,7 +1,8 @@
 /*
 Serial fifo control - Copyright (C) KI6ZUM 2015
 Copyright (C) 2015,2016 by Jonathan Naylor G4KLX
-
+Copyright (C) 2016, 2017 by Andy Uribe CA6JAU
+ 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Library General Public
 License as published by the Free Software Foundation; either

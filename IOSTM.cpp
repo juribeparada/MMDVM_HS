@@ -92,7 +92,7 @@ void CIO::dlybit(void)
 }
 
 void CIO::Init()
-{
+{ 
   // USB Conf IO:
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC | RCC_APB2Periph_AFIO, ENABLE);
   GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);
@@ -100,6 +100,8 @@ void CIO::Init()
   RCC_USBCLKConfig(RCC_USBCLKSource_PLLCLK_1Div5);
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_USB, ENABLE);
   NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
+
+  EXTI_InitTypeDef EXTI_InitStructure;
 
   GPIO_InitTypeDef GPIO_InitStruct;
   GPIO_StructInit(&GPIO_InitStruct);
@@ -201,14 +203,6 @@ void CIO::Init()
   GPIO_InitStruct.GPIO_Pin   = PIN_COS_LED;
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
   GPIO_Init(PORT_COS_LED, &GPIO_InitStruct);
-}
-
-void CIO::ifInit()
-{
-  EXTI_InitTypeDef EXTI_InitStructure;
-  NVIC_InitTypeDef NVIC_InitStructure;
-
-  m_started = true;
 
   // Connect EXTI15 Line
   GPIO_EXTILineConfig(PORT_TXRX_CLK_INT, PIN_TXRX_CLK_INT);
@@ -220,16 +214,18 @@ void CIO::ifInit()
   EXTI_InitStructure.EXTI_LineCmd = ENABLE;
   EXTI_Init(&EXTI_InitStructure);
 
+}
+
+void CIO::startInt()
+{
+  NVIC_InitTypeDef NVIC_InitStructure;
+  
   // Enable and set EXTI15 Interrupt
   NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
-
-  ifConf();
-  delay_rx();;
-  setRX();
 }
 
 void CIO::SCLK_pin(bool on)

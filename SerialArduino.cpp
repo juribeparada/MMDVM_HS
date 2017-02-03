@@ -1,5 +1,6 @@
 /*
  *   Copyright (C) 2016 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2016, 2017 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -27,14 +28,17 @@ void CSerialPort::beginInt(uint8_t n, int speed)
 {
   switch (n) {
     case 1U:
+    #if defined(STM32_USART1_HOST) && defined(__STM32F1__)
+      Serial1.begin(speed);
+    #else
       Serial.begin(speed);
-      break;
-/*    case 2U:
-      Serial2.begin(speed);
+    #endif
       break;
     case 3U:
-      Serial3.begin(speed);
-      break;*/
+    #if defined(SERIAL_REPEATER) && defined(__STM32F1__)
+      Serial2.begin(speed);
+    #endif
+      break;
     default:
       break;
   }
@@ -44,11 +48,15 @@ int CSerialPort::availableInt(uint8_t n)
 {
   switch (n) {
     case 1U:
+    #if defined(STM32_USART1_HOST) && defined(__STM32F1__)
+      return Serial1.available();
+    #else
       return Serial.available();
-/*    case 2U:
-      return Serial2.available();
+    #endif
     case 3U:
-      return Serial3.available();*/
+    #if defined(SERIAL_REPEATER) && defined(__STM32F1__)
+      return Serial2.available();
+    #endif
     default:
       return false;
   }
@@ -58,11 +66,15 @@ uint8_t CSerialPort::readInt(uint8_t n)
 {
   switch (n) {
     case 1U:
+    #if defined(STM32_USART1_HOST) && defined(__STM32F1__)
+      return Serial1.read();
+    #else
       return Serial.read();
-/*    case 2U:
-      return Serial2.read();
+    #endif
     case 3U:
-      return Serial3.read();*/
+    #if defined(SERIAL_REPEATER) && defined(__STM32F1__)
+      return Serial2.read();
+    #endif
     default:
       return 0U;
   }
@@ -72,20 +84,20 @@ void CSerialPort::writeInt(uint8_t n, const uint8_t* data, uint16_t length, bool
 {
   switch (n) {
     case 1U:
+    #if defined(STM32_USART1_HOST) && defined(__STM32F1__)
+      Serial1.write(data, length);
+      break;
+    #else
       Serial.write(data, length);
       if (flush)
         Serial.flush();
       break;
-/*    case 2U:
-      Serial2.write(data, length);
-      if (flush)
-        Serial2.flush();
-      break;
+    #endif
     case 3U:
-      Serial3.write(data, length);
-      if (flush)
-        Serial3.flush();
-      break;*/
+    #if defined(SERIAL_REPEATER) && defined(__STM32F1__)
+      Serial2.write(data, length);
+      break;
+    #endif
     default:
       break;
   }

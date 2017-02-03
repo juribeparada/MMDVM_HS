@@ -19,11 +19,14 @@
 #if !defined(CONFIG_H)
 #define  CONFIG_H
 
+// Enable ADF7021 support:
 #define  ADF7021
 
+// Host communication selection:
 //#define STM32_USART1_HOST
 #define STM32_USB_HOST
 
-//#define SERIAL_REPEATER
+// Enable Nextion LCD serial port repeater:
+#define SERIAL_REPEATER
 
 #endif
