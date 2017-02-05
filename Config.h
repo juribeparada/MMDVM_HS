@@ -20,13 +20,17 @@
 #define  CONFIG_H
 
 // Enable ADF7021 support:
-#define  ADF7021
+#define ENABLE_ADF7021
+
+// TCXO of the ADF7021:
+#define ADF7021_14_7456
+// #define ADF7021_19_6800
 
 // Host communication selection:
 //#define STM32_USART1_HOST
 #define STM32_USB_HOST
 
 // Enable Nextion LCD serial port repeater:
-#define SERIAL_REPEATER
+//#define SERIAL_REPEATER
 
 #endif

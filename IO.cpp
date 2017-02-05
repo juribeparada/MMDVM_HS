@@ -103,10 +103,10 @@ void CIO::interrupt()
 
 void CIO::start()
 { 
+  ifConf();
+  
   if (m_started)
     return;
-  
-  ifConf();
   
   delay_rx();
   setRX();
