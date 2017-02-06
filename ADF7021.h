@@ -78,7 +78,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_REG10            0x3296472A
 
 // Slicer threshold for 4FSK demodulator (REG 13)
-#define ADF7021_SLICER_TH_DSTAR  00U
+#define ADF7021_SLICER_TH_DSTAR  0U
 #define ADF7021_SLICER_TH_DMR    51U
 #define ADF7021_SLICER_TH_YSF    59U
 #define ADF7021_SLICER_TH_P25    45U
@@ -109,7 +109,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_DISC_BW_P25      397U // K=32
 
 // Post demodulator bandwith (REG 04)
-#define ADF7021_POST_BW_DSTAR    09U
+#define ADF7021_POST_BW_DSTAR    9U
 #define ADF7021_POST_BW_DMR      65U
 #define ADF7021_POST_BW_YSF      65U
 #define ADF7021_POST_BW_P25      65U
@@ -124,7 +124,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_REG10            0x3296354A
 
 // Slicer threshold for 4FSK demodulator (REG 13)
-#define ADF7021_SLICER_TH_DSTAR  00U
+#define ADF7021_SLICER_TH_DSTAR  0U
 #define ADF7021_SLICER_TH_DMR    51U
 #define ADF7021_SLICER_TH_YSF    59U
 #define ADF7021_SLICER_TH_P25    45U

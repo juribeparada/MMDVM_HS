@@ -65,10 +65,10 @@ void Send_REG0_RX()
   divider = (divider - N_divider) * 32768;
   F_divider = floor(divider + 0.5);
 
-  ADF7021_RX_REG0  = (uint32_t)0b0000;
-  ADF7021_RX_REG0 |= (uint32_t)0b01011   << 27;   // mux regulator/uart enabled/receive
-  ADF7021_RX_REG0 |= (uint32_t)N_divider << 19;   // frequency;
-  ADF7021_RX_REG0 |= (uint32_t)F_divider << 4;    // frequency;
+  ADF7021_RX_REG0  = (uint32_t) 0b0000;
+  ADF7021_RX_REG0 |= (uint32_t) 0b01011   << 27;   // mux regulator/uart enabled/receive
+  ADF7021_RX_REG0 |= (uint32_t) N_divider << 19;   // frequency;
+  ADF7021_RX_REG0 |= (uint32_t) F_divider << 4;    // frequency;
   
   AD7021_control_byte = ADF7021_RX_REG0;
   Send_AD7021_control();
