@@ -24,6 +24,7 @@
 
 // TCXO of the ADF7021:
 #define ADF7021_14_7456
+// #define ADF7021_12_2880
 // #define ADF7021_19_6800
 
 // Host communication selection:
