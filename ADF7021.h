@@ -34,14 +34,15 @@ http://www.analog.com/en/products/rf-microwave/integrated-transceivers-transmitt
 www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 */
 
-#define ADF7021_REG1_VHF         0x021F5041
-#define ADF7021_REG1_UHF         0x00575041
-
 /****** Support for 14.7456 MHz TCXO (modified RF7021SE boards) ******/
 #if defined(ADF7021_14_7456)
 
 // R = 4
 #define ADF7021_PFD              3686400.0
+
+// PLL (REG 01)
+#define ADF7021_REG1_VHF         0x021F5041
+#define ADF7021_REG1_UHF         0x00575041
 
 // Deviation of modulator (REG 02)
 #define ADF7021_DEV_DSTAR        43U
@@ -89,6 +90,10 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 // R = 4
 #define ADF7021_PFD              4920000.0
 
+// PLL (REG 01)
+#define ADF7021_REG1_VHF         0x021F5041
+#define ADF7021_REG1_UHF         0x00575041
+
 // Deviation of modulator (REG 02)
 #define ADF7021_DEV_DSTAR        32U
 #define ADF7021_DEV_DMR          17U
@@ -103,13 +108,13 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 
 // Discriminator bandwith, demodulator (REG 04)
 // Bug in ADI evaluation software, use datasheet formula (4FSK)
-#define ADF7021_DISC_BW_DSTAR    583U // K=83
-#define ADF7021_DISC_BW_DMR      397U // K=32
-#define ADF7021_DISC_BW_YSF      347U // K=28
-#define ADF7021_DISC_BW_P25      397U // K=32
+#define ADF7021_DISC_BW_DSTAR    597U // K=85
+#define ADF7021_DISC_BW_DMR      393U // K=32
+#define ADF7021_DISC_BW_YSF      344U // K=28
+#define ADF7021_DISC_BW_P25      393U // K=32
 
 // Post demodulator bandwith (REG 04)
-#define ADF7021_POST_BW_DSTAR    9U
+#define ADF7021_POST_BW_DSTAR    20U
 #define ADF7021_POST_BW_DMR      65U
 #define ADF7021_POST_BW_YSF      65U
 #define ADF7021_POST_BW_P25      65U
@@ -132,14 +137,18 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 /****** Support for 12.2880 MHz TCXO ******/
 #elif defined(ADF7021_12_2880)
 
-// R = 4
-#define ADF7021_PFD              3072000.0
+// R = 2
+#define ADF7021_PFD              6144000.0
+
+// PLL (REG 01)
+#define ADF7021_REG1_VHF         0x021F5021
+#define ADF7021_REG1_UHF         0x00575021
 
 // Deviation of modulator (REG 02)
-#define ADF7021_DEV_DSTAR        51U
-#define ADF7021_DEV_DMR          28U
-#define ADF7021_DEV_YSF          38U
-#define ADF7021_DEV_P25          26U
+#define ADF7021_DEV_DSTAR        26U
+#define ADF7021_DEV_DMR          14U
+#define ADF7021_DEV_YSF          19U
+#define ADF7021_DEV_P25          13U
 
 // TX/RX CLOCK register (REG 03)
 #define ADF7021_REG3_DSTAR       0x29EC4153
@@ -150,12 +159,12 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 // Discriminator bandwith, demodulator (REG 04)
 // Bug in ADI evaluation software, use datasheet formula (4FSK)
 #define ADF7021_DISC_BW_DSTAR    522U // K=85
-#define ADF7021_DISC_BW_DMR      492U // K=32
+#define ADF7021_DISC_BW_DMR      491U // K=32
 #define ADF7021_DISC_BW_YSF      430U // K=28
-#define ADF7021_DISC_BW_P25      492U // K=32
+#define ADF7021_DISC_BW_P25      491U // K=32
 
 // Post demodulator bandwith (REG 04)
-#define ADF7021_POST_BW_DSTAR    10U
+#define ADF7021_POST_BW_DSTAR    20U
 #define ADF7021_POST_BW_DMR      65U
 #define ADF7021_POST_BW_YSF      65U
 #define ADF7021_POST_BW_P25      65U
