@@ -32,6 +32,9 @@
 volatile uint32_t  AD7021_control_byte;
 volatile int       AD7021_counter;
 
+uint32_t           ADF7021_RX_REG0;
+uint32_t           ADF7021_TX_REG0;
+
 void Send_AD7021_control()
 {
   for(AD7021_counter = 31; AD7021_counter >= 0; AD7021_counter--) {
@@ -52,12 +55,16 @@ void Send_AD7021_control()
   io.SDATA_pin(LOW);
 }
 
-void Send_REG0_RX()
+void CIO::ifConf()
 {
-  uint32_t ADF7021_RX_REG0;
-  float divider;
-  uint8_t N_divider;
+  float    divider;
+  uint8_t  N_divider;
   uint16_t F_divider;
+  
+  uint32_t ADF7021_REG2  = 0;
+  uint32_t ADF7021_REG3  = 0;
+  uint32_t ADF7021_REG4  = 0;
+  uint32_t ADF7021_REG13 = 0;
      
   divider = (m_frequency_rx - 100000) / (ADF7021_PFD / 2.0);
 
@@ -70,17 +77,6 @@ void Send_REG0_RX()
   ADF7021_RX_REG0 |= (uint32_t) N_divider << 19;   // frequency;
   ADF7021_RX_REG0 |= (uint32_t) F_divider << 4;    // frequency;
   
-  AD7021_control_byte = ADF7021_RX_REG0;
-  Send_AD7021_control();
-}  
-
-void Send_REG0_TX()
-{
-  uint32_t ADF7021_TX_REG0;
-  float divider;
-  uint8_t N_divider;
-  uint16_t F_divider;
-
   divider = m_frequency_tx / (ADF7021_PFD / 2.0);
 
   N_divider = floor(divider);
@@ -91,17 +87,6 @@ void Send_REG0_TX()
   ADF7021_TX_REG0 |= (uint32_t) 0b01010   << 27;   // mux regulator/uart enabled/transmit
   ADF7021_TX_REG0 |= (uint32_t) N_divider << 19;   // frequency;
   ADF7021_TX_REG0 |= (uint32_t) F_divider << 4;    // frequency;
-
-  AD7021_control_byte = ADF7021_TX_REG0;         
-  Send_AD7021_control();
-}
-
-void CIO::ifConf()
-{
-  uint32_t ADF7021_REG2  = 0;
-  uint32_t ADF7021_REG3  = 0;
-  uint32_t ADF7021_REG4  = 0;
-  uint32_t ADF7021_REG13 = 0;
 
   if (m_dstarEnable) {
     // Dev: 1200 Hz, symb rate = 4800
@@ -207,6 +192,9 @@ void CIO::ifConf()
   // IF FILTER (5)
   AD7021_control_byte = ADF7021_REG5;
   Send_AD7021_control();
+  
+  // Frequency RX (0)
+  setRX();
 
   // MODULATION (2)
   ADF7021_REG2 |= (uint32_t) 0b0010;               // register 2
@@ -247,18 +235,23 @@ void CIO::ifConf()
 //======================================================================================================================
 void CIO::setTX()
 { 
+  AD7021_control_byte = ADF7021_TX_REG0;         
+  Send_AD7021_control();
+  
   PTT_pin(HIGH); 
   LED_pin(LOW);
-  Send_REG0_TX();
 }
 
 //======================================================================================================================
 void CIO::setRX()
 { 
+  delay_rx();
+    
+  AD7021_control_byte = ADF7021_RX_REG0;
+  Send_AD7021_control();
+  
   PTT_pin(LOW);
   LED_pin(HIGH);
-  delay_rx();
-  Send_REG0_RX();
 }
 
 #endif

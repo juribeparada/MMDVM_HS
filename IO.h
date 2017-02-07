@@ -77,7 +77,7 @@ public:
   // Misc functions
   void  dlybit(void);
   void  delay_rx(void);
-   
+     
 private:
   bool      m_started;
   CBitRB    m_rxBuffer;

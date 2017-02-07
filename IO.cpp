@@ -57,8 +57,10 @@ void CIO::process()
 
   // Switch off the transmitter if needed
   if (m_txBuffer.getData() == 0U && m_tx) {
-    m_tx = false;
+    DEB_pin(LOW);
     setRX();
+    m_tx = false;
+    DEB_pin(LOW);
   }
 
   if (m_rxBuffer.getData() >= 1U) {
@@ -83,6 +85,8 @@ void CIO::interrupt()
     return;
 
   if(m_tx) {
+    DEB_pin(HIGH);
+
     m_txBuffer.get(bit);
 
     if(bit)
@@ -98,7 +102,6 @@ void CIO::interrupt()
 
     m_rxBuffer.put(bit);
   }
-
 }
 
 void CIO::start()
@@ -107,9 +110,6 @@ void CIO::start()
   
   if (m_started)
     return;
-  
-  delay_rx();
-  setRX();
   
   startInt();
     

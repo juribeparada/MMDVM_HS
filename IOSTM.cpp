@@ -80,15 +80,33 @@ extern "C" {
   }
 }
 
+/**
+ * Function delay_us() from stm32duino project
+ *
+ * @brief Delay the given number of microseconds.
+ *
+ * @param us Number of microseconds to delay.
+ */
+static inline void delay_us(uint32_t us) {
+    us *= 12;
+
+    /* fudge for function call overhead  */
+    us--;
+    asm volatile("   mov r0, %[us]          \n\t"
+                 "1: subs r0, #1            \n\t"
+                 "   bhi 1b                 \n\t"
+                 :
+                 : [us] "r" (us)
+                 : "r0");
+}
+
 void CIO::delay_rx() {
-  volatile unsigned int delay;
-  for(delay = 0;delay<512;delay++);
+  delay_us(340);
 }
 
 void CIO::dlybit(void)
 {
-  volatile unsigned int delay;
-  for(delay = 0;delay<5;delay++);
+  delay_us(1);
 }
 
 void CIO::Init()

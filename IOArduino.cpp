@@ -70,12 +70,15 @@ extern "C" {
 }
 
 void CIO::delay_rx() {
-  delayMicroseconds(1);
+#if defined (__STM32F1__)
+  delayMicroseconds(290);
+#else
+  delayMicroseconds(150);
+#endif
 }
 
 void CIO::dlybit(void)
 {
-  volatile unsigned int delay;
   delayMicroseconds(1);
 }
 
