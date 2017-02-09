@@ -39,13 +39,18 @@
 #define PIN_RXD              GPIO_Pin_4
 #define PORT_RXD             GPIOB
 
+// TXD used in SPI Data mode of ADF7021
+// TXD is TxRxCLK of ADF7021, standard TX/RX data interface
 #define PIN_TXD              GPIO_Pin_3
 #define PORT_TXD             GPIOB
+#define PIN_TXD_INT          GPIO_PinSource3
+#define PORT_TXD_INT         GPIO_PortSourceGPIOB
 
-#define PIN_TXRX_CLK         GPIO_Pin_15
-#define PORT_TXRX_CLK        GPIOA
-#define PIN_TXRX_CLK_INT     GPIO_PinSource15
-#define PORT_TXRX_CLK_INT    GPIO_PortSourceGPIOA
+// CLKOUT used in SPI Data mode of ADF7021
+#define PIN_CLKOUT           GPIO_Pin_15
+#define PORT_CLKOUT          GPIOA
+#define PIN_CLKOUT_INT       GPIO_PinSource15
+#define PORT_CLKOUT_INT      GPIO_PortSourceGPIOA
 
 #define PIN_LED              GPIO_Pin_13
 #define PORT_LED             GPIOC
@@ -72,12 +77,21 @@
 #define PORT_COS_LED         GPIOB
 
 extern "C" {
+#if defined(BIDIR_DATA_PIN)
+  void EXTI3_IRQHandler(void) {
+    if(EXTI_GetITStatus(EXTI_Line3)!=RESET) {
+      io.interrupt();
+    EXTI_ClearITPendingBit(EXTI_Line3);
+    }
+  }
+#else
   void EXTI15_10_IRQHandler(void) {
     if(EXTI_GetITStatus(EXTI_Line15)!=RESET) {
       io.interrupt();
     EXTI_ClearITPendingBit(EXTI_Line15);
     }
   }
+#endif
 }
 
 /**
@@ -101,7 +115,11 @@ static inline void delay_us(uint32_t us) {
 }
 
 void CIO::delay_rx() {
+#if defined(BIDIR_DATA_PIN)
+  delay_us(290);
+#else
   delay_us(340);
+#endif
 }
 
 void CIO::dlybit(void)
@@ -163,16 +181,23 @@ void CIO::Init()
   GPIO_Init(PORT_RXD, &GPIO_InitStruct);
 
   // Pin TXD
+  // TXD is TxRxCLK of ADF7021, standard TX/RX data interface
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStruct.GPIO_Pin   = PIN_TXD;
+#if defined(BIDIR_DATA_PIN)
+  GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
+#else
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
+#endif
   GPIO_Init(PORT_TXD, &GPIO_InitStruct);
 
   // Pin TXRX_CLK
+#if !defined(BIDIR_DATA_PIN)
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStruct.GPIO_Pin   = PIN_TXRX_CLK;
+  GPIO_InitStruct.GPIO_Pin   = PIN_CLKOUT;
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
-  GPIO_Init(PORT_TXRX_CLK, &GPIO_InitStruct);
+  GPIO_Init(PORT_CLKOUT, &GPIO_InitStruct);
+#endif
  
   // Pin LED
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
@@ -222,29 +247,59 @@ void CIO::Init()
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
   GPIO_Init(PORT_COS_LED, &GPIO_InitStruct);
 
+#if defined(BIDIR_DATA_PIN)
+  // Connect EXTI3 Line
+  GPIO_EXTILineConfig(PORT_TXD_INT, PIN_TXD_INT);
+  // Configure EXTI3 line
+  EXTI_InitStructure.EXTI_Line = EXTI_Line3;
+#else
   // Connect EXTI15 Line
-  GPIO_EXTILineConfig(PORT_TXRX_CLK_INT, PIN_TXRX_CLK_INT);
-
+  GPIO_EXTILineConfig(PORT_CLKOUT_INT, PIN_CLKOUT_INT);
   // Configure EXTI15 line
   EXTI_InitStructure.EXTI_Line = EXTI_Line15;
+#endif
+
   EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
   EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;
   EXTI_InitStructure.EXTI_LineCmd = ENABLE;
   EXTI_Init(&EXTI_InitStructure);
-
 }
 
 void CIO::startInt()
 {
   NVIC_InitTypeDef NVIC_InitStructure;
-  
+
+#if defined(BIDIR_DATA_PIN)
+  // Enable and set EXTI3 Interrupt
+  NVIC_InitStructure.NVIC_IRQChannel = EXTI3_IRQn;
+#else
   // Enable and set EXTI15 Interrupt
   NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn;
+#endif
+
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
 }
+
+#if defined(BIDIR_DATA_PIN)
+// RXD pin is bidirectional in standard interfaces
+void CIO::Data_dir_out(bool dir) 
+{
+  GPIO_InitTypeDef GPIO_InitStruct;
+
+  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStruct.GPIO_Pin   = PIN_RXD;
+  
+  if(dir)
+    GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
+  else
+    GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
+  
+  GPIO_Init(PORT_RXD, &GPIO_InitStruct);
+}
+#endif
 
 void CIO::SCLK_pin(bool on)
 {
@@ -265,6 +320,13 @@ bool CIO::RXD_pin()
 {
   return GPIO_ReadInputDataBit(PORT_RXD, PIN_RXD) == Bit_SET;
 }
+
+#if defined(BIDIR_DATA_PIN)
+void CIO::RXD_pin_write(bool on)
+{
+  GPIO_WriteBit(PORT_RXD, PIN_RXD, on ? Bit_SET : Bit_RESET);
+}
+#endif
 
 void CIO::TXD_pin(bool on)
 {

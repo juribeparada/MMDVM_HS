@@ -32,7 +32,7 @@
 #define PIN_SLE        PB8
 #define PIN_RXD        PB4
 #define PIN_TXD        PB3
-#define PIN_TXRX_CLK   PA15
+#define PIN_CLKOUT     PA15
 #define PIN_LED        PC13
 #define PIN_DEB        PB9
 #define PIN_DSTAR_LED  PB12
@@ -51,7 +51,7 @@
 #define PIN_SLE        6
 #define PIN_RXD        7
 #define PIN_TXD        8
-#define PIN_TXRX_CLK   2   // 4 in Arduino Zero Pro
+#define PIN_CLKOUT     2   // 4 in Arduino Zero Pro
 #define PIN_LED       13
 #define PIN_DEB       11
 #define PIN_DSTAR_LED 14
@@ -92,8 +92,7 @@ void CIO::Init()
   pinMode(PIN_SDATA, OUTPUT);
   pinMode(PIN_SLE, OUTPUT);
   pinMode(PIN_RXD, INPUT);
-  pinMode(PIN_TXD, OUTPUT);
-  pinMode(PIN_TXRX_CLK, INPUT);
+  pinMode(PIN_CLKOUT, INPUT);
   pinMode(PIN_LED, OUTPUT);
   pinMode(PIN_DEB, OUTPUT);
   pinMode(PIN_DSTAR_LED, OUTPUT);
@@ -102,17 +101,47 @@ void CIO::Init()
   pinMode(PIN_P25_LED, OUTPUT);
   pinMode(PIN_PTT_LED, OUTPUT);
   pinMode(PIN_COS_LED, OUTPUT);
+  
+#if defined(BIDIR_DATA_PIN)
+  pinMode(PIN_TXD, INPUT);
+#else
+  pinMode(PIN_TXD, OUTPUT);
+#endif
 
 }
 
 void CIO::startInt()
 {
+#if defined(BIDIR_DATA_PIN)
+
+// TXD pin is TxRxCLK of ADF7021, standard TX/RX data interface
 #if defined (__STM32F1__)
-  attachInterrupt(PIN_TXRX_CLK, EXT_IRQHandler, RISING);
+  attachInterrupt(PIN_TXD, EXT_IRQHandler, RISING);
 #else
-  attachInterrupt(digitalPinToInterrupt(PIN_TXRX_CLK), EXT_IRQHandler, RISING);
+  attachInterrupt(digitalPinToInterrupt(PIN_TXD), EXT_IRQHandler, RISING);
+#endif
+
+#else
+
+#if defined (__STM32F1__)
+  attachInterrupt(PIN_CLKOUT, EXT_IRQHandler, RISING);
+#else
+  attachInterrupt(digitalPinToInterrupt(PIN_CLKOUT), EXT_IRQHandler, RISING);
+#endif
+
 #endif
 }
+
+#if defined(BIDIR_DATA_PIN)
+// RXD pin is bidirectional in standard interfaces
+void CIO::Data_dir_out(bool dir) 
+{
+  if(dir)
+    pinMode(PIN_RXD, OUTPUT);
+  else
+    pinMode(PIN_RXD, INPUT);
+}
+#endif
 
 void CIO::SCLK_pin(bool on) 
 {
@@ -133,6 +162,13 @@ bool CIO::RXD_pin()
 {
   return digitalRead(PIN_RXD) == HIGH;
 }
+
+#if defined(BIDIR_DATA_PIN)
+void CIO::RXD_pin_write(bool on)
+{
+  digitalWrite(PIN_RXD, on ? HIGH : LOW);
+}
+#endif
 
 void CIO::TXD_pin(bool on) 
 {

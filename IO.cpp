@@ -45,7 +45,10 @@ m_txBuffer(TX_RINGBUFFER_SIZE)
   COS_pin(LOW);
   DEB_pin(LOW);
 
+#if !defined(BIDIR_DATA_PIN)
   TXD_pin(LOW);
+#endif
+
   SCLK_pin(LOW);
   SDATA_pin(LOW);
   SLE_pin(LOW);
@@ -57,10 +60,8 @@ void CIO::process()
 
   // Switch off the transmitter if needed
   if (m_txBuffer.getData() == 0U && m_tx) {
-    DEB_pin(LOW);
     setRX();
     m_tx = false;
-    DEB_pin(LOW);
   }
 
   if (m_rxBuffer.getData() >= 1U) {
@@ -85,14 +86,19 @@ void CIO::interrupt()
     return;
 
   if(m_tx) {
-    DEB_pin(HIGH);
-
     m_txBuffer.get(bit);
 
+#if defined(BIDIR_DATA_PIN)
+    if(bit)
+      RXD_pin_write(HIGH);
+    else
+      RXD_pin_write(LOW);
+#else
     if(bit)
       TXD_pin(HIGH);
     else
       TXD_pin(LOW);
+#endif
 
   } else {
     if(RXD_pin())

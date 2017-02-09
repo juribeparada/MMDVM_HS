@@ -46,6 +46,9 @@ public:
   void  SDATA_pin(bool on);
   void  SLE_pin(bool on);
   bool  RXD_pin();
+#if defined(BIDIR_DATA_PIN)
+  void  RXD_pin_write(bool on);
+#endif
   void  TXD_pin(bool on);
   void  PTT_pin(bool on);
   void  LED_pin(bool on);
@@ -56,6 +59,10 @@ public:
   void  P25_pin(bool on);
   void  COS_pin(bool on);
   void  interrupt(void);
+
+#if defined(BIDIR_DATA_PIN)
+  void  Data_dir_out(bool dir);
+#endif
 
   // IO API
   void  write(uint8_t* data, uint16_t length);

@@ -73,7 +73,13 @@ void CIO::ifConf()
   F_divider = floor(divider + 0.5);
 
   ADF7021_RX_REG0  = (uint32_t) 0b0000;
-  ADF7021_RX_REG0 |= (uint32_t) 0b01011   << 27;   // mux regulator/uart enabled/receive
+  
+#if defined(BIDIR_DATA_PIN)
+  ADF7021_RX_REG0 |= (uint32_t) 0b01001   << 27;   // mux regulator/receive
+#else
+  ADF7021_RX_REG0 |= (uint32_t) 0b01011   << 27;   // mux regulator/uart-spi enabled/receive
+#endif
+
   ADF7021_RX_REG0 |= (uint32_t) N_divider << 19;   // frequency;
   ADF7021_RX_REG0 |= (uint32_t) F_divider << 4;    // frequency;
   
@@ -84,7 +90,13 @@ void CIO::ifConf()
   F_divider = floor(divider + 0.5);
 
   ADF7021_TX_REG0  = (uint32_t) 0b0000;            // register 0
-  ADF7021_TX_REG0 |= (uint32_t) 0b01010   << 27;   // mux regulator/uart enabled/transmit
+
+#if defined(BIDIR_DATA_PIN)
+  ADF7021_TX_REG0 |= (uint32_t) 0b01000   << 27;   // mux regulator/transmit
+#else
+  ADF7021_TX_REG0 |= (uint32_t) 0b01010   << 27;   // mux regulator/uart-spi enabled/transmit
+#endif
+
   ADF7021_TX_REG0 |= (uint32_t) N_divider << 19;   // frequency;
   ADF7021_TX_REG0 |= (uint32_t) F_divider << 4;    // frequency;
 
@@ -235,9 +247,15 @@ void CIO::ifConf()
 //======================================================================================================================
 void CIO::setTX()
 { 
+  // Send register 0 for TX operation
   AD7021_control_byte = ADF7021_TX_REG0;         
   Send_AD7021_control();
   
+#if defined(BIDIR_DATA_PIN)
+  Data_dir_out(true);  // Data pin output mode
+#endif
+  
+  // PTT pin on
   PTT_pin(HIGH); 
   LED_pin(LOW);
 }
@@ -245,11 +263,18 @@ void CIO::setTX()
 //======================================================================================================================
 void CIO::setRX()
 { 
+  // Delay for TX latency
   delay_rx();
-    
+  
+  // Send register 0 for RX operation
   AD7021_control_byte = ADF7021_RX_REG0;
   Send_AD7021_control();
   
+#if defined(BIDIR_DATA_PIN)
+  Data_dir_out(false);  // Data pin input mode
+#endif
+  
+  // PTT pin off
   PTT_pin(LOW);
   LED_pin(HIGH);
 }
