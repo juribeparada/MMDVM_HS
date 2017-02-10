@@ -68,7 +68,7 @@ const uint8_t MMDVM_DEBUG3       = 0xF3U;
 const uint8_t MMDVM_DEBUG4       = 0xF4U;
 const uint8_t MMDVM_DEBUG5       = 0xF5U;
 
-const uint8_t HARDWARE[]         = "MMDVM 20161213-HS (D-Star/DMR/YSF/P25)";
+const uint8_t HARDWARE[]         = "MMDVM-HS 20170210 (D-Star/DMR/YSF/P25)";
 
 const uint8_t PROTOCOL_VERSION   = 1U;
 
@@ -107,7 +107,7 @@ void CSerialPort::sendNAK(uint8_t err)
 
 void CSerialPort::getStatus()
 {
-  //io.resetWatchdog();
+  io.resetWatchdog();
 
   uint8_t reply[15U];
 
@@ -211,8 +211,6 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
   uint8_t colorCode = data[6U];
   if (colorCode > 15U)
     return 4U;
-
-//  uint8_t dmrDelay = data[7U];
 
   m_modemState  = modemState;
 

@@ -331,7 +331,6 @@ void CIO::setTX()
   
   // PTT pin on
   PTT_pin(HIGH); 
-  LED_pin(LOW);
 }
 
 //======================================================================================================================
@@ -350,7 +349,6 @@ void CIO::setRX()
   
   // PTT pin off
   PTT_pin(LOW);
-  LED_pin(HIGH);
 }
 
 #endif

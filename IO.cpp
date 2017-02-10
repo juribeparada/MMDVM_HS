@@ -32,7 +32,10 @@ uint8_t     m_power;
 CIO::CIO():
 m_started(false),
 m_rxBuffer(RX_RINGBUFFER_SIZE),
-m_txBuffer(TX_RINGBUFFER_SIZE)
+m_txBuffer(TX_RINGBUFFER_SIZE),
+m_ledCount(0U),
+m_ledValue(true),
+m_watchdog(0U)
 {
   Init();
 
@@ -57,6 +60,33 @@ m_txBuffer(TX_RINGBUFFER_SIZE)
 void CIO::process()
 {
   uint8_t bit;
+  
+  m_ledCount++;
+  
+  if (m_started) {
+    // Two seconds timeout
+    if (m_watchdog >= 19200U) {
+      if (m_modemState == STATE_DSTAR || m_modemState == STATE_DMR || m_modemState == STATE_YSF ||  m_modemState == STATE_P25) {
+        m_modemState = STATE_IDLE;
+        setMode();
+      }
+
+      m_watchdog = 0U;
+    }
+
+    if (m_ledCount >= 24000U) {
+      m_ledCount = 0U;
+      m_ledValue = !m_ledValue;
+      LED_pin(m_ledValue);
+    }
+  } else {
+    if (m_ledCount >= 240000U) {
+      m_ledCount = 0U;
+      m_ledValue = !m_ledValue;
+      LED_pin(m_ledValue);
+    }
+    return;
+  }
 
   // Switch off the transmitter if needed
   if (m_txBuffer.getData() == 0U && m_tx) {
@@ -108,6 +138,8 @@ void CIO::interrupt()
 
     m_rxBuffer.put(bit);
   }
+
+  m_watchdog++;
 }
 
 void CIO::start()
@@ -184,4 +216,9 @@ void CIO::setDecode(bool dcd)
     COS_pin(dcd ? true : false);
 
   m_dcd = dcd;
+}
+
+void CIO::resetWatchdog()
+{
+  m_watchdog = 0U;
 }

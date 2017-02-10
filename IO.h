@@ -47,9 +47,11 @@ public:
   bool     SREAD_pin(void);
   void     SLE_pin(bool on);
   bool     RXD_pin(void);
+  
 #if defined(BIDIR_DATA_PIN)
   void     RXD_pin_write(bool on);
 #endif
+
   void     TXD_pin(bool on);
   void     PTT_pin(bool on);
   void     LED_pin(bool on);
@@ -60,6 +62,7 @@ public:
   void     P25_pin(bool on);
   void     COS_pin(bool on);
   void     interrupt(void);
+  void     resetWatchdog(void);
 
 #if defined(BIDIR_DATA_PIN)
   void  Data_dir_out(bool dir);
@@ -94,6 +97,10 @@ private:
   bool      m_started;
   CBitRB    m_rxBuffer;
   CBitRB    m_txBuffer;
+  
+  uint32_t             m_ledCount;
+  bool                 m_ledValue;
+  volatile uint32_t    m_watchdog;
 
 };
 
