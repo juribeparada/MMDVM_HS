@@ -41,8 +41,10 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_PFD              3686400.0
 
 // PLL (REG 01)
-#define ADF7021_REG1_VHF         0x021F5041
-#define ADF7021_REG1_UHF         0x00575041
+#define ADF7021_REG1_VHF1        0x021F5041
+#define ADF7021_REG1_VHF2        0x021F5041
+#define ADF7021_REG1_UHF1        0x00575041
+#define ADF7021_REG1_UHF2        0x00535041
 
 // Deviation of modulator (REG 02)
 #define ADF7021_DEV_DSTAR        43U
@@ -91,8 +93,10 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_PFD              4920000.0
 
 // PLL (REG 01)
-#define ADF7021_REG1_VHF         0x021F5041
-#define ADF7021_REG1_UHF         0x00575041
+#define ADF7021_REG1_VHF1        0x021F5041
+#define ADF7021_REG1_VHF2        0x021F5041
+#define ADF7021_REG1_UHF1        0x00575041
+#define ADF7021_REG1_UHF2        0x00535041
 
 // Deviation of modulator (REG 02)
 #define ADF7021_DEV_DSTAR        32U
@@ -141,8 +145,10 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_PFD              6144000.0
 
 // PLL (REG 01)
-#define ADF7021_REG1_VHF         0x021F5021
-#define ADF7021_REG1_UHF         0x00575021
+#define ADF7021_REG1_VHF1        0x021F5021
+#define ADF7021_REG1_VHF2        0x021F5021
+#define ADF7021_REG1_UHF1        0x00575021
+#define ADF7021_REG1_UHF2        0x00535021
 
 // Deviation of modulator (REG 02)
 #define ADF7021_DEV_DSTAR        26U

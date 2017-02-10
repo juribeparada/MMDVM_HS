@@ -26,10 +26,14 @@
 #define LOW      0
 #define HIGH     1
 
-#define VHF_MIN  144000000
-#define VHF_MAX  148000000
-#define UHF_MIN  430000000
-#define UHF_MAX  450000000
+#define VHF1_MIN  144000000
+#define VHF1_MAX  148000000
+#define VHF2_MIN  219000000
+#define VHF2_MAX  225000000
+#define UHF1_MIN  420000000
+#define UHF1_MAX  450000000
+#define UHF2_MIN  902000000
+#define UHF2_MAX  928000000
 
 extern uint32_t  m_frequency_rx;
 extern uint32_t  m_frequency_tx;

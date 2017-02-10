@@ -134,13 +134,40 @@ void CIO::ifConf()
   float    divider;
   uint8_t  N_divider;
   uint16_t F_divider;
-  
+  uint32_t div2;
+
+  uint32_t ADF7021_REG1  = 0;
   uint32_t ADF7021_REG2  = 0;
   uint32_t ADF7021_REG3  = 0;
   uint32_t ADF7021_REG4  = 0;
   uint32_t ADF7021_REG13 = 0;
-     
-  divider = (m_frequency_rx - 100000) / (ADF7021_PFD / 2.0);
+
+  // Check frequency band
+  if( (m_frequency_tx >= VHF1_MIN) && (m_frequency_tx < VHF1_MAX) ) {
+    ADF7021_REG1 = ADF7021_REG1_VHF1;         // VHF1, external VCO
+    div2 = 1U;
+  }
+  else if( (m_frequency_tx >= VHF2_MIN) && (m_frequency_tx < VHF2_MAX) ) {
+    ADF7021_REG1 = ADF7021_REG1_VHF2;         // VHF1, external VCO
+    div2 = 1U;
+  }
+  else if( (m_frequency_tx >= UHF1_MIN)&&(m_frequency_tx < UHF1_MAX) ) {
+    ADF7021_REG1 = ADF7021_REG1_UHF1;         // UHF1, internal VCO
+    div2 = 1U;
+  }
+  else if( (m_frequency_tx >= UHF2_MIN)&&(m_frequency_tx < UHF2_MAX) ) {
+    ADF7021_REG1 = ADF7021_REG1_UHF2;         // UHF2, internal VCO
+    div2 = 2U;
+  }
+  else {
+    ADF7021_REG1 = ADF7021_REG1_UHF1;         // UHF1, internal VCO
+    div2 = 1U;
+  }
+
+  if( div2 == 1U )
+    divider = (m_frequency_rx - 100000) / (ADF7021_PFD / 2U);
+  else
+    divider = (m_frequency_rx - 100000) / ADF7021_PFD;
 
   N_divider = floor(divider);
   divider = (divider - N_divider) * 32768;
@@ -157,7 +184,10 @@ void CIO::ifConf()
   ADF7021_RX_REG0 |= (uint32_t) N_divider << 19;   // frequency;
   ADF7021_RX_REG0 |= (uint32_t) F_divider << 4;    // frequency;
   
-  divider = m_frequency_tx / (ADF7021_PFD / 2.0);
+  if( div2 == 1U )
+    divider = m_frequency_tx / (ADF7021_PFD / 2U);
+  else
+    divider = m_frequency_tx / ADF7021_PFD;
 
   N_divider = floor(divider);
   divider = (divider - N_divider) * 32768;
@@ -192,7 +222,7 @@ void CIO::ifConf()
     ADF7021_REG13 |= (uint32_t) ADF7021_SLICER_TH_DSTAR  << 4;   // slicer threshold
 
     ADF7021_REG2 = (uint32_t) 0b00                       << 28;  // clock normal
-    ADF7021_REG2 |= (uint32_t) ADF7021_DEV_DSTAR         << 19;  // deviation
+    ADF7021_REG2 |= (uint32_t) (ADF7021_DEV_DSTAR / div2)<< 19;  // deviation
     ADF7021_REG2 |= (uint32_t) 0b001                     << 4;   // modulation (GMSK)
   }
   else if (m_dmrEnable) {
@@ -213,7 +243,7 @@ void CIO::ifConf()
     ADF7021_REG13 |= (uint32_t) ADF7021_SLICER_TH_DMR    << 4;   // slicer threshold
 
     ADF7021_REG2 = (uint32_t) 0b10                       << 28;  // invert data
-    ADF7021_REG2 |= (uint32_t) ADF7021_DEV_DMR           << 19;  // deviation
+    ADF7021_REG2 |= (uint32_t) (ADF7021_DEV_DMR / div2)  << 19;  // deviation
     ADF7021_REG2 |= (uint32_t) 0b111                     << 4;   // modulation (4FSK)
   }
   else if (m_ysfEnable) {
@@ -234,7 +264,7 @@ void CIO::ifConf()
     ADF7021_REG13 |= (uint32_t) ADF7021_SLICER_TH_YSF    << 4;   // slicer threshold
 
     ADF7021_REG2 = (uint32_t) 0b10                       << 28;  // invert data
-    ADF7021_REG2 |= (uint32_t) ADF7021_DEV_YSF           << 19;  // deviation
+    ADF7021_REG2 |= (uint32_t) (ADF7021_DEV_YSF / div2)  << 19;  // deviation
     ADF7021_REG2 |= (uint32_t) 0b111                     << 4;   // modulation (4FSK)
   }
   else if (m_p25Enable) {
@@ -255,16 +285,12 @@ void CIO::ifConf()
     ADF7021_REG13 |= (uint32_t) ADF7021_SLICER_TH_P25    << 4;   // slicer threshold
 
     ADF7021_REG2 = (uint32_t) 0b10                       << 28;  // invert data
-    ADF7021_REG2 |= (uint32_t) ADF7021_DEV_P25           << 19;  // deviation
+    ADF7021_REG2 |= (uint32_t) (ADF7021_DEV_P25 / div2)  << 19;  // deviation
     ADF7021_REG2 |= (uint32_t) 0b111                     << 4;   // modulation (4FSK)
   }
 
   // VCO/OSCILLATOR (REG1)
-  if( (m_frequency_tx >= VHF_MIN) && (m_frequency_tx < VHF_MAX) )
-    AD7021_control_word = ADF7021_REG1_VHF;         // VHF, external VCO
-  else if( (m_frequency_tx >= UHF_MIN)&&(m_frequency_tx < UHF_MAX) )
-    AD7021_control_word = ADF7021_REG1_UHF;         // UHF, internal VCO
-
+  AD7021_control_word = ADF7021_REG1;
   Send_AD7021_control();
 
   // TX/RX CLOCK (3)

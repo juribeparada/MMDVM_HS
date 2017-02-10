@@ -192,8 +192,10 @@ uint8_t CIO::setFreq(uint32_t frequency_rx, uint32_t frequency_tx)
   // power level
   m_power = 0x20;
 
-  if( !( ((frequency_rx >= VHF_MIN)&&(frequency_rx < VHF_MAX)) || ((frequency_tx >= VHF_MIN)&&(frequency_tx < VHF_MAX)) || \
-  ((frequency_rx >= UHF_MIN)&&(frequency_rx < UHF_MAX)) || ((frequency_tx >= UHF_MIN)&&(frequency_tx < UHF_MAX)) ) )
+  if( !( ((frequency_rx >= VHF1_MIN)&&(frequency_rx < VHF1_MAX)) || ((frequency_tx >= VHF1_MIN)&&(frequency_tx < VHF1_MAX)) || \
+  ((frequency_rx >= UHF1_MIN)&&(frequency_rx < UHF1_MAX)) || ((frequency_tx >= UHF1_MIN)&&(frequency_tx < UHF1_MAX)) || \
+  ((frequency_rx >= VHF2_MIN)&&(frequency_rx < VHF2_MAX)) || ((frequency_tx >= VHF2_MIN)&&(frequency_tx < VHF2_MAX)) || \
+  ((frequency_rx >= UHF2_MIN)&&(frequency_rx < UHF2_MAX)) || ((frequency_tx >= UHF2_MIN)&&(frequency_tx < UHF2_MAX)) ) )
     return 4U;
 
   m_frequency_rx = frequency_rx;
