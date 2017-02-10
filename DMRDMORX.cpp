@@ -110,7 +110,7 @@ void CDMRDMORX::databit(bool bit)
         switch (dataType) {
           case DT_DATA_HEADER:
             DEBUG2("DMRDMORX: data header found pos", m_syncPtr);
-            serial.writeDMRData(true, frame, DMR_FRAME_LENGTH_BYTES + 1U);
+            writeRSSIData(frame);
             m_state = DMORXS_DATA;
             m_type  = 0x00U;
             break;
@@ -119,32 +119,32 @@ void CDMRDMORX::databit(bool bit)
           case DT_RATE_1_DATA:
             if (m_state == DMORXS_DATA) {
               DEBUG2("DMRDMORX: data payload found pos", m_syncPtr);
-              serial.writeDMRData(true, frame, DMR_FRAME_LENGTH_BYTES + 1U);
+              writeRSSIData(frame);
               m_type = dataType;
             }
             break;
           case DT_VOICE_LC_HEADER:
             DEBUG2("DMRDMORX: voice header found pos", m_syncPtr);
-            serial.writeDMRData(true, frame, DMR_FRAME_LENGTH_BYTES + 1U);
+            writeRSSIData(frame);
             m_state = DMORXS_VOICE;
             break;
           case DT_VOICE_PI_HEADER:
             if (m_state == DMORXS_VOICE) {
               DEBUG2("DMRDMORX: voice pi header found pos", m_syncPtr);
-              serial.writeDMRData(true, frame, DMR_FRAME_LENGTH_BYTES + 1U);
+              writeRSSIData(frame);
             }
             m_state = DMORXS_VOICE;
             break;
           case DT_TERMINATOR_WITH_LC:
             if (m_state == DMORXS_VOICE) {
               DEBUG2("DMRDMORX: voice terminator found pos", m_syncPtr);
-              serial.writeDMRData(true, frame, DMR_FRAME_LENGTH_BYTES + 1U);
+              writeRSSIData(frame);
               reset();
             }
             break;
           default:    // DT_CSBK
             DEBUG2("DMRDMORX: csbk found pos", m_syncPtr);
-            serial.writeDMRData(true, frame, DMR_FRAME_LENGTH_BYTES + 1U);
+            writeRSSIData(frame);
             reset();
             break;
         }
@@ -152,7 +152,7 @@ void CDMRDMORX::databit(bool bit)
     } else if (m_control == CONTROL_VOICE) {
       // Voice sync
       DEBUG2("DMRDMORX: voice sync found pos", m_syncPtr);
-      serial.writeDMRData(true, frame, DMR_FRAME_LENGTH_BYTES + 1U);
+      writeRSSIData(frame);
 
       m_state     = DMORXS_VOICE;
       m_syncCount = 0U;
@@ -177,7 +177,7 @@ void CDMRDMORX::databit(bool bit)
       } else if (m_state == DMORXS_DATA) {
         if (m_type != 0x00U) {
           frame[0U] = CONTROL_DATA | m_type;
-          serial.writeDMRData(true, frame, DMR_FRAME_LENGTH_BYTES + 1U);
+          writeRSSIData(frame);
         }
       }
     }
@@ -254,3 +254,18 @@ void CDMRDMORX::setColorCode(uint8_t colorCode)
 {
   m_colorCode = colorCode;
 }
+
+void CDMRDMORX::writeRSSIData(uint8_t* frame)
+{
+#if defined(SEND_RSSI_DATA)
+  uint16_t rssi = io.readRSSI();
+  
+  frame[34U] = (rssi >> 8) & 0xFFU;
+  frame[35U] = (rssi >> 0) & 0xFFU;
+  
+  serial.writeDMRData(true, frame, DMR_FRAME_LENGTH_BYTES + 3U);
+#else
+  serial.writeDMRData(true, frame, DMR_FRAME_LENGTH_BYTES + 1U);
+#endif
+}
+

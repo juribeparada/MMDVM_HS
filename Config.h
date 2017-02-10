@@ -23,7 +23,7 @@
 #define ENABLE_ADF7021
 
 // Bidirectional Data pin (Enable Standard TX/RX Data Interface of ADF7021)
-#define BIDIR_DATA_PIN
+// #define BIDIR_DATA_PIN
 
 // TCXO of the ADF7021:
 // For 14.7456 MHz:
@@ -36,6 +36,9 @@
 // Host communication selection:
 //#define STM32_USART1_HOST
 #define STM32_USB_HOST
+
+// Send RSSI value
+// #define SEND_RSSI_DATA
 
 // Enable Nextion LCD serial port repeater:
 //#define SERIAL_REPEATER

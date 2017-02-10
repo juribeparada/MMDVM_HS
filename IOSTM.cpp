@@ -167,6 +167,12 @@ void CIO::Init()
   GPIO_InitStruct.GPIO_Pin   = PIN_SDATA;
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
   GPIO_Init(PORT_SDATA, &GPIO_InitStruct);
+  
+  // Pin SREAD
+  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStruct.GPIO_Pin   = PIN_SREAD;
+  GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
+  GPIO_Init(PORT_SREAD, &GPIO_InitStruct);
 
   // Pin SLE
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
@@ -309,6 +315,11 @@ void CIO::SCLK_pin(bool on)
 void CIO::SDATA_pin(bool on)
 {
   GPIO_WriteBit(PORT_SDATA, PIN_SDATA, on ? Bit_SET : Bit_RESET);
+}
+
+bool CIO::SREAD_pin()
+{
+  return GPIO_ReadInputDataBit(PORT_SREAD, PIN_SREAD) == Bit_SET;
 }
 
 void CIO::SLE_pin(bool on)

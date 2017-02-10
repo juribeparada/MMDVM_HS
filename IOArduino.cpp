@@ -90,6 +90,7 @@ void CIO::Init()
  
   pinMode(PIN_SCLK, OUTPUT);
   pinMode(PIN_SDATA, OUTPUT);
+  pinMode(PIN_SREAD, INPUT);
   pinMode(PIN_SLE, OUTPUT);
   pinMode(PIN_RXD, INPUT);
   pinMode(PIN_CLKOUT, INPUT);
@@ -151,6 +152,11 @@ void CIO::SCLK_pin(bool on)
 void CIO::SDATA_pin(bool on) 
 {
   digitalWrite(PIN_SDATA, on ? HIGH : LOW);
+}
+
+bool CIO::SREAD_pin()
+{
+  return digitalRead(PIN_SREAD) == HIGH;
 }
 
 void CIO::SLE_pin(bool on) 

@@ -58,6 +58,7 @@ private:
   void    viterbiDecode(int* data);
   void    traceBack();
   bool    checksum(const uint8_t* header) const;
+  void    writeRSSIData(unsigned char* data);
 };
 
 #endif

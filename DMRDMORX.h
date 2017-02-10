@@ -56,6 +56,7 @@ private:
 
   void correlateSync();
   void bitsToBytes(uint16_t start, uint8_t count, uint8_t* buffer);
+  void writeRSSIData(uint8_t* frame);
 
 };
 

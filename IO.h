@@ -41,49 +41,54 @@ public:
   CIO();
 
   // Platform API
-  void  Init(void);
-  void  SCLK_pin(bool on);
-  void  SDATA_pin(bool on);
-  void  SLE_pin(bool on);
-  bool  RXD_pin();
+  void     Init(void);
+  void     SCLK_pin(bool on);
+  void     SDATA_pin(bool on);
+  bool     SREAD_pin(void);
+  void     SLE_pin(bool on);
+  bool     RXD_pin(void);
 #if defined(BIDIR_DATA_PIN)
-  void  RXD_pin_write(bool on);
+  void     RXD_pin_write(bool on);
 #endif
-  void  TXD_pin(bool on);
-  void  PTT_pin(bool on);
-  void  LED_pin(bool on);
-  void  DEB_pin(bool on);
-  void  DSTAR_pin(bool on);
-  void  DMR_pin(bool on);
-  void  YSF_pin(bool on);
-  void  P25_pin(bool on);
-  void  COS_pin(bool on);
-  void  interrupt(void);
+  void     TXD_pin(bool on);
+  void     PTT_pin(bool on);
+  void     LED_pin(bool on);
+  void     DEB_pin(bool on);
+  void     DSTAR_pin(bool on);
+  void     DMR_pin(bool on);
+  void     YSF_pin(bool on);
+  void     P25_pin(bool on);
+  void     COS_pin(bool on);
+  void     interrupt(void);
 
 #if defined(BIDIR_DATA_PIN)
   void  Data_dir_out(bool dir);
 #endif
 
   // IO API
-  void  write(uint8_t* data, uint16_t length);
-  uint16_t  getSpace() const;
-  void  process();
-  bool  hasTXOverflow();
-  bool  hasRXOverflow();
-  uint8_t  setFreq(uint32_t frequency_rx, uint32_t frequency_tx);
-  void  setMode();
-  void  setDecode(bool dcd);
+  void      write(uint8_t* data, uint16_t length);
+  uint16_t  getSpace(void) const;
+  void      process(void);
+  bool      hasTXOverflow(void);
+  bool      hasRXOverflow(void);
+  uint8_t   setFreq(uint32_t frequency_rx, uint32_t frequency_tx);
+  void      setMode(void);
+  void      setDecode(bool dcd);
 
   // RF interface API
-  void  setTX();
-  void  setRX();
-  void  ifConf();
-  void  start();
-  void  startInt();
+  void      setTX(void);
+  void      setRX(void);
+  void      ifConf(void);
+  void      start(void);
+  void      startInt(void);
+  
+#if defined(SEND_RSSI_DATA)
+  uint16_t  readRSSI(void);
+#endif
 
   // Misc functions
-  void  dlybit(void);
-  void  delay_rx(void);
+  void      dlybit(void);
+  void      delay_rx(void);
      
 private:
   bool      m_started;

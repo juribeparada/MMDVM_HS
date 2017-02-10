@@ -29,31 +29,105 @@
 #include "ADF7021.h"
 #include <math.h>
 
-volatile uint32_t  AD7021_control_byte;
-volatile int       AD7021_counter;
+volatile uint32_t  AD7021_control_word;
 
 uint32_t           ADF7021_RX_REG0;
 uint32_t           ADF7021_TX_REG0;
 
 void Send_AD7021_control()
 {
+  int AD7021_counter;
+
   for(AD7021_counter = 31; AD7021_counter >= 0; AD7021_counter--) {
-    if(bitRead(AD7021_control_byte, AD7021_counter) == HIGH)
-      io.SDATA_pin(HIGH);   
+    if(bitRead(AD7021_control_word, AD7021_counter) == HIGH)
+      io.SDATA_pin(HIGH);
     else
       io.SDATA_pin(LOW);
-     
+
     io.dlybit();
     io.SCLK_pin(HIGH);
     io.dlybit();
     io.SCLK_pin(LOW);
   }
-  
+
   io.SLE_pin(HIGH);
   io.dlybit();
-  io.SLE_pin(LOW);    
+  io.SLE_pin(LOW);
   io.SDATA_pin(LOW);
 }
+
+#if defined(SEND_RSSI_DATA)
+uint16_t CIO::readRSSI()
+{
+  uint32_t AD7021_RB;
+  uint16_t RB_word = 0;
+  int AD7021_counter;
+  uint8_t RB_code, gain_code, gain_corr;
+
+  // Register 7, readback enable, ADC RSSI mode
+  AD7021_RB = 0x0147;
+  
+  // Send control register
+  for(AD7021_counter = 8; AD7021_counter >= 0; AD7021_counter--) {
+    if(bitRead(AD7021_RB, AD7021_counter) == HIGH)
+      SDATA_pin(HIGH);
+    else
+      SDATA_pin(LOW);
+
+    dlybit();
+    SCLK_pin(HIGH);
+    dlybit();
+    SCLK_pin(LOW);
+  }
+
+  SDATA_pin(LOW);
+  SLE_pin(HIGH);
+  dlybit();
+  
+  // Read SREAD pin
+  for(AD7021_counter = 17; AD7021_counter >= 0; AD7021_counter--) {
+    SCLK_pin(HIGH);
+    dlybit();
+
+    if( (AD7021_counter != 17) && (AD7021_counter != 0) )
+      RB_word |= ( (SREAD_pin() & 0x01) << (AD7021_counter-1) );
+
+    SCLK_pin(LOW);
+    dlybit();
+
+  }
+
+  SLE_pin(LOW);
+  
+  // Process RSSI code
+  RB_code = RB_word & 0x7f;
+  gain_code = (RB_word >> 7) & 0x0f;
+  
+  switch(gain_code) {
+    case 0b1010:
+      gain_corr = 0;
+      break;
+    case 0b0110:
+      gain_corr = 24;
+      break;
+    case 0b0101:
+      gain_corr = 38;
+      break;
+    case 0b0100:
+      gain_corr = 58;
+      break;
+    case 0b0000:
+      gain_corr = 86;
+      break;
+    default:
+      gain_corr = 0;
+      break;
+  }
+
+  return ( 130 - (RB_code + gain_corr)/2 );
+
+}
+#endif
 
 void CIO::ifConf()
 {
@@ -187,22 +261,22 @@ void CIO::ifConf()
 
   // VCO/OSCILLATOR (REG1)
   if( (m_frequency_tx >= VHF_MIN) && (m_frequency_tx < VHF_MAX) )
-    AD7021_control_byte = ADF7021_REG1_VHF;         // VHF, external VCO
+    AD7021_control_word = ADF7021_REG1_VHF;         // VHF, external VCO
   else if( (m_frequency_tx >= UHF_MIN)&&(m_frequency_tx < UHF_MAX) )
-    AD7021_control_byte = ADF7021_REG1_UHF;         // UHF, internal VCO
+    AD7021_control_word = ADF7021_REG1_UHF;         // UHF, internal VCO
 
   Send_AD7021_control();
 
   // TX/RX CLOCK (3)
-  AD7021_control_byte = ADF7021_REG3;
+  AD7021_control_word = ADF7021_REG3;
   Send_AD7021_control();
 
   // DEMOD (4)
-  AD7021_control_byte = ADF7021_REG4;
+  AD7021_control_word = ADF7021_REG4;
   Send_AD7021_control();
 
   // IF FILTER (5)
-  AD7021_control_byte = ADF7021_REG5;
+  AD7021_control_word = ADF7021_REG5;
   Send_AD7021_control();
   
   // Frequency RX (0)
@@ -212,35 +286,35 @@ void CIO::ifConf()
   ADF7021_REG2 |= (uint32_t) 0b0010;               // register 2
   ADF7021_REG2 |= (uint32_t) m_power       << 13;  // power level
   ADF7021_REG2 |= (uint32_t) 0b110001      << 7;   // PA  
-  AD7021_control_byte = ADF7021_REG2;
+  AD7021_control_word = ADF7021_REG2;
   Send_AD7021_control();
  
   // TEST MODE (disabled) (15)
-  AD7021_control_byte = 0x000E000F;
+  AD7021_control_word = 0x000E000F;
   Send_AD7021_control();
 
   // IF FINE CAL (fine cal, defaults) (6)
-  AD7021_control_byte = ADF7021_REG6;
+  AD7021_control_word = ADF7021_REG6;
   Send_AD7021_control();
 
   // AGC (auto, defaults) (9)
-  AD7021_control_byte = 0x000231E9;
+  AD7021_control_word = 0x000231E9;
   Send_AD7021_control();
 
   // AFC (off, defaults) (10)
-  AD7021_control_byte = ADF7021_REG10;
+  AD7021_control_word = ADF7021_REG10;
   Send_AD7021_control();
 
   // SYNC WORD DET (11)
-  AD7021_control_byte = 0x0000003B;
+  AD7021_control_word = 0x0000003B;
   Send_AD7021_control();
 
   // SWD/THRESHOLD (12)
-  AD7021_control_byte = 0x0000010C;
+  AD7021_control_word = 0x0000010C;
   Send_AD7021_control();
 
   // 3FSK/4FSK DEMOD (13)
-  AD7021_control_byte = ADF7021_REG13;
+  AD7021_control_word = ADF7021_REG13;
   Send_AD7021_control();
 }
 
@@ -248,7 +322,7 @@ void CIO::ifConf()
 void CIO::setTX()
 { 
   // Send register 0 for TX operation
-  AD7021_control_byte = ADF7021_TX_REG0;         
+  AD7021_control_word = ADF7021_TX_REG0;         
   Send_AD7021_control();
   
 #if defined(BIDIR_DATA_PIN)
@@ -267,7 +341,7 @@ void CIO::setRX()
   delay_rx();
   
   // Send register 0 for RX operation
-  AD7021_control_byte = ADF7021_RX_REG0;
+  AD7021_control_word = ADF7021_RX_REG0;
   Send_AD7021_control();
   
 #if defined(BIDIR_DATA_PIN)
