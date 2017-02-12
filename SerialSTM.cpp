@@ -174,8 +174,8 @@ void InitUSART1(int speed)
   // USART IRQ init
   NVIC_InitStructure.NVIC_IRQChannel    = USART1_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 0;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 15;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 15;
   NVIC_Init(&NVIC_InitStructure);
 
   // Configure USART as alternate function
@@ -238,6 +238,11 @@ void WriteUSART1(const uint8_t* data, uint16_t length)
 #endif
 
 #if defined(SERIAL_REPEATER)
+
+extern "C" {
+  void USART2_IRQHandler();
+}
+
 /* ************* USART2 ***************** */
 
 volatile uint32_t intcount2;
@@ -312,7 +317,8 @@ uint8_t TXSerialfifoput2(uint8_t next)
 void USART2_IRQHandler()
 {
   uint8_t c;
-
+  io.DEB_pin(HIGH);
+  
   if (USART_GetITStatus(USART2, USART_IT_RXNE)) {
     c = (uint8_t) USART_ReceiveData(USART2);
 
@@ -363,8 +369,8 @@ void InitUSART2(int speed)
   // USART IRQ init
   NVIC_InitStructure.NVIC_IRQChannel    = USART2_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 3;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 0;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 15;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 15;
   NVIC_Init(&NVIC_InitStructure);
 
   // Configure USART as alternate function
@@ -374,7 +380,7 @@ void InitUSART2(int speed)
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOA, &GPIO_InitStructure);
   
-    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
+  GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
   GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_3;       //  Rx
   GPIO_Init(GPIOA, &GPIO_InitStructure);
 
