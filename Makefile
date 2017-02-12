@@ -36,19 +36,19 @@ ifdef SYSTEMROOT
 	ASOURCES=$(shell dir /S /B *.s)
 	CSOURCES=$(shell dir /S /B *.c)
 	CXXSOURCES=$(shell dir /S /B *.cpp)
-	CLEANCMD=del /S *.o *.hex *.bin *.elf
+	CLEANCMD=del /S *.o *.hex *.bin *.elf *.d
 	MDBIN=md $@
 else ifdef SystemRoot
 	ASOURCES=$(shell dir /S /B *.s)
 	CSOURCES=$(shell dir /S /B *.c)
 	CXXSOURCES=$(shell dir /S /B *.cpp)
-	CLEANCMD=del /S *.o *.hex *.bin *.elf
+	CLEANCMD=del /S *.o *.hex *.bin *.elf *.d
 	MDBIN=md $@
 else
 	ASOURCES=$(shell find . -name '*.s')
 	CSOURCES=$(shell find . -name '*.c')
 	CXXSOURCES=$(shell find . -name '*.cpp')
-	CLEANCMD=rm -f $(OBJECTS) $(BINDIR)/$(BINELF) $(BINDIR)/$(BINHEX) $(BINDIR)/$(BINBIN)
+	CLEANCMD=rm -f $(OBJECTS) $(BINDIR)/$(BINELF) $(BINDIR)/$(BINHEX) $(BINDIR)/$(BINBIN) *.d
 	MDBIN=mkdir $@
 endif
 
@@ -76,7 +76,7 @@ BINHEX=outp.hex
 BINBIN=outp.bin
 
 # MCU FLAGS
-MCFLAGS=-mcpu=cortex-m3 -mthumb -Wall
+MCFLAGS=-mcpu=cortex-m3 -march=armv7-m -mthumb -Wall -Wextra
 
 # COMPILE FLAGS
 DEFS_HS=-DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DHSE_VALUE=$(OSC)
@@ -93,13 +93,13 @@ LDFLAGS =-T $(LDSCRIPT) $(MCFLAGS) --specs=nosys.specs $(INCLUDES_LIBS) $(LINK_L
 
 all: hs
 
-hs: CFLAGS+=$(DEFS_HS) -Os -ffunction-sections -fdata-sections -fno-builtin -Wno-implicit -DCUSTOM_NEW -DNO_EXCEPTIONS
-hs: CXXFLAGS+=$(DEFS_HS) -Os -fno-exceptions -ffunction-sections -fdata-sections -fno-builtin -fno-rtti -DCUSTOM_NEW -DNO_EXCEPTIONS
+hs: CFLAGS+=$(DEFS_HS) -Os -MMD -ffunction-sections -fdata-sections -nostdlib -DCUSTOM_NEW -DNO_EXCEPTIONS
+hs: CXXFLAGS+=$(DEFS_HS) -Os -MMD -fno-exceptions -ffunction-sections -fdata-sections -nostdlib -fno-rtti -DCUSTOM_NEW -DNO_EXCEPTIONS
 hs: LDFLAGS+=-Os --specs=nano.specs
 hs: release
 
-debug: CFLAGS+=-g
-debug: CXXFLAGS+=-g
+debug: CFLAGS+=-g $(DEFS_HS)
+debug: CXXFLAGS+=-g $(DEFS_HS)
 debug: LDFLAGS+=-g
 debug: release
 
