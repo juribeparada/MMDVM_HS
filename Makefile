@@ -86,7 +86,7 @@ CFLAGS=-c $(MCFLAGS) $(INCLUDES)
 CXXFLAGS=-c $(MCFLAGS) $(INCLUDES)
 
 # LINKER FLAGS
-LDSCRIPT=normal.ld
+LDSCRIPT_N=normal.ld
 LDSCRIPT_BL=bootloader.ld
 LDFLAGS=$(MCFLAGS) --specs=nosys.specs $(INCLUDES_LIBS) $(LINK_LIBS)
 
@@ -160,17 +160,17 @@ endif
 
 stlink-bl:
 ifneq ($(wildcard /usr/bin/openocd),)
-	/usr/bin/openocd -f /usr/share/openocd/scripts/interface/stlink-v2-1.cfg -f /usr/share/openocd/scripts/target/stm32f1x.cfg -c "program STM32F10X_Lib/utils/bootloader/generic_boot20_pc13.bin verify reset exit 0x08002000"
+	/usr/bin/openocd -f /usr/share/openocd/scripts/interface/stlink-v2-1.cfg -f /usr/share/openocd/scripts/target/stm32f1x.cfg -c "program STM32F10X_Lib/utils/bootloader/generic_boot20_pc13.bin verify reset exit 0x08000000"
 	/usr/bin/openocd -f /usr/share/openocd/scripts/interface/stlink-v2-1.cfg -f /usr/share/openocd/scripts/target/stm32f1x.cfg -c "program bin/$(BINBIN) verify reset exit 0x08002000"
 endif
 
 ifneq ($(wildcard /usr/local/bin/openocd),)
-	/usr/local/bin/openocd -f /usr/local/share/openocd/scripts/interface/stlink-v2-1.cfg -f /usr/local/share/openocd/scripts/target/stm32f1x.cfg -c "program STM32F10X_Lib/utils/bootloader/generic_boot20_pc13.bin verify reset exit 0x08002000"
+	/usr/local/bin/openocd -f /usr/local/share/openocd/scripts/interface/stlink-v2-1.cfg -f /usr/local/share/openocd/scripts/target/stm32f1x.cfg -c "program STM32F10X_Lib/utils/bootloader/generic_boot20_pc13.bin verify reset exit 0x08000000"
 	/usr/local/bin/openocd -f /usr/local/share/openocd/scripts/interface/stlink-v2-1.cfg -f /usr/local/share/openocd/scripts/target/stm32f1x.cfg -c "program bin/$(BINBIN) verify reset exit 0x08002000"
 endif
 
 ifneq ($(wildcard /opt/openocd/bin/openocd),)
-	/opt/openocd/bin/openocd -f /opt/openocd/scripts/interface/stlink-v2-1.cfg -f /opt/openocd/share/openocd/scripts/target/stm32f1x.cfg -c "program STM32F10X_Lib/utils/bootloader/generic_boot20_pc13.bin verify reset exit 0x08002000"
+	/opt/openocd/bin/openocd -f /opt/openocd/scripts/interface/stlink-v2-1.cfg -f /opt/openocd/share/openocd/scripts/target/stm32f1x.cfg -c "program STM32F10X_Lib/utils/bootloader/generic_boot20_pc13.bin verify reset exit 0x08000000"
 	/opt/openocd/bin/openocd -f /opt/openocd/scripts/interface/stlink-v2-1.cfg -f /opt/openocd/share/openocd/scripts/target/stm32f1x.cfg -c "program bin/$(BINBIN) verify reset exit 0x08002000"
 endif
 
