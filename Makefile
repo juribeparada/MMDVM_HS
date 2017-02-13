@@ -79,24 +79,31 @@ BINBIN=outp.bin
 MCFLAGS=-mcpu=cortex-m3 -march=armv7-m -mthumb -Wall -Wextra
 
 # COMPILE FLAGS
-DEFS_HS=-DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DHSE_VALUE=$(OSC)
+DEFS_HS=-DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DHSE_VALUE=$(OSC) -DVECT_TAB_OFFSET=0x0
+DEFS_HS_BL=-DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DHSE_VALUE=$(OSC) -DVECT_TAB_OFFSET=0x2000
 
 CFLAGS=-c $(MCFLAGS) $(INCLUDES)
 CXXFLAGS=-c $(MCFLAGS) $(INCLUDES)
 
 # LINKER FLAGS
-LDSCRIPT=stm32f10x_link.ld
-LDFLAGS =-T $(LDSCRIPT) $(MCFLAGS) --specs=nosys.specs $(INCLUDES_LIBS) $(LINK_LIBS)
+LDSCRIPT=normal.ld
+LDSCRIPT_BL=bootloader.ld
+LDFLAGS=$(MCFLAGS) --specs=nosys.specs $(INCLUDES_LIBS) $(LINK_LIBS)
 
 # Build Rules
-.PHONY: all release hs debug clean
+.PHONY: all release hs bl debug clean
 
 all: hs
 
-hs: CFLAGS+=$(DEFS_HS) -Os -MMD -ffunction-sections -fdata-sections -nostdlib -DCUSTOM_NEW -DNO_EXCEPTIONS
-hs: CXXFLAGS+=$(DEFS_HS) -Os -MMD -fno-exceptions -ffunction-sections -fdata-sections -nostdlib -fno-rtti -DCUSTOM_NEW -DNO_EXCEPTIONS
-hs: LDFLAGS+=-Os --specs=nano.specs
+hs: CFLAGS+=$(DEFS_HS) -Os -ffunction-sections -fdata-sections -nostdlib -DCUSTOM_NEW -DNO_EXCEPTIONS
+hs: CXXFLAGS+=$(DEFS_HS) -Os -fno-exceptions -ffunction-sections -fdata-sections -nostdlib -fno-rtti -DCUSTOM_NEW -DNO_EXCEPTIONS
+hs: LDFLAGS+=-T $(LDSCRIPT_N) -Os --specs=nano.specs
 hs: release
+
+bl: CFLAGS+=$(DEFS_HS_BL) -Os -ffunction-sections -fdata-sections -nostdlib -DCUSTOM_NEW -DNO_EXCEPTIONS
+bl: CXXFLAGS+=$(DEFS_HS_BL) -Os -fno-exceptions -ffunction-sections -fdata-sections -nostdlib -fno-rtti -DCUSTOM_NEW -DNO_EXCEPTIONS
+bl: LDFLAGS+=-T $(LDSCRIPT_BL) -Os --specs=nano.specs
+bl: release
 
 debug: CFLAGS+=-g $(DEFS_HS)
 debug: CXXFLAGS+=-g $(DEFS_HS)
@@ -149,6 +156,22 @@ endif
 
 ifneq ($(wildcard /opt/openocd/bin/openocd),)
 	/opt/openocd/bin/openocd -f /opt/openocd/scripts/interface/stlink-v2-1.cfg -f /opt/openocd/share/openocd/scripts/target/stm32f1x.cfg -c "program bin/$(BINELF) verify reset exit"
+endif
+
+stlink-bl:
+ifneq ($(wildcard /usr/bin/openocd),)
+	/usr/bin/openocd -f /usr/share/openocd/scripts/interface/stlink-v2-1.cfg -f /usr/share/openocd/scripts/target/stm32f1x.cfg -c "program STM32F10X_Lib/utils/bootloader/generic_boot20_pc13.bin verify reset exit 0x08002000"
+	/usr/bin/openocd -f /usr/share/openocd/scripts/interface/stlink-v2-1.cfg -f /usr/share/openocd/scripts/target/stm32f1x.cfg -c "program bin/$(BINBIN) verify reset exit 0x08002000"
+endif
+
+ifneq ($(wildcard /usr/local/bin/openocd),)
+	/usr/local/bin/openocd -f /usr/local/share/openocd/scripts/interface/stlink-v2-1.cfg -f /usr/local/share/openocd/scripts/target/stm32f1x.cfg -c "program STM32F10X_Lib/utils/bootloader/generic_boot20_pc13.bin verify reset exit 0x08002000"
+	/usr/local/bin/openocd -f /usr/local/share/openocd/scripts/interface/stlink-v2-1.cfg -f /usr/local/share/openocd/scripts/target/stm32f1x.cfg -c "program bin/$(BINBIN) verify reset exit 0x08002000"
+endif
+
+ifneq ($(wildcard /opt/openocd/bin/openocd),)
+	/opt/openocd/bin/openocd -f /opt/openocd/scripts/interface/stlink-v2-1.cfg -f /opt/openocd/share/openocd/scripts/target/stm32f1x.cfg -c "program STM32F10X_Lib/utils/bootloader/generic_boot20_pc13.bin verify reset exit 0x08002000"
+	/opt/openocd/bin/openocd -f /opt/openocd/scripts/interface/stlink-v2-1.cfg -f /opt/openocd/share/openocd/scripts/target/stm32f1x.cfg -c "program bin/$(BINBIN) verify reset exit 0x08002000"
 endif
 
 serial:

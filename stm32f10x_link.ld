@@ -23,13 +23,6 @@ _min_stack_size = 0x0800;
 /* The entry point in the interrupt vector table */
 ENTRY(Reset_Handler)
 
-/* Memory areas */
-MEMORY
-{
-	ROM (rx)      : ORIGIN = 0x08000000, LENGTH = 64K    /* FLASH */
-	RAM (xrw)     : ORIGIN = 0x20000000, LENGTH = 20K    /* Main RAM */
-}
-
 /* Stack start address (end of 20K RAM) */
 _estack = ORIGIN(RAM) + LENGTH(RAM);
 
