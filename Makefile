@@ -176,5 +176,29 @@ endif
 
 serial:
 ifneq ($(wildcard /usr/local/bin/stm32flash),)
-	/usr/local/bin/stm32flash -w bin/$(BINBIN) -g 0x0 $(devser)
+	/usr/local/bin/stm32flash -v -w bin/$(BINBIN) -g 0x0 $(devser)
+endif
+
+ifneq ($(wildcard /usr/bin/stm32flash),)
+	/usr/bin/stm32flash -v -w bin/$(BINBIN) -g 0x0 $(devser)
+endif
+
+serial-bl:
+ifneq ($(wildcard /usr/local/bin/stm32flash),)
+	/usr/local/bin/stm32flash -v -w STM32F10X_Lib/utils/bootloader/generic_boot20_pc13.bin -g 0x0 $(devser)
+	/usr/local/bin/stm32flash -v -w bin/$(BINBIN) -g 0x0 -S 0x08002000 $(devser)
+endif
+
+ifneq ($(wildcard /usr/bin/stm32flash),)
+	/usr/bin/stm32flash -v -w STM32F10X_Lib/utils/bootloader/generic_boot20_pc13.bin -g 0x0 $(devser)
+	/usr/bin/stm32flash -v -w bin/$(BINBIN) -g 0x0 -S 0x08002000 $(devser)
+endif
+
+dfu:
+ifneq ($(wildcard /usr/local/bin/dfu-util),)
+	/usr/local/bin/dfu-util -D bin/$(BINBIN) -d 1eaf:0003 -a 2 -R -R
+endif
+
+ifneq ($(wildcard /usr/bin/dfu-util),)
+	/usr/bin/dfu-util -D bin/$(BINBIN) -d 1eaf:0003 -a 2 -R -R
 endif
