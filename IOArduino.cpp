@@ -30,6 +30,7 @@
 #define PIN_SREAD      PB7
 #define PIN_SDATA      PB6
 #define PIN_SLE        PB8
+#define PIN_CE         PC14
 #define PIN_RXD        PB4
 #define PIN_TXD        PB3
 #define PIN_CLKOUT     PA15
@@ -49,6 +50,7 @@
 #define PIN_SDATA      4   // 2 in Arduino Zero Pro
 #define PIN_SREAD      5
 #define PIN_SLE        6
+#define PIN_CE        12
 #define PIN_RXD        7
 #define PIN_TXD        8
 #define PIN_CLKOUT     2   // 4 in Arduino Zero Pro
@@ -92,6 +94,7 @@ void CIO::Init()
   pinMode(PIN_SDATA, OUTPUT);
   pinMode(PIN_SREAD, INPUT);
   pinMode(PIN_SLE, OUTPUT);
+  pinMode(PIN_CE, OUTPUT);
   pinMode(PIN_RXD, INPUT);
   pinMode(PIN_CLKOUT, INPUT);
   pinMode(PIN_LED, OUTPUT);
@@ -162,6 +165,11 @@ bool CIO::SREAD_pin()
 void CIO::SLE_pin(bool on) 
 {
   digitalWrite(PIN_SLE, on ? HIGH : LOW);
+}
+
+void CIO::CE_pin(bool on) 
+{
+  digitalWrite(PIN_CE, on ? HIGH : LOW);
 }
 
 bool CIO::RXD_pin()

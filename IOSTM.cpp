@@ -36,6 +36,9 @@
 #define PIN_SLE              GPIO_Pin_8
 #define PORT_SLE             GPIOB
 
+#define PIN_CE               GPIO_Pin_14
+#define PORT_CE              GPIOC
+
 #define PIN_RXD              GPIO_Pin_4
 #define PORT_RXD             GPIOB
 
@@ -179,6 +182,12 @@ void CIO::Init()
   GPIO_InitStruct.GPIO_Pin   = PIN_SLE;
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
   GPIO_Init(PORT_SLE, &GPIO_InitStruct);
+
+  // Pin CE
+  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStruct.GPIO_Pin   = PIN_CE;
+  GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
+  GPIO_Init(PORT_CE, &GPIO_InitStruct);
 
   // Pin RXD
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
@@ -325,6 +334,11 @@ bool CIO::SREAD_pin()
 void CIO::SLE_pin(bool on)
 {
   GPIO_WriteBit(PORT_SLE, PIN_SLE, on ? Bit_SET : Bit_RESET);
+}
+
+void CIO::CE_pin(bool on)
+{
+  GPIO_WriteBit(PORT_CE, PIN_CE, on ? Bit_SET : Bit_RESET);
 }
 
 bool CIO::RXD_pin()

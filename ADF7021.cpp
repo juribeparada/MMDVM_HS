@@ -142,6 +142,12 @@ void CIO::ifConf()
   uint32_t ADF7021_REG4  = 0;
   uint32_t ADF7021_REG13 = 0;
 
+  // Toggle CE pin for ADF7021 reset
+  CE_pin(LOW);
+  delay_rx();
+  CE_pin(HIGH);
+  delay_rx();
+
   // Check frequency band
   if( (m_frequency_tx >= VHF1_MIN) && (m_frequency_tx < VHF1_MAX) ) {
     ADF7021_REG1 = ADF7021_REG1_VHF1;         // VHF1, external VCO

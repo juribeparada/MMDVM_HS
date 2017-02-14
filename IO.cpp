@@ -39,6 +39,7 @@ m_watchdog(0U)
 {
   Init();
 
+  CE_pin(HIGH);
   LED_pin(HIGH);
   PTT_pin(LOW);
   DSTAR_pin(LOW);

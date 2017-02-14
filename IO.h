@@ -50,6 +50,7 @@ public:
   void     SDATA_pin(bool on);
   bool     SREAD_pin(void);
   void     SLE_pin(bool on);
+  void     CE_pin(bool on);
   bool     RXD_pin(void);
   
 #if defined(BIDIR_DATA_PIN)
