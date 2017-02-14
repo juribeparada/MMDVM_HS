@@ -30,26 +30,41 @@ A2L=arm-none-eabi-addr2line
 # Directory Structure
 BINDIR=bin
 
-# Find source files
-# "SystemRoot" is only defined in Windows
-ifdef SYSTEMROOT
+# Configure vars depending on OS
+ifeq ($(OS),Windows_NT)
 	ASOURCES=$(shell dir /S /B *.s)
 	CSOURCES=$(shell dir /S /B *.c)
 	CXXSOURCES=$(shell dir /S /B *.cpp)
 	CLEANCMD=del /S *.o *.hex *.bin *.elf *.d
 	MDBIN=md $@
-else ifdef SystemRoot
-	ASOURCES=$(shell dir /S /B *.s)
-	CSOURCES=$(shell dir /S /B *.c)
-	CXXSOURCES=$(shell dir /S /B *.cpp)
-	CLEANCMD=del /S *.o *.hex *.bin *.elf *.d
-	MDBIN=md $@
+	DFU_UTIL=./STM32F10X_Lib/utils/win/dfu-util.exe
+	STM32FLASH=./STM32F10X_Lib/utils/win/stm32flash.exe
 else
 	ASOURCES=$(shell find . -name '*.s')
 	CSOURCES=$(shell find . -name '*.c')
 	CXXSOURCES=$(shell find . -name '*.cpp')
 	CLEANCMD=rm -f $(OBJECTS) $(BINDIR)/$(BINELF) $(BINDIR)/$(BINHEX) $(BINDIR)/$(BINBIN) *.d
 	MDBIN=mkdir $@
+	
+    ifeq ($(shell uname -s),Linux)
+    	ifeq ($(shell uname -p),x86_64)
+			DFU_RST=./STM32F10X_Lib/utils/linux64/upload-reset
+			DFU_UTIL=./STM32F10X_Lib/utils/linux64/dfu-util
+			ST_FLASH=./STM32F10X_Lib/utils/linux64/st-flash
+			STM32FLASH=./STM32F10X_Lib/utils/linux64/stm32flash	
+		else
+			DFU_RST=./STM32F10X_Lib/utils/linux/upload-reset
+			DFU_UTIL=./STM32F10X_Lib/utils/linux/dfu-util
+			ST_FLASH=./STM32F10X_Lib/utils/linux/st-flash
+			STM32FLASH=./STM32F10X_Lib/utils/linux/stm32flash		
+    	endif
+    endif
+    ifeq ($(shell uname -s),Darwin)
+		DFU_RST=./STM32F10X_Lib/utils/macosx/upload-reset
+		DFU_UTIL=./STM32F10X_Lib/utils/macosx/dfu-util
+		ST_FLASH=./STM32F10X_Lib/utils/macosx/st-flash
+		STM32FLASH=./STM32F10X_Lib/utils/macosx/stm32flash	
+    endif
 endif
 
 # Default reference oscillator frequencies
@@ -146,59 +161,21 @@ clean:
 	$(CLEANCMD)
 	
 stlink:
-ifneq ($(wildcard /usr/bin/openocd),)
-	/usr/bin/openocd -f /usr/share/openocd/scripts/interface/stlink-v2-1.cfg -f /usr/share/openocd/scripts/target/stm32f1x.cfg -c "program bin/$(BINELF) verify reset exit"
-endif
-
-ifneq ($(wildcard /usr/local/bin/openocd),)
-	/usr/local/bin/openocd -f /usr/local/share/openocd/scripts/interface/stlink-v2-1.cfg -f /usr/local/share/openocd/scripts/target/stm32f1x.cfg -c "program bin/$(BINELF) verify reset exit"
-endif
-
-ifneq ($(wildcard /opt/openocd/bin/openocd),)
-	/opt/openocd/bin/openocd -f /opt/openocd/scripts/interface/stlink-v2-1.cfg -f /opt/openocd/share/openocd/scripts/target/stm32f1x.cfg -c "program bin/$(BINELF) verify reset exit"
-endif
+	$(ST_FLASH) write bin/$(BINBIN) 0x8000000
 
 stlink-bl:
-ifneq ($(wildcard /usr/bin/openocd),)
-	/usr/bin/openocd -f /usr/share/openocd/scripts/interface/stlink-v2-1.cfg -f /usr/share/openocd/scripts/target/stm32f1x.cfg -c "program STM32F10X_Lib/utils/bootloader/generic_boot20_pc13.bin verify reset exit 0x08000000"
-	/usr/bin/openocd -f /usr/share/openocd/scripts/interface/stlink-v2-1.cfg -f /usr/share/openocd/scripts/target/stm32f1x.cfg -c "program bin/$(BINBIN) verify reset exit 0x08002000"
-endif
-
-ifneq ($(wildcard /usr/local/bin/openocd),)
-	/usr/local/bin/openocd -f /usr/local/share/openocd/scripts/interface/stlink-v2-1.cfg -f /usr/local/share/openocd/scripts/target/stm32f1x.cfg -c "program STM32F10X_Lib/utils/bootloader/generic_boot20_pc13.bin verify reset exit 0x08000000"
-	/usr/local/bin/openocd -f /usr/local/share/openocd/scripts/interface/stlink-v2-1.cfg -f /usr/local/share/openocd/scripts/target/stm32f1x.cfg -c "program bin/$(BINBIN) verify reset exit 0x08002000"
-endif
-
-ifneq ($(wildcard /opt/openocd/bin/openocd),)
-	/opt/openocd/bin/openocd -f /opt/openocd/scripts/interface/stlink-v2-1.cfg -f /opt/openocd/share/openocd/scripts/target/stm32f1x.cfg -c "program STM32F10X_Lib/utils/bootloader/generic_boot20_pc13.bin verify reset exit 0x08000000"
-	/opt/openocd/bin/openocd -f /opt/openocd/scripts/interface/stlink-v2-1.cfg -f /opt/openocd/share/openocd/scripts/target/stm32f1x.cfg -c "program bin/$(BINBIN) verify reset exit 0x08002000"
-endif
-
+	$(ST_FLASH) write STM32F10X_Lib/utils/bootloader/generic_boot20_pc13.bin 0x8000000
+	$(ST_FLASH) write bin/$(BINBIN) 0x8002000
+	
 serial:
-ifneq ($(wildcard /usr/local/bin/stm32flash),)
-	/usr/local/bin/stm32flash -v -w bin/$(BINBIN) -g 0x0 $(devser)
-endif
-
-ifneq ($(wildcard /usr/bin/stm32flash),)
-	/usr/bin/stm32flash -v -w bin/$(BINBIN) -g 0x0 $(devser)
-endif
+	$(STM32FLASH) -v -w bin/$(BINBIN) -g 0x0 $(devser)
 
 serial-bl:
-ifneq ($(wildcard /usr/local/bin/stm32flash),)
-	/usr/local/bin/stm32flash -v -w STM32F10X_Lib/utils/bootloader/generic_boot20_pc13.bin -g 0x0 $(devser)
-	/usr/local/bin/stm32flash -v -w bin/$(BINBIN) -g 0x0 -S 0x08002000 $(devser)
-endif
-
-ifneq ($(wildcard /usr/bin/stm32flash),)
-	/usr/bin/stm32flash -v -w STM32F10X_Lib/utils/bootloader/generic_boot20_pc13.bin -g 0x0 $(devser)
-	/usr/bin/stm32flash -v -w bin/$(BINBIN) -g 0x0 -S 0x08002000 $(devser)
-endif
+	$(STM32FLASH) -v -w STM32F10X_Lib/utils/bootloader/generic_boot20_pc13.bin -g 0x0 $(devser)
+	$(STM32FLASH) -v -w bin/$(BINBIN) -g 0x0 -S 0x08002000 $(devser)
 
 dfu:
-ifneq ($(wildcard /usr/local/bin/dfu-util),)
-	/usr/local/bin/dfu-util -D bin/$(BINBIN) -d 1eaf:0003 -a 2 -R -R
+ifdef devser
+	$(DFU_RST) $(devser) 750
 endif
-
-ifneq ($(wildcard /usr/bin/dfu-util),)
-	/usr/bin/dfu-util -D bin/$(BINBIN) -d 1eaf:0003 -a 2 -R -R
-endif
+	$(DFU_UTIL) -D bin/$(BINBIN) -d 1eaf:0003 -a 2 -R -R
