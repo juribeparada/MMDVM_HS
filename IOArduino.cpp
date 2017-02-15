@@ -26,6 +26,28 @@
 #if defined (__STM32F1__)
 
 // STM32F1 pin definitions, using STM32duino
+
+#if defined(PI_HAT_7021_REV_02)
+
+#define PIN_SCLK       PB4
+#define PIN_SREAD      PB6
+#define PIN_SDATA      PB5
+#define PIN_SLE        PB7
+#define PIN_CE         PC14
+#define PIN_RXD        PB3
+#define PIN_TXD        PA15
+#define PIN_CLKOUT     PA14
+#define PIN_LED        PC13
+#define PIN_DEB        PA11
+#define PIN_DSTAR_LED  PB14
+#define PIN_DMR_LED    PB15
+#define PIN_YSF_LED    PA13
+#define PIN_P25_LED    PA12
+#define PIN_PTT_LED    PB12
+#define PIN_COS_LED    PB13
+
+#elif defined(PI_HAT_7021_REV_03) || defined(ADF7021_CARRIER_BOARD)
+
 #define PIN_SCLK       PB5
 #define PIN_SREAD      PB7
 #define PIN_SDATA      PB6
@@ -42,6 +64,10 @@
 #define PIN_P25_LED    PB0
 #define PIN_PTT_LED    PB14
 #define PIN_COS_LED    PB15
+
+#else
+#error "Either PI_HAT_7021_REV_02, PI_HAT_7021_REV_03, or ADF7021_CARRIER_BOARD need to be defined"
+#endif
 
 #else
 
@@ -86,8 +112,14 @@ void CIO::dlybit(void)
 
 void CIO::Init()
 {
-#if defined (__STM32F1__) 
+#if defined (__STM32F1__)
+
+#if defined(PI_HAT_7021_REV_02)
+  afio_cfg_debug_ports(AFIO_DEBUG_NONE);
+#elif defined(PI_HAT_7021_REV_03) || defined(ADF7021_CARRIER_BOARD)
   afio_cfg_debug_ports(AFIO_DEBUG_SW_ONLY);
+#endif
+
 #endif
  
   pinMode(PIN_SCLK, OUTPUT);

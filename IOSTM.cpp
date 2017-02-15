@@ -24,6 +24,65 @@
 #include "Globals.h"
 #include "IO.h"
 
+#if defined(PI_HAT_7021_REV_02)
+
+#define PIN_SCLK             GPIO_Pin_4
+#define PORT_SCLK            GPIOB
+
+#define PIN_SREAD            GPIO_Pin_6
+#define PORT_SREAD           GPIOB
+
+#define PIN_SDATA            GPIO_Pin_5
+#define PORT_SDATA           GPIOB
+
+#define PIN_SLE              GPIO_Pin_7
+#define PORT_SLE             GPIOB
+
+#define PIN_CE               GPIO_Pin_14
+#define PORT_CE              GPIOC
+
+#define PIN_RXD              GPIO_Pin_3
+#define PORT_RXD             GPIOB
+
+// TXD used in SPI Data mode of ADF7021
+// TXD is TxRxCLK of ADF7021, standard TX/RX data interface
+#define PIN_TXD              GPIO_Pin_15
+#define PORT_TXD             GPIOA
+#define PIN_TXD_INT          GPIO_PinSource15
+#define PORT_TXD_INT         GPIO_PortSourceGPIOA
+
+// CLKOUT used in SPI Data mode of ADF7021
+#define PIN_CLKOUT           GPIO_Pin_14
+#define PORT_CLKOUT          GPIOA
+#define PIN_CLKOUT_INT       GPIO_PinSource14
+#define PORT_CLKOUT_INT      GPIO_PortSourceGPIOA
+
+#define PIN_LED              GPIO_Pin_13
+#define PORT_LED             GPIOC
+
+#define PIN_DEB              GPIO_Pin_11
+#define PORT_DEB             GPIOA
+
+#define PIN_DSTAR_LED        GPIO_Pin_14
+#define PORT_DSTAR_LED       GPIOB
+
+#define PIN_DMR_LED          GPIO_Pin_15
+#define PORT_DMR_LED         GPIOB
+
+#define PIN_YSF_LED          GPIO_Pin_13
+#define PORT_YSF_LED         GPIOA
+
+#define PIN_P25_LED          GPIO_Pin_12
+#define PORT_P25_LED         GPIOA
+
+#define PIN_PTT_LED          GPIO_Pin_12
+#define PORT_PTT_LED         GPIOB
+
+#define PIN_COS_LED          GPIO_Pin_13
+#define PORT_COS_LED         GPIOB
+
+#elif defined(PI_HAT_7021_REV_03) || defined(ADF7021_CARRIER_BOARD)
+
 #define PIN_SCLK             GPIO_Pin_5
 #define PORT_SCLK            GPIOB
 
@@ -79,7 +138,31 @@
 #define PIN_COS_LED          GPIO_Pin_15
 #define PORT_COS_LED         GPIOB
 
+#else
+#error "Either PI_HAT_7021_REV_02, PI_HAT_7021_REV_03, or ADF7021_CARRIER_BOARD need to be defined"
+#endif
+
 extern "C" {
+#if defined(PI_HAT_7021_REV_02)
+
+#if defined(BIDIR_DATA_PIN)
+  void EXTI15_10_IRQHandler(void) {
+    if(EXTI_GetITStatus(EXTI_Line15)!=RESET) {
+      io.interrupt();
+    EXTI_ClearITPendingBit(EXTI_Line15);
+    }
+  }
+#else
+  void EXTI15_10_IRQHandler(void) {
+    if(EXTI_GetITStatus(EXTI_Line14)!=RESET) {
+      io.interrupt();
+    EXTI_ClearITPendingBit(EXTI_Line14);
+    }
+  }
+#endif
+
+#elif defined(PI_HAT_7021_REV_03) || defined(ADF7021_CARRIER_BOARD)
+
 #if defined(BIDIR_DATA_PIN)
   void EXTI3_IRQHandler(void) {
     if(EXTI_GetITStatus(EXTI_Line3)!=RESET) {
@@ -94,6 +177,8 @@ extern "C" {
     EXTI_ClearITPendingBit(EXTI_Line15);
     }
   }
+#endif
+
 #endif
 }
 
@@ -134,7 +219,12 @@ void CIO::Init()
 { 
   // USB Conf IO:
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC | RCC_APB2Periph_AFIO, ENABLE);
+  
+#if defined(PI_HAT_7021_REV_02)
+  GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable, ENABLE);
+#elif defined(PI_HAT_7021_REV_03) || defined(ADF7021_CARRIER_BOARD)
   GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);
+#endif
 
   RCC_USBCLKConfig(RCC_USBCLKSource_PLLCLK_1Div5);
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_USB, ENABLE);
@@ -262,6 +352,22 @@ void CIO::Init()
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
   GPIO_Init(PORT_COS_LED, &GPIO_InitStruct);
 
+#if defined(PI_HAT_7021_REV_02)
+
+#if defined(BIDIR_DATA_PIN)
+  // Connect EXTI15 Line
+  GPIO_EXTILineConfig(PORT_TXD_INT, PIN_TXD_INT);
+  // Configure EXTI15 line
+  EXTI_InitStructure.EXTI_Line = EXTI_Line15;
+#else
+  // Connect EXTI14 Line
+  GPIO_EXTILineConfig(PORT_CLKOUT_INT, PIN_CLKOUT_INT);
+  // Configure EXTI14 line
+  EXTI_InitStructure.EXTI_Line = EXTI_Line14;
+#endif
+
+#elif defined(PI_HAT_7021_REV_03) || defined(ADF7021_CARRIER_BOARD)
+
 #if defined(BIDIR_DATA_PIN)
   // Connect EXTI3 Line
   GPIO_EXTILineConfig(PORT_TXD_INT, PIN_TXD_INT);
@@ -274,6 +380,8 @@ void CIO::Init()
   EXTI_InitStructure.EXTI_Line = EXTI_Line15;
 #endif
 
+#endif
+
   EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
   EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;
   EXTI_InitStructure.EXTI_LineCmd = ENABLE;
@@ -284,12 +392,20 @@ void CIO::startInt()
 {
   NVIC_InitTypeDef NVIC_InitStructure;
 
+#if defined(PI_HAT_7021_REV_02)
+
+  NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn;
+
+#elif defined(PI_HAT_7021_REV_03) || defined(ADF7021_CARRIER_BOARD)
+
 #if defined(BIDIR_DATA_PIN)
   // Enable and set EXTI3 Interrupt
   NVIC_InitStructure.NVIC_IRQChannel = EXTI3_IRQn;
 #else
   // Enable and set EXTI15 Interrupt
   NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn;
+#endif
+
 #endif
 
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 15;

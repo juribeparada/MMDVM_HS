@@ -19,10 +19,15 @@
 #if !defined(CONFIG_H)
 #define  CONFIG_H
 
+// Select one board:
+// #define PI_HAT_7021_REV_02
+// #define PI_HAT_7021_REV_03
+#define ADF7021_CARRIER_BOARD
+
 // Enable ADF7021 support:
 #define ENABLE_ADF7021
 
-// Bidirectional Data pin (Enable Standard TX/RX Data Interface of ADF7021)
+// Bidirectional Data pin (Enable Standard TX/RX Data Interface of ADF7021):
 // #define BIDIR_DATA_PIN
 
 // TCXO of the ADF7021:
@@ -34,13 +39,13 @@
 // #define ADF7021_19_6800
 
 // Host communication selection:
-//#define STM32_USART1_HOST
+// #define STM32_USART1_HOST
 #define STM32_USB_HOST
 
-// Send RSSI value
+// Send RSSI value:
 // #define SEND_RSSI_DATA
 
 // Enable Nextion LCD serial port repeater:
-//#define SERIAL_REPEATER
+// #define SERIAL_REPEATER
 
 #endif
