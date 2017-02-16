@@ -52,7 +52,7 @@ else
 			DFU_UTIL=./STM32F10X_Lib/utils/linux64/dfu-util
 			ST_FLASH=./STM32F10X_Lib/utils/linux64/st-flash
 			STM32FLASH=./STM32F10X_Lib/utils/linux64/stm32flash	
-    	else ifeq ($(shell uname -m),armhf)
+    	else ifeq ($(shell uname -m),armv7l)
 			DFU_RST=./STM32F10X_Lib/utils/rpi32/upload-reset
 			DFU_UTIL=./STM32F10X_Lib/utils/rpi32/dfu-util
 			ST_FLASH=./STM32F10X_Lib/utils/rpi32/st-flash
