@@ -47,11 +47,16 @@ else
 	MDBIN=mkdir $@
 	
     ifeq ($(shell uname -s),Linux)
-    	ifeq ($(shell uname -p),x86_64)
+    	ifeq ($(shell uname -m),x86_64)
 			DFU_RST=./STM32F10X_Lib/utils/linux64/upload-reset
 			DFU_UTIL=./STM32F10X_Lib/utils/linux64/dfu-util
 			ST_FLASH=./STM32F10X_Lib/utils/linux64/st-flash
 			STM32FLASH=./STM32F10X_Lib/utils/linux64/stm32flash	
+    	else ifeq ($(shell uname -m),armhf)
+			DFU_RST=./STM32F10X_Lib/utils/rpi32/upload-reset
+			DFU_UTIL=./STM32F10X_Lib/utils/rpi32/dfu-util
+			ST_FLASH=./STM32F10X_Lib/utils/rpi32/st-flash
+			STM32FLASH=./STM32F10X_Lib/utils/rpi32/stm32flash	
 		else
 			DFU_RST=./STM32F10X_Lib/utils/linux/upload-reset
 			DFU_UTIL=./STM32F10X_Lib/utils/linux/dfu-util
@@ -59,6 +64,7 @@ else
 			STM32FLASH=./STM32F10X_Lib/utils/linux/stm32flash		
     	endif
     endif
+
     ifeq ($(shell uname -s),Darwin)
 		DFU_RST=./STM32F10X_Lib/utils/macosx/upload-reset
 		DFU_UTIL=./STM32F10X_Lib/utils/macosx/dfu-util
