@@ -30,8 +30,8 @@
 #if defined(PI_HAT_7021_REV_02)
 
 #define PIN_SCLK       PB4
-#define PIN_SREAD      PB6
-#define PIN_SDATA      PB5
+#define PIN_SREAD      PB5
+#define PIN_SDATA      PB6
 #define PIN_SLE        PB7
 #define PIN_CE         PC14
 #define PIN_RXD        PB3

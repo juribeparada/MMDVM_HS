@@ -29,10 +29,10 @@
 #define PIN_SCLK             GPIO_Pin_4
 #define PORT_SCLK            GPIOB
 
-#define PIN_SREAD            GPIO_Pin_6
+#define PIN_SREAD            GPIO_Pin_5
 #define PORT_SREAD           GPIOB
 
-#define PIN_SDATA            GPIO_Pin_5
+#define PIN_SDATA            GPIO_Pin_6
 #define PORT_SDATA           GPIOB
 
 #define PIN_SLE              GPIO_Pin_7
