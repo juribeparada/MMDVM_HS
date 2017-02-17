@@ -133,12 +133,27 @@ void CP25RX::processData(bool bit)
     } else {
       m_outBuffer[0U] = m_lostCount == (MAX_SYNC_FRAMES - 1U) ? 0x01U : 0x00U;
 
-      serial.writeP25Ldu(m_outBuffer, P25_LDU_FRAME_LENGTH_BYTES + 1U);
-
+      writeRSSILdu(m_outBuffer);
+      
       // Start the next frame
       ::memset(m_outBuffer, 0x00U, P25_LDU_FRAME_LENGTH_BYTES + 3U);
       m_bufferPtr = 0U;
     }
   }
 }
+
+void CP25RX::writeRSSILdu(uint8_t* ldu)
+{
+#if defined(SEND_RSSI_DATA)
+  uint16_t rssi = io.readRSSI();
+  
+  ldu[217U] = (rssi >> 8) & 0xFFU;
+  ldu[218U] = (rssi >> 0) & 0xFFU;
+  
+  serial.writeP25Ldu(ldu, P25_LDU_FRAME_LENGTH_BYTES + 3U);
+#else
+  serial.writeP25Ldu(ldu, P25_LDU_FRAME_LENGTH_BYTES + 1U);
+#endif
+}
+
 

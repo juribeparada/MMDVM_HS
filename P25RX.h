@@ -46,7 +46,7 @@ private:
 
   void processNone(bool bit);
   void processData(bool bit);
-
+  void writeRSSILdu(uint8_t* data);
 };
 
 #endif
