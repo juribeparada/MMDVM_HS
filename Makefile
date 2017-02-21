@@ -185,3 +185,32 @@ ifdef devser
 	$(DFU_RST) $(devser) 750
 endif
 	$(DFU_UTIL) -D bin/$(BINBIN) -d 1eaf:0003 -a 2 -R -R
+	
+ocd:
+ifneq ($(wildcard /usr/bin/openocd),)
+	/usr/bin/openocd -f /usr/share/openocd/scripts/interface/stlink-v2-1.cfg -f /usr/share/openocd/scripts/target/stm32f1x.cfg -c "program bin/$(BINELF) verify reset exit"
+endif
+
+ifneq ($(wildcard /usr/local/bin/openocd),)
+	/usr/local/bin/openocd -f /usr/local/share/openocd/scripts/interface/stlink-v2-1.cfg -f /usr/local/share/openocd/scripts/target/stm32f1x.cfg -c "program bin/$(BINELF) verify reset exit"
+endif
+
+ifneq ($(wildcard /opt/openocd/bin/openocd),)
+	/opt/openocd/bin/openocd -f /opt/openocd/scripts/interface/stlink-v2-1.cfg -f /opt/openocd/share/openocd/scripts/target/stm32f1x.cfg -c "program bin/$(BINELF) verify reset exit"
+endif
+  
+ocd-bl:
+ifneq ($(wildcard /usr/bin/openocd),)
+	/usr/bin/openocd -f /usr/share/openocd/scripts/interface/stlink-v2-1.cfg -f /usr/share/openocd/scripts/target/stm32f1x.cfg -c "program STM32F10X_Lib/utils/bootloader/generic_boot20_pc13.bin verify reset exit 0x08000000"
+	/usr/bin/openocd -f /usr/share/openocd/scripts/interface/stlink-v2-1.cfg -f /usr/share/openocd/scripts/target/stm32f1x.cfg -c "program bin/$(BINBIN) verify reset exit 0x08002000"
+endif
+
+ifneq ($(wildcard /usr/local/bin/openocd),)
+	/usr/local/bin/openocd -f /usr/local/share/openocd/scripts/interface/stlink-v2-1.cfg -f /usr/local/share/openocd/scripts/target/stm32f1x.cfg -c "program STM32F10X_Lib/utils/bootloader/generic_boot20_pc13.bin verify reset exit 0x08000000"
+	/usr/local/bin/openocd -f /usr/local/share/openocd/scripts/interface/stlink-v2-1.cfg -f /usr/local/share/openocd/scripts/target/stm32f1x.cfg -c "program bin/$(BINBIN) verify reset exit 0x08002000"
+endif
+
+ifneq ($(wildcard /opt/openocd/bin/openocd),)
+	/opt/openocd/bin/openocd -f /opt/openocd/scripts/interface/stlink-v2-1.cfg -f /opt/openocd/share/openocd/scripts/target/stm32f1x.cfg -c "program STM32F10X_Lib/utils/bootloader/generic_boot20_pc13.bin verify reset exit 0x08000000"
+	/opt/openocd/bin/openocd -f /opt/openocd/scripts/interface/stlink-v2-1.cfg -f /opt/openocd/share/openocd/scripts/target/stm32f1x.cfg -c "program bin/$(BINBIN) verify reset exit 0x08002000"
+endif
