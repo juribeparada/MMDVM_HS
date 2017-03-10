@@ -46,6 +46,8 @@ private:
 
   void processNone(bool bit);
   void processData(bool bit);
+  void writeRSSIData(uint8_t* data);
+  
 };
 
 #endif

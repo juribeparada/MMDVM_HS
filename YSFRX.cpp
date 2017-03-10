@@ -117,7 +117,7 @@ void CYSFRX::processData(bool bit)
     } else {
       m_outBuffer[0U] = m_lostCount == (MAX_SYNC_FRAMES - 1U) ? 0x01U : 0x00U;
 
-      serial.writeYSFData(m_outBuffer, YSF_FRAME_LENGTH_BYTES + 1U);
+      writeRSSIData(m_outBuffer);
 
       // Start the next frame
       ::memset(m_outBuffer, 0x00U, YSF_FRAME_LENGTH_BYTES + 3U);
@@ -126,3 +126,16 @@ void CYSFRX::processData(bool bit)
   }
 }
 
+void CYSFRX::writeRSSIData(uint8_t* data)
+{
+#if defined(SEND_RSSI_DATA)
+  uint16_t rssi = io.readRSSI();
+
+  data[121U] = (rssi >> 8) & 0xFFU;
+  data[122U] = (rssi >> 0) & 0xFFU;
+
+  serial.writeYSFData(data, YSF_FRAME_LENGTH_BYTES + 3U);
+#else
+  serial.writeYSFData(data, YSF_FRAME_LENGTH_BYTES + 1U);
+#endif
+}
