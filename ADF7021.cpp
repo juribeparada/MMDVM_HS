@@ -140,6 +140,7 @@ void CIO::ifConf()
   uint32_t ADF7021_REG2  = 0;
   uint32_t ADF7021_REG3  = 0;
   uint32_t ADF7021_REG4  = 0;
+  uint32_t ADF7021_REG10 = 0;
   uint32_t ADF7021_REG13 = 0;
 
   // Toggle CE pin for ADF7021 reset
@@ -214,6 +215,7 @@ void CIO::ifConf()
     // Dev: 1200 Hz, symb rate = 4800
 
     ADF7021_REG3 = ADF7021_REG3_DSTAR;
+    ADF7021_REG10 = ADF7021_REG10_DSTAR;
     
     // K=32
     ADF7021_REG4  = (uint32_t) 0b0100                    << 0;   // register 4
@@ -235,6 +237,7 @@ void CIO::ifConf()
     // Dev: +1 symb 648 Hz, symb rate = 4800
     
     ADF7021_REG3 = ADF7021_REG3_DMR;
+    ADF7021_REG10 = ADF7021_REG10_DMR;
 
     // K=32
     ADF7021_REG4  = (uint32_t) 0b0100                    << 0;   // register 4
@@ -256,6 +259,7 @@ void CIO::ifConf()
     // Dev: +1 symb 900 Hz, symb rate = 4800
 
     ADF7021_REG3 = ADF7021_REG3_YSF;
+    ADF7021_REG10 = ADF7021_REG10_YSF;
 
     // K=28
     ADF7021_REG4  = (uint32_t) 0b0100                    << 0;   // register 4
@@ -277,6 +281,7 @@ void CIO::ifConf()
     // Dev: +1 symb 600 Hz, symb rate = 4800
 
     ADF7021_REG3 = ADF7021_REG3_P25;
+    ADF7021_REG10 = ADF7021_REG10_P25;
 
     // K=32
     ADF7021_REG4  = (uint32_t) 0b0100                    << 0;   // register 4
@@ -311,6 +316,10 @@ void CIO::ifConf()
   AD7021_control_word = ADF7021_REG5;
   Send_AD7021_control();
   
+  // Delay for coarse IF filter calibration
+  delay_rx();
+  delay_rx();
+
   // Frequency RX (0)
   setRX();
 
@@ -333,7 +342,7 @@ void CIO::ifConf()
   AD7021_control_word = 0x000231E9;
   Send_AD7021_control();
 
-  // AFC (off, defaults) (10)
+  // AFC (10)
   AD7021_control_word = ADF7021_REG10;
   Send_AD7021_control();
 
