@@ -38,6 +38,9 @@
 // Original 19.68 MHz, not working, only for experimentation:
 // #define ADF7021_19_6800
 
+// Enable AFC support for ADF7021
+// #define ADF7021_ENABLE_AFC
+
 // Host communication selection:
 // #define STM32_USART1_HOST
 #define STM32_USB_HOST
