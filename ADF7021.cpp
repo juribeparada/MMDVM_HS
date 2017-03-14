@@ -171,10 +171,17 @@ void CIO::ifConf()
     div2 = 1U;
   }
 
+#if defined(ADF7021_ENABLE_AFC)
+  if( div2 == 1U )
+    divider = (m_frequency_rx - 100000 + 1000) / (ADF7021_PFD / 2U);
+  else
+    divider = (m_frequency_rx - 100000 + 2000) / ADF7021_PFD;
+#else
   if( div2 == 1U )
     divider = (m_frequency_rx - 100000) / (ADF7021_PFD / 2U);
   else
     divider = (m_frequency_rx - 100000) / ADF7021_PFD;
+#endif
 
   N_divider = floor(divider);
   divider = (divider - N_divider) * 32768;
