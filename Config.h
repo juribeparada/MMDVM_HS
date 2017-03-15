@@ -27,6 +27,9 @@
 // Enable ADF7021 support:
 #define ENABLE_ADF7021
 
+// Support for ADF7021-N version 
+// #define ADF7021_N_VER
+
 // Bidirectional Data pin (Enable Standard TX/RX Data Interface of ADF7021):
 #define BIDIR_DATA_PIN
 

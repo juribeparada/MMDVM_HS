@@ -98,12 +98,6 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define AFC_OFFSET_P25           0
 #endif
 
-// Slicer threshold for 4FSK demodulator (REG 13)
-#define ADF7021_SLICER_TH_DSTAR  0U
-#define ADF7021_SLICER_TH_DMR    54U
-#define ADF7021_SLICER_TH_YSF    75U
-#define ADF7021_SLICER_TH_P25    52U
-
 /****** Support for 19.6800 MHz TCXO (original RF7021SE boards) ******/
 #elif defined(ADF7021_19_6800)
 
@@ -167,12 +161,6 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define AFC_OFFSET_YSF           0
 #define AFC_OFFSET_P25           0
 #endif
-
-// Slicer threshold for 4FSK demodulator (REG 13)
-#define ADF7021_SLICER_TH_DSTAR  0U
-#define ADF7021_SLICER_TH_DMR    54U
-#define ADF7021_SLICER_TH_YSF    75U
-#define ADF7021_SLICER_TH_P25    52U
 
 /****** Support for 12.2880 MHz TCXO ******/
 #elif defined(ADF7021_12_2880)
@@ -238,12 +226,19 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define AFC_OFFSET_P25           0
 #endif
 
+#endif
+
 // Slicer threshold for 4FSK demodulator (REG 13)
+#if defined(ADF7021_N_VER)
+#define ADF7021_SLICER_TH_DSTAR  0U
+#define ADF7021_SLICER_TH_DMR    47U
+#define ADF7021_SLICER_TH_YSF    63U
+#define ADF7021_SLICER_TH_P25    43U
+#else
 #define ADF7021_SLICER_TH_DSTAR  0U
 #define ADF7021_SLICER_TH_DMR    54U
 #define ADF7021_SLICER_TH_YSF    75U
 #define ADF7021_SLICER_TH_P25    52U
-
 #endif
 
 #define bitRead(value, bit) (((value) >> (bit)) & 0x01)
