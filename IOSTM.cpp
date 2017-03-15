@@ -81,7 +81,64 @@
 #define PIN_COS_LED          GPIO_Pin_13
 #define PORT_COS_LED         GPIOB
 
-#elif defined(PI_HAT_7021_REV_03) || defined(ADF7021_CARRIER_BOARD)
+#elif defined(PI_HAT_7021_REV_03)
+
+#define PIN_SCLK             GPIO_Pin_5
+#define PORT_SCLK            GPIOB
+
+#define PIN_SREAD            GPIO_Pin_6
+#define PORT_SREAD           GPIOB
+
+#define PIN_SDATA            GPIO_Pin_7
+#define PORT_SDATA           GPIOB
+
+#define PIN_SLE              GPIO_Pin_8
+#define PORT_SLE             GPIOB
+
+#define PIN_CE               GPIO_Pin_14
+#define PORT_CE              GPIOC
+
+#define PIN_RXD              GPIO_Pin_4
+#define PORT_RXD             GPIOB
+
+// TXD used in SPI Data mode of ADF7021
+// TXD is TxRxCLK of ADF7021, standard TX/RX data interface
+#define PIN_TXD              GPIO_Pin_3
+#define PORT_TXD             GPIOB
+#define PIN_TXD_INT          GPIO_PinSource3
+#define PORT_TXD_INT         GPIO_PortSourceGPIOB
+
+// CLKOUT used in SPI Data mode of ADF7021
+#define PIN_CLKOUT           GPIO_Pin_15
+#define PORT_CLKOUT          GPIOA
+#define PIN_CLKOUT_INT       GPIO_PinSource15
+#define PORT_CLKOUT_INT      GPIO_PortSourceGPIOA
+
+#define PIN_LED              GPIO_Pin_13
+#define PORT_LED             GPIOC
+
+#define PIN_DEB              GPIO_Pin_9
+#define PORT_DEB             GPIOB
+
+#define PIN_DSTAR_LED        GPIO_Pin_12
+#define PORT_DSTAR_LED       GPIOB
+
+#define PIN_DMR_LED          GPIO_Pin_13
+#define PORT_DMR_LED         GPIOB
+
+#define PIN_YSF_LED          GPIO_Pin_1
+#define PORT_YSF_LED         GPIOB
+
+#define PIN_P25_LED          GPIO_Pin_0
+#define PORT_P25_LED         GPIOB
+
+#define PIN_PTT_LED          GPIO_Pin_14
+#define PORT_PTT_LED         GPIOB
+
+#define PIN_COS_LED          GPIO_Pin_15
+#define PORT_COS_LED         GPIOB
+
+#elif defined(ADF7021_CARRIER_BOARD)
 
 #define PIN_SCLK             GPIO_Pin_5
 #define PORT_SCLK            GPIOB

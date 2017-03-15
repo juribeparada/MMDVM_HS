@@ -46,7 +46,26 @@
 #define PIN_PTT_LED    PB12
 #define PIN_COS_LED    PB13
 
-#elif defined(PI_HAT_7021_REV_03) || defined(ADF7021_CARRIER_BOARD)
+#elif defined(PI_HAT_7021_REV_03)
+
+#define PIN_SCLK       PB5
+#define PIN_SREAD      PB6
+#define PIN_SDATA      PB7
+#define PIN_SLE        PB8
+#define PIN_CE         PC14
+#define PIN_RXD        PB4
+#define PIN_TXD        PB3
+#define PIN_CLKOUT     PA15
+#define PIN_LED        PC13
+#define PIN_DEB        PB9
+#define PIN_DSTAR_LED  PB12
+#define PIN_DMR_LED    PB13
+#define PIN_YSF_LED    PB1
+#define PIN_P25_LED    PB0
+#define PIN_PTT_LED    PB14
+#define PIN_COS_LED    PB15
+
+#elif defined(ADF7021_CARRIER_BOARD)
 
 #define PIN_SCLK       PB5
 #define PIN_SREAD      PB7
