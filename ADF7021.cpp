@@ -142,6 +142,7 @@ void CIO::ifConf()
   uint32_t ADF7021_REG4  = 0;
   uint32_t ADF7021_REG10 = 0;
   uint32_t ADF7021_REG13 = 0;
+  uint32_t AFC_OFFSET = 0;
 
   // Toggle CE pin for ADF7021 reset
   CE_pin(LOW);
@@ -171,17 +172,19 @@ void CIO::ifConf()
     div2 = 1U;
   }
 
-#if defined(ADF7021_ENABLE_AFC)
+  if(m_dstarEnable)
+    AFC_OFFSET = AFC_OFFSET_DSTAR;
+  else if(m_dmrEnable)
+    AFC_OFFSET = AFC_OFFSET_DMR;
+  else if(m_ysfEnable)
+    AFC_OFFSET = AFC_OFFSET_YSF;
+  else if(m_p25Enable)
+    AFC_OFFSET = AFC_OFFSET_P25;
+
   if( div2 == 1U )
-    divider = (m_frequency_rx - 100000 + 1000) / (ADF7021_PFD / 2U);
+    divider = (m_frequency_rx - 100000 + AFC_OFFSET) / (ADF7021_PFD / 2U);
   else
-    divider = (m_frequency_rx - 100000 + 2000) / ADF7021_PFD;
-#else
-  if( div2 == 1U )
-    divider = (m_frequency_rx - 100000) / (ADF7021_PFD / 2U);
-  else
-    divider = (m_frequency_rx - 100000) / ADF7021_PFD;
-#endif
+    divider = (m_frequency_rx - 100000 + (2*AFC_OFFSET)) / ADF7021_PFD;
 
   N_divider = floor(divider);
   divider = (divider - N_divider) * 32768;
@@ -231,7 +234,7 @@ void CIO::ifConf()
     ADF7021_REG4 |= (uint32_t) 0b10                      << 8;
     ADF7021_REG4 |= (uint32_t) ADF7021_DISC_BW_DSTAR     << 10;  // Disc BW
     ADF7021_REG4 |= (uint32_t) ADF7021_POST_BW_DSTAR     << 20;  // Post dem BW
-    ADF7021_REG4 |= (uint32_t) 0b00                      << 30;  // IF filter
+    ADF7021_REG4 |= (uint32_t) 0b10                      << 30;  // IF filter
 
     ADF7021_REG13 = (uint32_t) 0b1101      << 0;   // register 13
     ADF7021_REG13 |= (uint32_t) ADF7021_SLICER_TH_DSTAR  << 4;   // slicer threshold
@@ -339,10 +342,6 @@ void CIO::ifConf()
  
   // TEST MODE (disabled) (15)
   AD7021_control_word = 0x000E000F;
-  Send_AD7021_control();
-
-  // IF FINE CAL (fine cal, defaults) (6)
-  AD7021_control_word = ADF7021_REG6;
   Send_AD7021_control();
 
   // AGC (auto, defaults) (9)

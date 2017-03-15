@@ -79,15 +79,23 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 
 // AFC configuration (REG 10)
 #if defined(ADF7021_ENABLE_AFC)
-#define ADF7021_REG10_DSTAR      0x0496473A
+#define ADF7021_REG10_DSTAR      0x0C96473A
 #define ADF7021_REG10_DMR        0x049E473A
 #define ADF7021_REG10_YSF        0x049E473A
 #define ADF7021_REG10_P25        0x049E473A
+#define AFC_OFFSET_DSTAR         0
+#define AFC_OFFSET_DMR           1000
+#define AFC_OFFSET_YSF           1000
+#define AFC_OFFSET_P25           1000
 #else
 #define ADF7021_REG10_DSTAR      0x0496472A
 #define ADF7021_REG10_DMR        0x049E472A
 #define ADF7021_REG10_YSF        0x049E472A
 #define ADF7021_REG10_P25        0x049E472A
+#define AFC_OFFSET_DSTAR         0
+#define AFC_OFFSET_DMR           0
+#define AFC_OFFSET_YSF           0
+#define AFC_OFFSET_P25           0
 #endif
 
 // Slicer threshold for 4FSK demodulator (REG 13)
@@ -141,15 +149,23 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 
 // AFC (REG 10)
 #if defined(ADF7021_ENABLE_AFC)
-#define ADF7021_REG10_DSTAR      0x0496355A
+#define ADF7021_REG10_DSTAR      0x0C96355A
 #define ADF7021_REG10_DMR        0x049E355A
 #define ADF7021_REG10_YSF        0x049E355A
 #define ADF7021_REG10_P25        0x049E355A
+#define AFC_OFFSET_DSTAR         0
+#define AFC_OFFSET_DMR           1000
+#define AFC_OFFSET_YSF           1000
+#define AFC_OFFSET_P25           1000
 #else
 #define ADF7021_REG10_DSTAR      0x0496354A
 #define ADF7021_REG10_DMR        0x049E354A
 #define ADF7021_REG10_YSF        0x049E354A
 #define ADF7021_REG10_P25        0x049E354A
+#define AFC_OFFSET_DSTAR         0
+#define AFC_OFFSET_DMR           0
+#define AFC_OFFSET_YSF           0
+#define AFC_OFFSET_P25           0
 #endif
 
 // Slicer threshold for 4FSK demodulator (REG 13)
@@ -203,15 +219,23 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 
 // AFC (REG 10)
 #if defined(ADF7021_ENABLE_AFC)
-#define ADF7021_REG10_DSTAR      0x0496557A
+#define ADF7021_REG10_DSTAR      0x0C96557A
 #define ADF7021_REG10_DMR        0x049E557A
 #define ADF7021_REG10_YSF        0x049E557A
 #define ADF7021_REG10_P25        0x049E557A
+#define AFC_OFFSET_DSTAR         0
+#define AFC_OFFSET_DMR           1000
+#define AFC_OFFSET_YSF           1000
+#define AFC_OFFSET_P25           1000
 #else
 #define ADF7021_REG10_DSTAR      0x0496556A
 #define ADF7021_REG10_DMR        0x049E556A
 #define ADF7021_REG10_YSF        0x049E556A
 #define ADF7021_REG10_P25        0x049E556A
+#define AFC_OFFSET_DSTAR         0
+#define AFC_OFFSET_DMR           0
+#define AFC_OFFSET_YSF           0
+#define AFC_OFFSET_P25           0
 #endif
 
 // Slicer threshold for 4FSK demodulator (REG 13)
