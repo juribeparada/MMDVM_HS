@@ -231,7 +231,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 // Slicer threshold for 4FSK demodulator (REG 13)
 #if defined(ADF7021_N_VER)
 #define ADF7021_SLICER_TH_DSTAR  0U
-#define ADF7021_SLICER_TH_DMR    47U
+#define ADF7021_SLICER_TH_DMR    48U
 #define ADF7021_SLICER_TH_YSF    63U
 #define ADF7021_SLICER_TH_P25    43U
 #else
