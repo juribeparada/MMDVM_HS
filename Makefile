@@ -103,8 +103,8 @@ MCFLAGS=-mcpu=cortex-m3 -march=armv7-m -mthumb -Wall -Wextra
 DEFS_HS=-DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DHSE_VALUE=$(OSC) -DVECT_TAB_OFFSET=0x0
 DEFS_HS_BL=-DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DHSE_VALUE=$(OSC) -DVECT_TAB_OFFSET=0x2000
 
-CFLAGS=-c $(MCFLAGS) $(INCLUDES)
-CXXFLAGS=-c $(MCFLAGS) $(INCLUDES)
+CFLAGS=-c $(MCFLAGS) $(INCLUDES) -DCUSTOM_NEW -DNO_EXCEPTIONS -Wno-unused-parameter
+CXXFLAGS=-c $(MCFLAGS) $(INCLUDES) -DCUSTOM_NEW -DNO_EXCEPTIONS -Wno-unused-parameter
 
 # LINKER FLAGS
 LDSCRIPT_N=normal.ld
@@ -116,13 +116,13 @@ LDFLAGS=$(MCFLAGS) --specs=nosys.specs $(INCLUDES_LIBS) $(LINK_LIBS)
 
 all: hs
 
-hs: CFLAGS+=$(DEFS_HS) -Os -ffunction-sections -fdata-sections -nostdlib -DCUSTOM_NEW -DNO_EXCEPTIONS
-hs: CXXFLAGS+=$(DEFS_HS) -Os -fno-exceptions -ffunction-sections -fdata-sections -nostdlib -fno-rtti -DCUSTOM_NEW -DNO_EXCEPTIONS
+hs: CFLAGS+=$(DEFS_HS) -Os -ffunction-sections -fdata-sections -nostdlib
+hs: CXXFLAGS+=$(DEFS_HS) -Os -fno-exceptions -ffunction-sections -fdata-sections -nostdlib -fno-rtti
 hs: LDFLAGS+=-T $(LDSCRIPT_N) -Os --specs=nano.specs
 hs: release
 
-bl: CFLAGS+=$(DEFS_HS_BL) -Os -ffunction-sections -fdata-sections -nostdlib -DCUSTOM_NEW -DNO_EXCEPTIONS
-bl: CXXFLAGS+=$(DEFS_HS_BL) -Os -fno-exceptions -ffunction-sections -fdata-sections -nostdlib -fno-rtti -DCUSTOM_NEW -DNO_EXCEPTIONS
+bl: CFLAGS+=$(DEFS_HS_BL) -Os -ffunction-sections -fdata-sections -nostdlib
+bl: CXXFLAGS+=$(DEFS_HS_BL) -Os -fno-exceptions -ffunction-sections -fdata-sections -nostdlib -fno-rtti
 bl: LDFLAGS+=-T $(LDSCRIPT_BL) -Os --specs=nano.specs
 bl: release
 
