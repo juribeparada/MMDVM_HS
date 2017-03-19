@@ -81,17 +81,17 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_REG10_DSTAR      0x0C96473A
 
 #if defined(ADF7021_ENABLE_4FSK_AFC)
-#define ADF7021_REG10_DMR        0x049E473A
-#define ADF7021_REG10_YSF        0x049E473A
-#define ADF7021_REG10_P25        0x049E473A
+#define ADF7021_REG10_DMR        0x01FE473A
+#define ADF7021_REG10_YSF        0x01FE473A
+#define ADF7021_REG10_P25        0x01FE473A
 #if defined(ADF7021_AFC_POS)
-#define AFC_OFFSET_DMR           -1000
-#define AFC_OFFSET_YSF           -1000
-#define AFC_OFFSET_P25           -1000
+#define AFC_OFFSET_DMR           -250
+#define AFC_OFFSET_YSF           -250
+#define AFC_OFFSET_P25           -250
 #else
-#define AFC_OFFSET_DMR           1000
-#define AFC_OFFSET_YSF           1000
-#define AFC_OFFSET_P25           1000
+#define AFC_OFFSET_DMR           250
+#define AFC_OFFSET_YSF           250
+#define AFC_OFFSET_P25           250
 #endif
 #else
 #define ADF7021_REG10_DMR        0x049E472A
@@ -149,17 +149,17 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_REG10_DSTAR      0x0C96355A
 
 #if defined(ADF7021_ENABLE_4FSK_AFC)
-#define ADF7021_REG10_DMR        0x049E355A
-#define ADF7021_REG10_YSF        0x049E355A
-#define ADF7021_REG10_P25        0x049E355A
+#define ADF7021_REG10_DMR        0x01FE355A
+#define ADF7021_REG10_YSF        0x01FE355A
+#define ADF7021_REG10_P25        0x01FE355A
 #if defined(ADF7021_AFC_POS)
-#define AFC_OFFSET_DMR           -1000
-#define AFC_OFFSET_YSF           -1000
-#define AFC_OFFSET_P25           -1000
+#define AFC_OFFSET_DMR           -250
+#define AFC_OFFSET_YSF           -250
+#define AFC_OFFSET_P25           -250
 #else
-#define AFC_OFFSET_DMR           1000
-#define AFC_OFFSET_YSF           1000
-#define AFC_OFFSET_P25           1000
+#define AFC_OFFSET_DMR           250
+#define AFC_OFFSET_YSF           250
+#define AFC_OFFSET_P25           250
 #endif
 #else
 #define ADF7021_REG10_DMR        0x049E354A
@@ -217,17 +217,17 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_REG10_DSTAR      0x0C96557A
 
 #if defined(ADF7021_ENABLE_4FSK_AFC)
-#define ADF7021_REG10_DMR        0x049E557A
-#define ADF7021_REG10_YSF        0x049E557A
-#define ADF7021_REG10_P25        0x049E557A
+#define ADF7021_REG10_DMR        0x01FE557A
+#define ADF7021_REG10_YSF        0x01FE557A
+#define ADF7021_REG10_P25        0x01FE557A
 #if defined(ADF7021_AFC_POS)
-#define AFC_OFFSET_DMR           -1000
-#define AFC_OFFSET_YSF           -1000
-#define AFC_OFFSET_P25           -1000
+#define AFC_OFFSET_DMR           -250
+#define AFC_OFFSET_YSF           -250
+#define AFC_OFFSET_P25           -250
 #else
-#define AFC_OFFSET_DMR           1000
-#define AFC_OFFSET_YSF           1000
-#define AFC_OFFSET_P25           1000
+#define AFC_OFFSET_DMR           250
+#define AFC_OFFSET_YSF           250
+#define AFC_OFFSET_P25           250
 #endif
 #else
 #define ADF7021_REG10_DMR        0x049E556A
