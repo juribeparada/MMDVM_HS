@@ -41,8 +41,12 @@
 // Original 19.68 MHz, not working, only for experimentation:
 // #define ADF7021_19_6800
 
-// Enable AFC support for ADF7021
-// #define ADF7021_ENABLE_AFC
+// AFC is enabled by default in D-Star
+
+// Enable AFC support for DMR, YSF and P25 (experimental)
+// #define ADF7021_ENABLE_4FSK_AFC
+// Configure AFC with positive initial frequency offset
+// #define ADF7021_AFC_POS
 
 // Host communication selection:
 // #define STM32_USART1_HOST

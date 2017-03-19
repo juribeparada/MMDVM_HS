@@ -173,7 +173,7 @@ void CIO::ifConf()
   }
 
   if(m_dstarEnable)
-    AFC_OFFSET = AFC_OFFSET_DSTAR;
+    AFC_OFFSET = 0;
   else if(m_dmrEnable)
     AFC_OFFSET = AFC_OFFSET_DMR;
   else if(m_ysfEnable)
