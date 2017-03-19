@@ -68,10 +68,12 @@ const uint8_t MMDVM_DEBUG3       = 0xF3U;
 const uint8_t MMDVM_DEBUG4       = 0xF4U;
 const uint8_t MMDVM_DEBUG5       = 0xF5U;
 
-const uint8_t HARDWARE[]         = "MMDVM-HS 20170210 (D-Star/DMR/YSF/P25)";
+#define DESCRIPTION              "MMDVM-HS 20170319 (D-Star/DMR/YSF/P25)"
 
+#define concat(a, b, c) a " (Build: " b " " c ")"
+const char HARDWARE[] = concat(DESCRIPTION, __TIME__, __DATE__);
+ 
 const uint8_t PROTOCOL_VERSION   = 1U;
-
 
 CSerialPort::CSerialPort() :
 m_buffer(),
