@@ -20,8 +20,11 @@
 #define  CONFIG_H
 
 // Select one board:
+// 1) Initial release of Pi HAT:
 // #define PI_HAT_7021_REV_02
+// 2) ZUM-Spot USB v0.1 and Pi HAT v0.3:
 // #define PI_HAT_7021_REV_03
+// 3) Board with modified RF7021SE and Blue Pill STM32F103 (initial tests)
 #define ADF7021_CARRIER_BOARD
 
 // Enable ADF7021 support:
