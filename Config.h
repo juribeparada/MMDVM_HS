@@ -55,6 +55,9 @@
 // #define STM32_USART1_HOST
 #define STM32_USB_HOST
 
+// Enable Half Deviation mode in YSF (experimental)
+// #define ADF7021_YSF_HALF_DEV
+
 // Send RSSI value:
 // #define SEND_RSSI_DATA
 

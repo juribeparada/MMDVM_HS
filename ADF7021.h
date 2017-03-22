@@ -49,7 +49,11 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 // Deviation of modulator (REG 02)
 #define ADF7021_DEV_DSTAR        43U
 #define ADF7021_DEV_DMR          23U
+#if defined(ADF7021_YSF_HALF_DEV)
+#define ADF7021_DEV_YSF          16U
+#else
 #define ADF7021_DEV_YSF          32U
+#endif
 #define ADF7021_DEV_P25          22U
 
 // TX/RX CLOCK register (REG 03)
@@ -62,7 +66,11 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 // Bug in ADI evaluation software, use datasheet formula (4FSK)
 #define ADF7021_DISC_BW_DSTAR    522U // K=85
 #define ADF7021_DISC_BW_DMR      393U // K=32
+#if defined(ADF7021_YSF_HALF_DEV)
+#define ADF7021_DISC_BW_YSF      394U // K=32
+#else
 #define ADF7021_DISC_BW_YSF      344U // K=28
+#endif
 #define ADF7021_DISC_BW_P25      394U // K=32
 
 // Post demodulator bandwith (REG 04)
@@ -117,7 +125,11 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 // Deviation of modulator (REG 02)
 #define ADF7021_DEV_DSTAR        32U
 #define ADF7021_DEV_DMR          17U
+#if defined(ADF7021_YSF_HALF_DEV)
+#define ADF7021_DEV_YSF          12U
+#else
 #define ADF7021_DEV_YSF          24U
+#endif
 #define ADF7021_DEV_P25          16U
 
 // TX/RX CLOCK register (REG 03)
@@ -130,7 +142,11 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 // Bug in ADI evaluation software, use datasheet formula (4FSK)
 #define ADF7021_DISC_BW_DSTAR    597U // K=85
 #define ADF7021_DISC_BW_DMR      393U // K=32
+#if defined(ADF7021_YSF_HALF_DEV)
+#define ADF7021_DISC_BW_YSF      394U // K=32
+#else
 #define ADF7021_DISC_BW_YSF      344U // K=28
+#endif
 #define ADF7021_DISC_BW_P25      394U // K=32
 
 // Post demodulator bandwith (REG 04)
@@ -185,7 +201,11 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 // Deviation of modulator (REG 02)
 #define ADF7021_DEV_DSTAR        26U
 #define ADF7021_DEV_DMR          14U
+#if defined(ADF7021_YSF_HALF_DEV)
+#define ADF7021_DEV_YSF          10U
+#else
 #define ADF7021_DEV_YSF          19U
+#endif
 #define ADF7021_DEV_P25          14U
 
 // TX/RX CLOCK register (REG 03)
@@ -198,7 +218,11 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 // Bug in ADI evaluation software, use datasheet formula (4FSK)
 #define ADF7021_DISC_BW_DSTAR    522U // K=85
 #define ADF7021_DISC_BW_DMR      491U // K=32
+#if defined(ADF7021_YSF_HALF_DEV)
+#define ADF7021_DISC_BW_YSF      493U // K=32
+#else
 #define ADF7021_DISC_BW_YSF      430U // K=28
+#endif
 #define ADF7021_DISC_BW_P25      493U // K=32
 
 // Post demodulator bandwith (REG 04)
@@ -242,14 +266,25 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 
 // Slicer threshold for 4FSK demodulator (REG 13)
 #if defined(ADF7021_N_VER)
+
 #define ADF7021_SLICER_TH_DSTAR  0U
 #define ADF7021_SLICER_TH_DMR    48U
-#define ADF7021_SLICER_TH_YSF    63U
-#define ADF7021_SLICER_TH_P25    43U
+#if defined(ADF7021_YSF_HALF_DEV)
+#define ADF7021_SLICER_TH_YSF    32U
 #else
+#define ADF7021_SLICER_TH_YSF    63U
+#endif
+#define ADF7021_SLICER_TH_P25    43U
+
+#else
+
 #define ADF7021_SLICER_TH_DSTAR  0U
 #define ADF7021_SLICER_TH_DMR    54U
+#if defined(ADF7021_YSF_HALF_DEV)
+#define ADF7021_SLICER_TH_YSF    38U
+#else
 #define ADF7021_SLICER_TH_YSF    75U
+#endif
 #define ADF7021_SLICER_TH_P25    52U
 #endif
 
