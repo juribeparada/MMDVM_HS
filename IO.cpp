@@ -35,7 +35,8 @@ m_rxBuffer(RX_RINGBUFFER_SIZE),
 m_txBuffer(TX_RINGBUFFER_SIZE),
 m_ledCount(0U),
 m_ledValue(true),
-m_watchdog(0U)
+m_watchdog(0U),
+m_LoDevYSF(false)
 {
   Init();
 

@@ -33,6 +33,8 @@ bool m_dmrEnable   = true;
 bool m_ysfEnable   = true;
 bool m_p25Enable   = true;
 
+bool m_duplex = false;
+
 bool m_tx  = false;
 bool m_dcd = false;
 

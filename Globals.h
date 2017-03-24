@@ -57,6 +57,8 @@ extern bool m_dmrEnable;
 extern bool m_ysfEnable;
 extern bool m_p25Enable;
 
+extern bool m_duplex;
+
 extern bool m_tx;
 extern bool m_dcd;
 

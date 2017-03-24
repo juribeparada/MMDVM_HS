@@ -276,15 +276,15 @@ void CIO::ifConf()
     ADF7021_REG4 |= (uint32_t) 0b011                     << 4;   // mode, 4FSK
     ADF7021_REG4 |= (uint32_t) 0b0                       << 7;
     ADF7021_REG4 |= (uint32_t) 0b11                      << 8;
-    ADF7021_REG4 |= (uint32_t) ADF7021_DISC_BW_YSF       << 10;  // Disc BW
+    ADF7021_REG4 |= (uint32_t) (m_LoDevYSF ? ADF7021_DISC_BW_YSF_L : ADF7021_DISC_BW_YSF_H) << 10;  // Disc BW
     ADF7021_REG4 |= (uint32_t) ADF7021_POST_BW_YSF       << 20;  // Post dem BW
     ADF7021_REG4 |= (uint32_t) 0b10                      << 30;  // IF filter
 
     ADF7021_REG13 = (uint32_t) 0b1101                    << 0;   // register 13
-    ADF7021_REG13 |= (uint32_t) ADF7021_SLICER_TH_YSF    << 4;   // slicer threshold
+    ADF7021_REG13 |= (uint32_t) (m_LoDevYSF ? ADF7021_SLICER_TH_YSF_L : ADF7021_SLICER_TH_YSF_H) << 4;   // slicer threshold
 
     ADF7021_REG2 = (uint32_t) 0b10                       << 28;  // invert data
-    ADF7021_REG2 |= (uint32_t) (ADF7021_DEV_YSF / div2)  << 19;  // deviation
+    ADF7021_REG2 |= (uint32_t) ((m_LoDevYSF ? ADF7021_DEV_YSF_L : ADF7021_DEV_YSF_H) / div2)  << 19;  // deviation
     ADF7021_REG2 |= (uint32_t) 0b111                     << 4;   // modulation (4FSK)
   }
   else if (m_p25Enable) {
@@ -396,6 +396,11 @@ void CIO::setRX()
   
   // PTT pin off
   PTT_pin(LOW);
+}
+
+void CIO::setLoDevYSF(bool on)
+{
+  m_LoDevYSF = on;
 }
 
 #endif

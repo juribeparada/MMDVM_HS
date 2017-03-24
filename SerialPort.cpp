@@ -191,6 +191,9 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
 {
   if (length < 13U)
     return 4U;
+    
+  bool ysfLoDev  = (data[0U] & 0x08U) == 0x08U;
+  bool simplex   = (data[0U] & 0x80U) == 0x80U;
 
   bool dstarEnable = (data[1U] & 0x01U) == 0x01U;
   bool dmrEnable   = (data[1U] & 0x02U) == 0x02U;
@@ -224,6 +227,8 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
   m_dmrEnable   = dmrEnable;
   m_ysfEnable   = ysfEnable;
   m_p25Enable   = p25Enable;
+  
+  m_duplex      = !simplex;
 
   dstarTX.setTXDelay(txDelay);
   ysfTX.setTXDelay(txDelay);
@@ -232,6 +237,7 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
   
   dmrDMORX.setColorCode(colorCode);
 
+  io.setLoDevYSF(ysfLoDev);
   io.start();
 
   return 0U;

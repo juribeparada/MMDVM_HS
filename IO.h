@@ -82,6 +82,7 @@ public:
   uint8_t   setFreq(uint32_t frequency_rx, uint32_t frequency_tx);
   void      setMode(void);
   void      setDecode(bool dcd);
+  void      setLoDevYSF(bool ysfLoDev);
 
   // RF interface API
   void      setTX(void);
@@ -102,6 +103,7 @@ private:
   bool      m_started;
   CBitRB    m_rxBuffer;
   CBitRB    m_txBuffer;
+  bool      m_LoDevYSF;
   
   uint32_t             m_ledCount;
   bool                 m_ledValue;
