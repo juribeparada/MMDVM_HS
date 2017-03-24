@@ -87,7 +87,7 @@ public:
   // RF interface API
   void      setTX(void);
   void      setRX(void);
-  void      ifConf(void);
+  void      ifConf(MMDVM_STATE modemState, bool reset);
   void      start(void);
   void      startInt(void);
   

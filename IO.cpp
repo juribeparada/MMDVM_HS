@@ -98,16 +98,26 @@ void CIO::process()
 
   if (m_rxBuffer.getData() >= 1U) {
     m_rxBuffer.get(bit);
+    
+    switch (m_modemState_prev) {
+      case STATE_DSTAR:
+        dstarRX.databit(bit);
+        break;
+      case STATE_DMR:
+        dmrDMORX.databit(bit);
+        break;
+      case STATE_YSF:
+        ysfRX.databit(bit);
+        break;
+      case STATE_P25:
+        ysfRX.databit(bit);
+        break;
+      default:
+        break;
+    }
 
-    if(m_dstarEnable)
-      dstarRX.databit(bit);
-    else if(m_dmrEnable)
-      dmrDMORX.databit(bit);
-    else if(m_ysfEnable)
-      ysfRX.databit(bit);
-    else if(m_p25Enable)
-      p25RX.databit(bit);
   }
+  
 }
 
 void CIO::interrupt()
@@ -146,8 +156,6 @@ void CIO::interrupt()
 
 void CIO::start()
 { 
-  ifConf();
-  
   if (m_started)
     return;
   

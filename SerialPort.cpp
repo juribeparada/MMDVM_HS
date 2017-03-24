@@ -238,6 +238,16 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
   dmrDMORX.setColorCode(colorCode);
 
   io.setLoDevYSF(ysfLoDev);
+  
+  if(m_dstarEnable)
+    io.ifConf(STATE_DSTAR, true);
+  else if(m_dmrEnable)
+    io.ifConf(STATE_DMR, true);
+  else if(m_ysfEnable)
+    io.ifConf(STATE_YSF, true);
+  else if(m_p25Enable)
+    io.ifConf(STATE_P25, true);
+  
   io.start();
 
   return 0U;
@@ -253,7 +263,7 @@ uint8_t CSerialPort::setMode(const uint8_t* data, uint8_t length)
   if (modemState == m_modemState)
     return 0U;
 
-if (modemState != STATE_IDLE && modemState != STATE_DSTAR && modemState != STATE_DMR && modemState != STATE_YSF && modemState != STATE_P25)
+  if (modemState != STATE_IDLE && modemState != STATE_DSTAR && modemState != STATE_DMR && modemState != STATE_YSF && modemState != STATE_P25)
     return 4U;
   if (modemState == STATE_DSTAR && !m_dstarEnable)
     return 4U;
@@ -263,7 +273,7 @@ if (modemState != STATE_IDLE && modemState != STATE_DSTAR && modemState != STATE
     return 4U;
   if (modemState == STATE_P25 && !m_p25Enable)
     return 4U;
-
+    
   setMode(modemState);
 
   return 0U;
@@ -323,7 +333,12 @@ void CSerialPort::setMode(MMDVM_STATE modemState)
   }
 
   m_modemState = modemState;
-
+  
+  if ((modemState != STATE_IDLE) && (m_modemState_prev != modemState)) {
+    DEBUG1("setMode: configuring Hardware");
+    io.ifConf(modemState, true);
+  }
+    
   io.setMode();
 }
 
