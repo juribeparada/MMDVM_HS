@@ -339,7 +339,7 @@ void CSerialPort::setMode(MMDVM_STATE modemState)
     io.ifConf(modemState, true);
   }
     
-  io.setMode();
+  io.setMode(m_modemState);
 }
 
 void CSerialPort::start()

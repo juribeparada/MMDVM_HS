@@ -144,6 +144,8 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
   uint32_t ADF7021_REG13 = 0;
   uint32_t AFC_OFFSET = 0;
 
+  m_modemState_prev = modemState;
+
   // Toggle CE pin for ADF7021 reset
   if(reset) {
     CE_pin(LOW);
@@ -381,8 +383,7 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
   // 3FSK/4FSK DEMOD (13)
   AD7021_control_word = ADF7021_REG13;
   Send_AD7021_control();
-  
-  m_modemState_prev = modemState;
+
 }
 
 //======================================================================================================================

@@ -55,6 +55,9 @@
 // #define STM32_USART1_HOST
 #define STM32_USB_HOST
 
+// Enable mode detection
+#define ENABLE_SCAN_MODE
+
 // Send RSSI value:
 // #define SEND_RSSI_DATA
 

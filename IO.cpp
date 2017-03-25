@@ -33,13 +33,17 @@ CIO::CIO():
 m_started(false),
 m_rxBuffer(RX_RINGBUFFER_SIZE),
 m_txBuffer(TX_RINGBUFFER_SIZE),
+m_LoDevYSF(false),
 m_ledCount(0U),
+m_scanEnable(false),
+m_modeTimerCnt(0U),
+m_scanPauseCnt(0U),
+m_scanPos(0U),
 m_ledValue(true),
-m_watchdog(0U),
-m_LoDevYSF(false)
+m_watchdog(0U)
 {
   Init();
-
+  
   CE_pin(HIGH);
   LED_pin(HIGH);
   PTT_pin(LOW);
@@ -62,6 +66,7 @@ m_LoDevYSF(false)
 void CIO::process()
 {
   uint8_t bit;
+  uint32_t scantime;
   
   m_ledCount++;
   
@@ -70,7 +75,7 @@ void CIO::process()
     if (m_watchdog >= 19200U) {
       if (m_modemState == STATE_DSTAR || m_modemState == STATE_DMR || m_modemState == STATE_YSF ||  m_modemState == STATE_P25) {
         m_modemState = STATE_IDLE;
-        setMode();
+        setMode(m_modemState);
       }
 
       m_watchdog = 0U;
@@ -94,6 +99,26 @@ void CIO::process()
   if (m_txBuffer.getData() == 0U && m_tx) {
     setRX();
     m_tx = false;
+  }
+  
+  if(m_modemState_prev == STATE_DSTAR)
+    scantime = SCAN_TIME;
+  else if(m_modemState_prev == STATE_DMR)
+    scantime = SCAN_TIME*2;
+  else if(m_modemState_prev == STATE_YSF)
+    scantime = SCAN_TIME;
+  else if(m_modemState_prev == STATE_P25)
+    scantime = SCAN_TIME;
+  else
+    scantime = SCAN_TIME;
+
+  if(m_modeTimerCnt >= scantime) {
+    m_modeTimerCnt = 0;
+    if( (m_modemState == STATE_IDLE) && (m_scanPauseCnt == 0) && m_scanEnable) {
+      m_scanPos = (m_scanPos + 1) % m_TotalModes;
+      setMode(m_Modes[m_scanPos]);
+      io.ifConf(m_Modes[m_scanPos], true);
+    }
   }
 
   if (m_rxBuffer.getData() >= 1U) {
@@ -152,18 +177,56 @@ void CIO::interrupt()
   }
 
   m_watchdog++;
+  m_modeTimerCnt++;
+
+  if(m_scanPauseCnt >= SCAN_PAUSE)
+    m_scanPauseCnt = 0;
+  
+  if(m_scanPauseCnt != 0)
+    m_scanPauseCnt++;
+
 }
 
 void CIO::start()
 { 
+  m_TotalModes = 0;
+  
+  if(m_dstarEnable) {
+    m_Modes[m_TotalModes] = STATE_DSTAR;
+    m_TotalModes++;
+  }
+  if(m_dmrEnable) {
+    m_Modes[m_TotalModes] = STATE_DMR;
+    m_TotalModes++;
+  }
+  if(m_ysfEnable) {
+    m_Modes[m_TotalModes] = STATE_YSF;
+    m_TotalModes++;
+  }
+  if(m_p25Enable) {
+    m_Modes[m_TotalModes] = STATE_P25;
+    m_TotalModes++;
+  }
+  
+#if defined(ENABLE_SCAN_MODE)
+  if(m_TotalModes > 1)
+    m_scanEnable = true;
+  else {
+    m_scanEnable = false;
+    setMode(m_modemState);
+  }
+#else
+  m_scanEnable = false;
+  setMode(m_modemState);
+#endif
+
   if (m_started)
     return;
-  
+    
   startInt();
     
   m_started = true;
   
-  setMode();
 }
 
 void CIO::write(uint8_t* data, uint16_t length)
@@ -214,18 +277,20 @@ uint8_t CIO::setFreq(uint32_t frequency_rx, uint32_t frequency_tx)
   return 0U;
 }
 
-void CIO::setMode()
+void CIO::setMode(MMDVM_STATE modemState)
 {
-  DSTAR_pin(m_modemState == STATE_DSTAR);
-  DMR_pin(m_modemState   == STATE_DMR);
-  YSF_pin(m_modemState   == STATE_YSF);
-  P25_pin(m_modemState   == STATE_P25);
+  DSTAR_pin(modemState == STATE_DSTAR);
+  DMR_pin(modemState   == STATE_DMR);
+  YSF_pin(modemState   == STATE_YSF);
+  P25_pin(modemState   == STATE_P25);
 }
 
 void CIO::setDecode(bool dcd)
 {
-  if (dcd != m_dcd)
+  if (dcd != m_dcd) {
+    m_scanPauseCnt = 1;
     COS_pin(dcd ? true : false);
+  }
 
   m_dcd = dcd;
 }
@@ -234,3 +299,4 @@ void CIO::resetWatchdog()
 {
   m_watchdog = 0U;
 }
+

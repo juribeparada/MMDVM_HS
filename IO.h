@@ -35,6 +35,9 @@
 #define UHF2_MIN  842000000
 #define UHF2_MAX  950000000
 
+#define SCAN_TIME  960
+#define SCAN_PAUSE 10000
+
 extern uint32_t  m_frequency_rx;
 extern uint32_t  m_frequency_tx;
 extern uint8_t   m_power;
@@ -80,7 +83,7 @@ public:
   bool      hasTXOverflow(void);
   bool      hasRXOverflow(void);
   uint8_t   setFreq(uint32_t frequency_rx, uint32_t frequency_tx);
-  void      setMode(void);
+  void      setMode(MMDVM_STATE modemState);
   void      setDecode(bool dcd);
   void      setLoDevYSF(bool ysfLoDev);
 
@@ -100,14 +103,20 @@ public:
   void      delay_rx(void);
      
 private:
-  bool      m_started;
-  CBitRB    m_rxBuffer;
-  CBitRB    m_txBuffer;
-  bool      m_LoDevYSF;
   
-  uint32_t             m_ledCount;
-  bool                 m_ledValue;
-  volatile uint32_t    m_watchdog;
+  bool               m_started;
+  CBitRB             m_rxBuffer;
+  CBitRB             m_txBuffer;
+  bool               m_LoDevYSF;
+  uint32_t           m_ledCount;
+  bool               m_scanEnable;
+  uint32_t           m_modeTimerCnt;
+  uint32_t           m_scanPauseCnt;
+  uint8_t            m_scanPos;
+  uint8_t            m_TotalModes;
+  MMDVM_STATE        m_Modes[4];
+  bool               m_ledValue;
+  volatile uint32_t  m_watchdog;
 
 };
 
