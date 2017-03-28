@@ -35,8 +35,8 @@
 #define UHF2_MIN  842000000
 #define UHF2_MAX  950000000
 
-#define SCAN_TIME  960
-#define SCAN_PAUSE 10000
+#define SCAN_TIME  1920
+#define SCAN_PAUSE 20000
 
 extern uint32_t  m_frequency_rx;
 extern uint32_t  m_frequency_tx;
