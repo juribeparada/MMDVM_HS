@@ -29,6 +29,9 @@ uint32_t    m_frequency_rx;
 uint32_t    m_frequency_tx;
 uint8_t     m_power;
 
+extern volatile bool sle_request;
+static volatile bool sle_pin = 0;
+
 CIO::CIO():
 m_started(false),
 m_rxBuffer(RX_RINGBUFFER_SIZE),
@@ -152,7 +155,25 @@ void CIO::interrupt()
   if (!m_started)
     return;
 
-  if(m_tx) {
+  if (sle_request == true && m_tx)
+  { 
+    if(CLK_pin() == 0)
+    {
+	sle_pin = 1;
+  	SLE_pin(HIGH);
+   }
+   else if (sle_pin == 1)
+   {
+  	SLE_pin(LOW);
+  	SDATA_pin(LOW);
+  	sle_request = false;
+        sle_pin = 0;
+    }
+  }
+
+
+  // we set the TX bit at TXD low, sampling of ADF7021 happens at rising clock
+  if (CLK_pin() == 0 && m_tx ) {
     m_txBuffer.get(bit);
 
 #if defined(BIDIR_DATA_PIN)
@@ -166,8 +187,9 @@ void CIO::interrupt()
     else
       TXD_pin(LOW);
 #endif
-
-  } else {
+  } 
+  // we sample the RX bit at rising TXD clock edge, so TXD must be 1 and we are not in tx mode
+  else if (CLK_pin() == 1 && !m_tx) {
     if(RXD_pin())
       bit = 1;
     else
@@ -175,6 +197,7 @@ void CIO::interrupt()
 
     m_rxBuffer.put(bit);
   }
+
 
   m_watchdog++;
   m_modeTimerCnt++;
@@ -241,6 +264,8 @@ void CIO::write(uint8_t* data, uint16_t length)
   if (!m_tx) {
     setTX();
     m_tx = true;
+    sle_pin = 0;
+    while (sle_request) { asm("nop"); }
   }
 
 }

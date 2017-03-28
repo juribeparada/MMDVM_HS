@@ -55,6 +55,7 @@ public:
   void     SLE_pin(bool on);
   void     CE_pin(bool on);
   bool     RXD_pin(void);
+  bool     CLK_pin(void);
   
 #if defined(BIDIR_DATA_PIN)
   void     RXD_pin_write(bool on);
