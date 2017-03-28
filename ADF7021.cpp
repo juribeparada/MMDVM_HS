@@ -34,6 +34,31 @@ volatile uint32_t  AD7021_control_word;
 uint32_t           ADF7021_RX_REG0;
 uint32_t           ADF7021_TX_REG0;
 
+volatile bool sle_request = false;
+
+static  void Send_AD7021_control_shift()
+{
+  int AD7021_counter;
+
+  for(AD7021_counter = 31; AD7021_counter >= 0; AD7021_counter--) {
+    if(bitRead(AD7021_control_word, AD7021_counter) == HIGH)
+      io.SDATA_pin(HIGH);
+    else
+      io.SDATA_pin(LOW);
+
+    io.dlybit();
+    io.SCLK_pin(HIGH);
+    io.dlybit();
+    io.SCLK_pin(LOW);
+  }
+}
+
+static  void Send_AD7021_control_nosle()
+{
+  Send_AD7021_control_shift();
+  sle_request = true;
+}
+
 void Send_AD7021_control()
 {
   int AD7021_counter;
@@ -391,7 +416,7 @@ void CIO::setTX()
 { 
   // Send register 0 for TX operation
   AD7021_control_word = ADF7021_TX_REG0;         
-  Send_AD7021_control();
+  Send_AD7021_control_nosle();
   
 #if defined(BIDIR_DATA_PIN)
   Data_dir_out(true);  // Data pin output mode

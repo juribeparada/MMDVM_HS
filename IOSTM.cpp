@@ -440,7 +440,7 @@ void CIO::Init()
 #endif
 
   EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
-  EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;
+  EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising_Falling;
   EXTI_InitStructure.EXTI_LineCmd = ENABLE;
   EXTI_Init(&EXTI_InitStructure);
 }
@@ -465,7 +465,7 @@ void CIO::startInt()
 
 #endif
 
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 15;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 15;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
@@ -517,6 +517,15 @@ void CIO::CE_pin(bool on)
 bool CIO::RXD_pin()
 {
   return GPIO_ReadInputDataBit(PORT_RXD, PIN_RXD) == Bit_SET;
+}
+
+bool CIO::CLK_pin()
+{
+#if defined(BIDIR_DATA_PIN)
+  return GPIO_ReadInputDataBit(PORT_TXD, PIN_TXD) == Bit_SET;
+#else
+  return GPIO_ReadInputDataBit(PORT_CLKOUT, PIN_CLKOUT) == Bit_SET;
+#endif
 }
 
 #if defined(BIDIR_DATA_PIN)
