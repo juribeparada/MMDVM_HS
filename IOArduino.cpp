@@ -242,11 +242,7 @@ void CIO::RXD_pin_write(bool on)
 
 void CIO::TXD_pin(bool on) 
 {
-#if defined(BIDIR_DATA_PIN)
   digitalWrite(PIN_TXD, on ? HIGH : LOW);
-#else
-  digitalWrite(PIN_CLKOUT, on ? HIGH : LOW);
-#endif
 }
 
 void CIO::LED_pin(bool on) 
