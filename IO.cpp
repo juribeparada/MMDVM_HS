@@ -135,7 +135,7 @@ void CIO::process()
         ysfRX.databit(bit);
         break;
       case STATE_P25:
-        ysfRX.databit(bit);
+        p25RX.databit(bit);
         break;
       default:
         break;
