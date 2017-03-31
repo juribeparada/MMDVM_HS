@@ -30,7 +30,8 @@ uint32_t    m_frequency_tx;
 uint8_t     m_power;
 
 extern volatile bool sle_request;
-static volatile bool sle_pin = 0;
+volatile bool torx_request = false;
+bool volatile even = true;
 
 CIO::CIO():
 m_started(false),
@@ -100,8 +101,10 @@ void CIO::process()
 
   // Switch off the transmitter if needed
   if (m_txBuffer.getData() == 0U && m_tx) {
-    setRX();
-    m_tx = false;
+    //while(CLK_pin()==0) { asm volatile ("nop"); }
+    //while(CLK_pin()) { asm volatile ("nop"); }
+    torx_request = true;
+    while(torx_request) { asm volatile ("nop"); }
   }
   
   if(m_modemState_prev == STATE_DSTAR)
@@ -155,26 +158,12 @@ void CIO::interrupt()
   if (!m_started)
     return;
 
-  if (sle_request == true && m_tx)
-  { 
-    if(CLK_pin() == 0)
-    {
-	sle_pin = 1;
-  	SLE_pin(HIGH);
-   }
-   else if (sle_pin == 1)
-   {
-  	SLE_pin(LOW);
-  	SDATA_pin(LOW);
-  	sle_request = false;
-        sle_pin = 0;
-    }
-  }
-
-
+ uint8_t clk = CLK_pin();
   // we set the TX bit at TXD low, sampling of ADF7021 happens at rising clock
-  if (CLK_pin() == 0 && m_tx ) {
+  if (m_tx && clk == 0) {
+	
     m_txBuffer.get(bit);
+    even = !even; 
 
 #if defined(BIDIR_DATA_PIN)
     if(bit)
@@ -187,9 +176,26 @@ void CIO::interrupt()
     else
       TXD_pin(LOW);
 #endif
-  } 
+    // wait a brief period before raising SLE
+    if (sle_request == true) { 
+#if 1
+    asm volatile("mov r8, r8          \n\t"
+                 "mov r8, r8          \n\t"
+                 "mov r8, r8          \n\t"
+                 );
+#endif
+      SLE_pin(HIGH);
+    asm volatile("mov r8, r8          \n\t"
+                 "mov r8, r8          \n\t"
+                 "mov r8, r8          \n\t"
+                 );
+      SLE_pin(LOW);
+      SDATA_pin(LOW);
+      sle_request = false;
+    }  
+  }  
   // we sample the RX bit at rising TXD clock edge, so TXD must be 1 and we are not in tx mode
-  else if (CLK_pin() == 1 && !m_tx) {
+  if (!m_tx && clk == 1) {
     if(RXD_pin())
       bit = 1;
     else
@@ -197,6 +203,11 @@ void CIO::interrupt()
 
     m_rxBuffer.put(bit);
   }
+  if (torx_request == true && even == true && m_tx && clk == 0) { 
+      setRX();
+      m_tx = false;
+      torx_request = false;
+  }  
 
 
   m_watchdog++;
@@ -263,9 +274,8 @@ void CIO::write(uint8_t* data, uint16_t length)
   // Switch the transmitter on if needed
   if (!m_tx) {
     setTX();
+    while(CLK_pin());
     m_tx = true;
-    sle_pin = 0;
-    while (sle_request) { asm("nop"); }
   }
 
 }

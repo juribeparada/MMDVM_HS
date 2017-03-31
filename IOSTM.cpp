@@ -17,6 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+
 #include "Config.h"
 
 #if defined(STM32F10X_MD)
@@ -237,39 +238,6 @@ extern "C" {
 #endif
 
 #endif
-}
-
-/**
- * Function delay_us() from stm32duino project
- *
- * @brief Delay the given number of microseconds.
- *
- * @param us Number of microseconds to delay.
- */
-static inline void delay_us(uint32_t us) {
-    us *= 12;
-
-    /* fudge for function call overhead  */
-    us--;
-    asm volatile("   mov r0, %[us]          \n\t"
-                 "1: subs r0, #1            \n\t"
-                 "   bhi 1b                 \n\t"
-                 :
-                 : [us] "r" (us)
-                 : "r0");
-}
-
-void CIO::delay_rx() {
-#if defined(BIDIR_DATA_PIN)
-  delay_us(290);
-#else
-  delay_us(340);
-#endif
-}
-
-void CIO::dlybit(void)
-{
-  delay_us(1);
 }
 
 void CIO::Init()
@@ -532,6 +500,8 @@ bool CIO::CLK_pin()
 void CIO::RXD_pin_write(bool on)
 {
   GPIO_WriteBit(PORT_RXD, PIN_RXD, on ? Bit_SET : Bit_RESET);
+  GPIO_WriteBit(PORT_YSF_LED, PIN_YSF_LED, on ? Bit_SET : Bit_RESET);
+  GPIO_WriteBit(PORT_YSF_LED, PIN_YSF_LED, on ? Bit_SET : Bit_RESET);
 }
 #endif
 
@@ -580,4 +550,51 @@ void CIO::COS_pin(bool on)
   GPIO_WriteBit(PORT_COS_LED, PIN_COS_LED, on ? Bit_SET : Bit_RESET);
 }
 
+
+/**
+ * Function delay_us() from stm32duino project
+ *
+ * @brief Delay the given number of microseconds.
+ *
+ * @param us Number of microseconds to delay.
+ */
+static inline void delay_us(uint32_t us) {
+    us *= 12;
+
+    /* fudge for function call overhead  */
+    us--;
+    asm volatile("   mov r0, %[us]          \n\t"
+                 "1: subs r0, #1            \n\t"
+                 "   bhi 1b                 \n\t"
+                 :
+                 : [us] "r" (us)
+                 : "r0");
+}
+
+void CIO::delay_rx() {
+#if defined(BIDIR_DATA_PIN)
+  delay_us(290);
+#else
+  delay_us(340);
+#endif
+}
+
+
+// TODO: Investigate why. In fact there is just a single place where this is being use
+// during normal operation
+// it seems that optimizing this code breaks some timings
+#pragma GCC optimize ("O0")
+static inline void delay_ns() {
+
+    asm volatile("mov r8, r8          \n\t"
+                 "mov r8, r8          \n\t"
+                 "mov r8, r8          \n\t"
+                 );
+}
+
+
+void CIO::dlybit(void)
+{
+  delay_ns();
+}
 #endif

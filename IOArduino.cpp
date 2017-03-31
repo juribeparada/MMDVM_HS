@@ -124,11 +124,6 @@ void CIO::delay_rx() {
 #endif
 }
 
-void CIO::dlybit(void)
-{
-  delayMicroseconds(1);
-}
-
 void CIO::Init()
 {
 #if defined (__STM32F1__)
@@ -287,6 +282,17 @@ void CIO::PTT_pin(bool on)
 void CIO::COS_pin(bool on) 
 {
   digitalWrite(PIN_COS_LED, on ? HIGH : LOW);
+}
+
+// TODO: Investigate why. In fact there is just a single place where this is being use
+// during normal operation
+#pragma GCC optimize ("O0")
+void CIO::dlybit(void)
+{
+    asm volatile("nop          \n\t"
+                 "nop          \n\t"
+                 "nop          \n\t"
+                 );
 }
 
 #endif
