@@ -30,6 +30,8 @@ A2L=arm-none-eabi-addr2line
 # Directory Structure
 BINDIR=bin
 
+OPTFLAG=-Os
+
 # Configure vars depending on OS
 ifeq ($(OS),Windows_NT)
 	ASOURCES=$(shell dir /S /B *.s)
@@ -116,9 +118,9 @@ LDFLAGS=$(MCFLAGS) --specs=nosys.specs $(INCLUDES_LIBS) $(LINK_LIBS)
 
 all: hs
 
-hs: CFLAGS+=$(DEFS_HS) -Os -ffunction-sections -fdata-sections -nostdlib
-hs: CXXFLAGS+=$(DEFS_HS) -Os -fno-exceptions -ffunction-sections -fdata-sections -nostdlib -fno-rtti
-hs: LDFLAGS+=-T $(LDSCRIPT_N) -Os --specs=nano.specs
+hs: CFLAGS+=$(DEFS_HS) $(OPTFLAG) -ffunction-sections -fdata-sections -nostdlib
+hs: CXXFLAGS+=$(DEFS_HS) $(OPTFLAG) -fno-exceptions -ffunction-sections -fdata-sections -nostdlib -fno-rtti
+hs: LDFLAGS+=-T $(LDSCRIPT_N) $(OPTFLAG) --specs=nano.specs
 hs: release
 
 bl: CFLAGS+=$(DEFS_HS_BL) -Os -ffunction-sections -fdata-sections -nostdlib

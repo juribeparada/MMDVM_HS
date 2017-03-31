@@ -374,6 +374,7 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
   // Delay for coarse IF filter calibration
   delay_rx();
   delay_rx();
+  delay_rx();
 
   // Frequency RX (0)
   setRX();
@@ -429,9 +430,6 @@ void CIO::setTX()
 //======================================================================================================================
 void CIO::setRX()
 { 
-  // Delay for TX latency
-  delay_rx();
-  
   // Send register 0 for RX operation
   AD7021_control_word = ADF7021_RX_REG0;
   Send_AD7021_control();
