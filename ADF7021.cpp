@@ -34,8 +34,6 @@ volatile uint32_t  AD7021_control_word;
 uint32_t           ADF7021_RX_REG0;
 uint32_t           ADF7021_TX_REG0;
 
-volatile bool sle_request = false;
-
 static  void Send_AD7021_control_shift()
 {
   int AD7021_counter;
@@ -51,34 +49,24 @@ static  void Send_AD7021_control_shift()
     io.dlybit();
     io.SCLK_pin(LOW);
   }
+  // to keep SDATA signal at defined level when idle (not required)
+  io.SDATA_pin(LOW);
 }
 
-static  void Send_AD7021_control_nosle()
+static  void Send_AD7021_control_slePulse()
 {
-  Send_AD7021_control_shift();
-  sle_request = true;
-}
-
-void Send_AD7021_control()
-{
-  int AD7021_counter;
-
-  for(AD7021_counter = 31; AD7021_counter >= 0; AD7021_counter--) {
-    if(bitRead(AD7021_control_word, AD7021_counter) == HIGH)
-      io.SDATA_pin(HIGH);
-    else
-      io.SDATA_pin(LOW);
-
-    io.dlybit();
-    io.SCLK_pin(HIGH);
-    io.dlybit();
-    io.SCLK_pin(LOW);
-  }
-
   io.SLE_pin(HIGH);
   io.dlybit();
   io.SLE_pin(LOW);
-  io.SDATA_pin(LOW);
+}
+
+void Send_AD7021_control(bool doSle)
+{
+  Send_AD7021_control_shift();
+
+  if (doSle) {
+    Send_AD7021_control_slePulse();
+  }
 }
 
 #if defined(SEND_RSSI_DATA)
@@ -415,31 +403,36 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
 //======================================================================================================================
 void CIO::setTX()
 { 
-  // Send register 0 for TX operation
+  // PTT pin on (doing it earlier helps to measure timing impact)
+  PTT_pin(HIGH); 
+
+  // Send register 0 for TX operation, but do not activate yet. 
+  // This is done in the interrupt at the correct time
   AD7021_control_word = ADF7021_TX_REG0;         
-  Send_AD7021_control_nosle();
+  Send_AD7021_control(false);
+
   
 #if defined(BIDIR_DATA_PIN)
   Data_dir_out(true);  // Data pin output mode
 #endif
-  
-  // PTT pin on
-  PTT_pin(HIGH); 
+
 }
 
 //======================================================================================================================
-void CIO::setRX()
+void CIO::setRX(bool doSle)
 { 
-  // Send register 0 for RX operation
+  // PTT pin off (doing it earlier helps to measure timing impact)
+  PTT_pin(LOW);
+
+  // Send register 0 for RX operation, but do not activate yet. 
+  // This is done in the interrupt at the correct time
   AD7021_control_word = ADF7021_RX_REG0;
-  Send_AD7021_control();
+  Send_AD7021_control(doSle);
   
 #if defined(BIDIR_DATA_PIN)
   Data_dir_out(false);  // Data pin input mode
 #endif
   
-  // PTT pin off
-  PTT_pin(LOW);
 }
 
 void CIO::setLoDevYSF(bool on)

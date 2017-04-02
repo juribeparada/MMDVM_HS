@@ -579,16 +579,15 @@ void CIO::delay_rx() {
 #endif
 }
 
+void CIO::delay_us(uint32_t us) {
+  ::delay_us(us);
+}
 
-// TODO: Investigate why. In fact there is just a single place where this is being use
-// during normal operation
-// it seems that optimizing this code breaks some timings
-#pragma GCC optimize ("O0")
 static inline void delay_ns() {
 
-    asm volatile("mov r8, r8          \n\t"
-                 "mov r8, r8          \n\t"
-                 "mov r8, r8          \n\t"
+    asm volatile("nop          \n\t"
+                 "nop          \n\t"
+                 "nop          \n\t"
                  );
 }
 
