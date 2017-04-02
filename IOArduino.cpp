@@ -280,9 +280,9 @@ void CIO::COS_pin(bool on)
   digitalWrite(PIN_COS_LED, on ? HIGH : LOW);
 }
 
-// TODO: Investigate why. In fact there is just a single place where this is being use
-// during normal operation
-#pragma GCC optimize ("O0")
+void CIO::delay_us(uint32_t us) {
+  ::delayMicroseconds(us);
+}
 void CIO::dlybit(void)
 {
     asm volatile("nop          \n\t"

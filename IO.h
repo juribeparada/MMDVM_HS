@@ -90,7 +90,7 @@ public:
 
   // RF interface API
   void      setTX(void);
-  void      setRX(void);
+  void      setRX(bool doSle = true);
   void      ifConf(MMDVM_STATE modemState, bool reset);
   void      start(void);
   void      startInt(void);
@@ -102,6 +102,7 @@ public:
   // Misc functions
   void      dlybit(void);
   void      delay_rx(void);
+  void      delay_us(uint32_t us);
      
 private:
   
