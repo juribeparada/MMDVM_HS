@@ -500,8 +500,6 @@ bool CIO::CLK_pin()
 void CIO::RXD_pin_write(bool on)
 {
   GPIO_WriteBit(PORT_RXD, PIN_RXD, on ? Bit_SET : Bit_RESET);
-  GPIO_WriteBit(PORT_YSF_LED, PIN_YSF_LED, on ? Bit_SET : Bit_RESET);
-  GPIO_WriteBit(PORT_YSF_LED, PIN_YSF_LED, on ? Bit_SET : Bit_RESET);
 }
 #endif
 
