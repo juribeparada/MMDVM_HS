@@ -49,8 +49,8 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 // Deviation of modulator (REG 02)
 #define ADF7021_DEV_DSTAR        43U
 #define ADF7021_DEV_DMR          23U
-#define ADF7021_DEV_YSF_L        16U
-#define ADF7021_DEV_YSF_H        32U
+#define ADF7021_DEV_YSF_L        18U
+#define ADF7021_DEV_YSF_H        36U
 #define ADF7021_DEV_P25          22U
 
 // TX/RX CLOCK register (REG 03)
@@ -119,8 +119,8 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 // Deviation of modulator (REG 02)
 #define ADF7021_DEV_DSTAR        32U
 #define ADF7021_DEV_DMR          17U
-#define ADF7021_DEV_YSF_L        12U
-#define ADF7021_DEV_YSF_H        24U
+#define ADF7021_DEV_YSF_L        14U
+#define ADF7021_DEV_YSF_H        27U
 #define ADF7021_DEV_P25          16U
 
 // TX/RX CLOCK register (REG 03)
@@ -189,8 +189,8 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 // Deviation of modulator (REG 02)
 #define ADF7021_DEV_DSTAR        26U
 #define ADF7021_DEV_DMR          14U
-#define ADF7021_DEV_YSF_L        10U
-#define ADF7021_DEV_YSF_H        19U
+#define ADF7021_DEV_YSF_L        11U
+#define ADF7021_DEV_YSF_H        21U
 #define ADF7021_DEV_P25          14U
 
 // TX/RX CLOCK register (REG 03)
