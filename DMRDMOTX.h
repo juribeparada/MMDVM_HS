@@ -36,6 +36,8 @@ public:
   void setTXDelay(uint8_t delay);
 
   uint16_t getSpace() const;
+  
+  void setColorCode(uint8_t colorCode);
 
 private:
   CSerialRB            m_fifo;
@@ -45,7 +47,10 @@ private:
   uint16_t             m_txDelay;
   uint32_t             m_count;
   bool                 m_delay;
+  uint8_t              m_idle[DMR_FRAME_LENGTH_BYTES];
+  uint8_t              m_cachPtr;
 
+  void createCACH(uint8_t* buffer, uint8_t slotIndex);
   void writeByte(uint8_t c);
 };
 

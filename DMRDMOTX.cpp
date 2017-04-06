@@ -22,6 +22,18 @@
 
 #include "Config.h"
 #include "Globals.h"
+#include "DMRSlotType.h"
+
+// The PR FILL and Data Sync pattern.
+const uint8_t IDLE_DATA[] =
+        {0x53U, 0xC2U, 0x5EU, 0xABU, 0xA8U, 0x67U, 0x1DU, 0xC7U, 0x38U, 0x3BU, 0xD9U,
+         0x36U, 0x00U, 0x0DU, 0xFFU, 0x57U, 0xD7U, 0x5DU, 0xF5U, 0xD0U, 0x03U, 0xF6U,
+         0xE4U, 0x65U, 0x17U, 0x1BU, 0x48U, 0xCAU, 0x6DU, 0x4FU, 0xC6U, 0x10U, 0xB4U};
+         
+const uint8_t EMPTY_SHORT_LC[] =
+      {0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U};
+
+const uint8_t DMR_SYNC = 0x5FU;
 
 CDMRDMOTX::CDMRDMOTX() :
 m_fifo(),
@@ -41,11 +53,18 @@ void CDMRDMOTX::process()
       m_poLen = m_txDelay;
     } else {
       m_delay = false;
-      for (unsigned int i = 0U; i < 72U; i++)
-        m_poBuffer[m_poLen++] = 0x00U;
+      
+      createCACH(m_poBuffer + 0U, 0U);
 
       for (unsigned int i = 0U; i < DMR_FRAME_LENGTH_BYTES; i++)
-        m_poBuffer[i] = m_fifo.get();
+        m_poBuffer[i + 3U] = m_fifo.get();
+
+      createCACH(m_poBuffer + 36U, 1U);
+
+      for (unsigned int i = 0U; i < DMR_FRAME_LENGTH_BYTES; i++)
+        m_poBuffer[i + 39U] = m_idle[i];
+        
+      m_poLen = 72U;
     }
 
     m_poPtr = 0U;
@@ -57,7 +76,7 @@ void CDMRDMOTX::process()
     while (space > 8U) {
       if (m_delay) {
         m_poPtr++;
-        writeByte(0U);
+        writeByte(DMR_SYNC);
       } else
         writeByte(m_poBuffer[m_poPtr++]);   
 
@@ -113,3 +132,45 @@ void CDMRDMOTX::setTXDelay(uint8_t delay)
 {
   m_txDelay = 600U + uint16_t(delay) * 12U;        // 500ms + tx delay
 }
+
+
+void CDMRDMOTX::createCACH(uint8_t* buffer, uint8_t slotIndex)
+{
+  if (m_cachPtr >= 12U)
+    m_cachPtr = 0U;
+
+  ::memcpy(buffer, EMPTY_SHORT_LC + m_cachPtr, 3U);
+
+  bool at  = true;
+  bool tc  = slotIndex == 1U;
+  bool ls0 = true;            // For 1 and 2
+  bool ls1 = true;
+
+  if (m_cachPtr == 0U)          // For 0
+    ls1 = false;
+  else if (m_cachPtr == 9U)     // For 3
+    ls0 = false;
+
+  bool h0 = at ^ tc ^ ls1;
+  bool h1 = tc ^ ls1 ^ ls0;
+  bool h2 = at ^ tc       ^ ls0;
+
+  buffer[0U] |= at ? 0x80U : 0x00U;
+  buffer[0U] |= tc ? 0x08U : 0x00U;
+  buffer[1U] |= ls1 ? 0x80U : 0x00U;
+  buffer[1U] |= ls0 ? 0x08U : 0x00U;
+  buffer[1U] |= h0 ? 0x02U : 0x00U;
+  buffer[2U] |= h1 ? 0x20U : 0x00U;
+  buffer[2U] |= h2 ? 0x02U : 0x00U;
+
+  m_cachPtr += 3U;
+}
+
+void CDMRDMOTX::setColorCode(uint8_t colorCode)
+{
+  ::memcpy(m_idle, IDLE_DATA, DMR_FRAME_LENGTH_BYTES);
+
+  CDMRSlotType slotType;
+  slotType.encode(colorCode, DT_IDLE, m_idle);
+}
+
