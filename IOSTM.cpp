@@ -569,12 +569,12 @@ static inline void delay_us(uint32_t us) {
                  : "r0");
 }
 
-void CIO::delay_rx() {
-#if defined(BIDIR_DATA_PIN)
-  delay_us(290);
-#else
-  delay_us(340);
-#endif
+void CIO::delay_ifcal_coarse() {
+  delay_us(300);
+}
+
+void CIO::delay_reset() {
+  delay_us(300);
 }
 
 void CIO::delay_us(uint32_t us) {

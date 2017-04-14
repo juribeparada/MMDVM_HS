@@ -116,12 +116,12 @@ extern "C" {
   }
 }
 
-void CIO::delay_rx() {
-#if defined (__STM32F1__)
-  delayMicroseconds(290);
-#else
-  delayMicroseconds(150);
-#endif
+void CIO::delay_ifcal_coarse() {
+  delayMicroseconds(300);
+}
+
+void CIO::delay_reset() {
+  delayMicroseconds(300);
 }
 
 void CIO::Init()

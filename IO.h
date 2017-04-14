@@ -101,7 +101,8 @@ public:
 
   // Misc functions
   void      dlybit(void);
-  void      delay_rx(void);
+  void      delay_ifcal_coarse(void);
+  void      delay_reset(void);
   void      delay_us(uint32_t us);
      
 private:

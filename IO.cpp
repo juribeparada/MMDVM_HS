@@ -21,19 +21,9 @@
 #include "Globals.h"
 #include "IO.h"
 
-#if defined(ADF7021)
-#include "ADF7021.h"
-#endif
-
 uint32_t    m_frequency_rx;
 uint32_t    m_frequency_tx;
 uint8_t     m_power;
-
-// TODO: move to IO class as members
-volatile bool totx_request = false;
-volatile bool torx_request = false;
-volatile bool even = true;
-static uint32_t last_clk = 2;
 
 CIO::CIO():
 m_started(false),
@@ -102,11 +92,8 @@ void CIO::process()
   }
 
   // Switch off the transmitter if needed
-  if (m_txBuffer.getData() == 0U && m_tx) {
+  if (m_txBuffer.getData() == 0U && m_tx)
     setRX(false);
-    torx_request = true;
-    while(torx_request) { asm volatile ("nop"); }
-  }
   
   if(m_modemState_prev == STATE_DSTAR)
     scantime = SCAN_TIME;
@@ -149,118 +136,6 @@ void CIO::process()
     }
 
   }
-  
-}
-
-void CIO::interrupt()
-{
-  uint8_t bit = 0;
-  
-  if (!m_started)
-    return;
-
-  uint8_t clk = CLK_pin();
-
-  // this is to prevent activation by spurious interrupts
-  // which seem to happen if you send out an control word
-  // needs investigation
-  // this workaround will fail if only rising or falling edge
-  // is used to trigger the interrupt !!!!
-  // TODO: figure out why sending the control word seems to issue interrupts
-  // possibly this is a design problem of the RF7021 board or too long wires
-  // on the breadboard build 
-  // but normally this will not hurt too much
-  if (clk == last_clk) {
-    return;
-  } else {
-    last_clk = clk;
-  }
-
-
-  // we set the TX bit at TXD low, sampling of ADF7021 happens at rising clock
-  if (m_tx && clk == 0) {
-	
-    m_txBuffer.get(bit);
-    even = !even; 
-
-    // use this for tracking issues
-    // P25_pin(even);
-
-#if defined(BIDIR_DATA_PIN)
-    if(bit)
-      RXD_pin_write(HIGH);
-    else
-      RXD_pin_write(LOW);
-#else
-    if(bit)
-      TXD_pin(HIGH);
-    else
-      TXD_pin(LOW);
-#endif
-    // wait a brief period before raising SLE
-    if (totx_request == true) { 
-      asm volatile("nop          \n\t"
-                   "nop          \n\t"
-                   "nop          \n\t"
-                   );
-
-      // SLE Pulse, should be moved out of here into class method 
-      // according to datasheet in 4FSK we have to deliver this before 1/4 tbit == 26uS 
-      SLE_pin(HIGH);
-      asm volatile("nop          \n\t"
-                   "nop          \n\t"
-                   "nop          \n\t"
-                   );
-      SLE_pin(LOW);
-      SDATA_pin(LOW);
-
-      // now do housekeeping
-      totx_request = false;
-      // first tranmittted bit is always the odd bit
-      even = false;
-    }  
-  }  
-  // we sample the RX bit at rising TXD clock edge, so TXD must be 1 and we are not in tx mode
-  if (!m_tx && clk == 1) {
-    if(RXD_pin())
-      bit = 1;
-    else
-      bit = 0;
-
-    m_rxBuffer.put(bit);
-  }
-  if (torx_request == true && even == false && m_tx && clk == 0) { 
-      // that is absolutely crucial in 4FSK, see datasheet:
-      // enable sle after 1/4 tBit == 26uS when sending MSB (even == false) and clock is low 
-      delay_us(26);
-
-      // SLE Pulse, should be moved out of here into class method 
-      SLE_pin(HIGH);
-      asm volatile("nop          \n\t"
-                   "nop          \n\t"
-                   "nop          \n\t"
-                   );
-      SLE_pin(LOW);
-      SDATA_pin(LOW);
-
-      // now do housekeeping
-      m_tx = false;
-      torx_request = false;
-      //last tranmittted bit is always the even bit
-      // since the current bit is a transitional "don't care" bit, never transmitted
-      even = true;
-  }  
-
-
-  m_watchdog++;
-  m_modeTimerCnt++;
-
-  if(m_scanPauseCnt >= SCAN_PAUSE)
-    m_scanPauseCnt = 0;
-  
-  if(m_scanPauseCnt != 0)
-    m_scanPauseCnt++;
-
 }
 
 void CIO::start()
@@ -302,7 +177,6 @@ void CIO::start()
   startInt();
     
   m_started = true;
-  
 }
 
 void CIO::write(uint8_t* data, uint16_t length)
@@ -316,13 +190,8 @@ void CIO::write(uint8_t* data, uint16_t length)
   // Switch the transmitter on if needed
   if (!m_tx) {
     setTX();
-    totx_request = true;
-    // not sure if needed, would be better if handled in interrupt (like torx_request)
-    // or move into setTX()
-    while(CLK_pin());
     m_tx = true;
   }
-
 }
 
 uint16_t CIO::getSpace() const
