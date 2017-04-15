@@ -57,12 +57,12 @@ void CDMRDMOTX::process()
       createCACH(m_poBuffer + 0U, 0U);
 
       for (unsigned int i = 0U; i < DMR_FRAME_LENGTH_BYTES; i++)
-        m_poBuffer[i + 3U] = m_fifo.get();
+        m_poBuffer[i + 3U] = m_idle[i];
 
       createCACH(m_poBuffer + 36U, 1U);
 
       for (unsigned int i = 0U; i < DMR_FRAME_LENGTH_BYTES; i++)
-        m_poBuffer[i + 39U] = m_idle[i];
+        m_poBuffer[i + 39U] = m_fifo.get();
         
       m_poLen = 72U;
     }
