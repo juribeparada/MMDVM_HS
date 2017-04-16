@@ -181,6 +181,9 @@ serial:
 serial-bl:
 	$(STM32FLASH) -v -w STM32F10X_Lib/utils/bootloader/generic_boot20_pc13.bin -g 0x0 $(devser)
 	$(STM32FLASH) -v -w bin/$(BINBIN) -g 0x0 -S 0x08002000 $(devser)
+	
+zumspot-pi:
+	$(STM32FLASH) -v -w bin/$(BINBIN) -g 0x0 -R -i 20,-21,21:-20,21 /dev/ttyAMA0
 
 dfu:
 ifdef devser
