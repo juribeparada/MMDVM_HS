@@ -183,7 +183,13 @@ serial-bl:
 	$(STM32FLASH) -v -w bin/$(BINBIN) -g 0x0 -S 0x08002000 $(devser)
 	
 zumspot-pi:
-	$(STM32FLASH) -v -w bin/$(BINBIN) -g 0x0 -R -i 20,-21,21:-20,21 /dev/ttyAMA0
+ifneq ($(wildcard /usr/local/bin/stm32flash),)
+	/usr/local/bin/stm32flash -v -w bin/$(BINBIN) -g 0x0 -R -i 20,-21,21:-20,21 /dev/ttyAMA0
+endif
+
+ifneq ($(wildcard /usr/bin/stm32flash),)
+	/usr/bin/stm32flash -v -w bin/$(BINBIN) -g 0x0 -R -i 20,-21,21:-20,21 /dev/ttyAMA0
+endif
 
 dfu:
 ifdef devser
