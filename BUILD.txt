@@ -1,0 +1,77 @@
+Building instructions:
+ 
+1) Raspberry Pi with ZUMSpot Pi:
+
+* Download latest Raspbian image and install to a micro SD
+- See: https://www.raspberrypi.org/documentation/installation/installing-images/
+- Configure your SD before booting. Useful article:
+  https://styxit.com/2017/03/14/headless-raspberry-setup.html
+- Boot your Raspberry Pi
+- Run raspi-config and configure according your preferences:
+sudo raspi-config
+(at least expand filesystem and change default password. It's a good idea to enable "Wait
+for Network at Boot" and disable Desktop GUI if you don't plan to use it)
+
+* Enable serial port /dev/ttyAMA0 (Raspberry Pi 3 or Pi Zero W only):
+- Edit /boot/cmdline.txt
+sudo nano /boot/cmdline.txt
+(remove the text: console=serial0,115200)
+
+- Disable services:
+sudo systemctl disable serial-getty@ttyAMA0.service
+sudo systemctl disable bluetooth.service
+
+- Edit /boot/config.txt
+sudo nano /boot/config.txt
+(add the following lines):
+enable_uart=1
+dtoverlay=pi3-disable-bt
+
+- Reboot the RPi:
+sudo reboot
+
+* Build de firmware and upload to ZUMSpot:
+cd ~
+- Install the necessary software tools:
+sudo apt-get update
+sudo apt-get install gcc-arm-none-eabi gdb-arm-none-eabi
+git clone https://git.code.sf.net/p/stm32flash/code stm32flash
+cd stm32flash
+make
+sudo make install
+cd ~
+
+- Download the sources:
+git clone https://github.com/juribeparada/MMDVM_HS
+cd MMDVM_HS/
+git clone https://github.com/juribeparada/STM32F10X_Lib
+
+- Edit Config.h
+nano Config.h
+(and enable):
+#define PI_HAT_7021_REV_03
+#define ENABLE_ADF7021
+#define ADF7021_N_VER (only if your board uses ADF7021N)
+#define BIDIR_DATA_PIN
+#define ADF7021_14_7456
+#define STM32_USART1_HOST
+#define ENABLE_SCAN_MODE
+
+- Build the firmware:
+make
+
+- Upload the firmware to ZUMSpot Pi board:
+sudo make zumspot-pi
+
+* Install MMDVMHost:
+cd ~
+git clone https://github.com/g4klx/MMDVMHost/
+cd MMDVMHost/
+make
+
+- Edit MMDVM.ini according your preferences
+nano MMDVM.ini
+(use Port=/dev/ttyAMA0 in [Modem])
+
+- Execute MMDVMHost:
+./MMDVMHost MMDVM.ini
