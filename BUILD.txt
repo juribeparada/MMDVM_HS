@@ -30,6 +30,17 @@ dtoverlay=pi3-disable-bt
 - Reboot the RPi:
 sudo reboot
 
+* Enable serial port /dev/ttyAMA0 (Raspberry Pi 2 only):
+- Edit /boot/cmdline.txt
+sudo nano /boot/cmdline.txt
+(remove the text: console=serial0,115200)
+
+- Disable services:
+sudo systemctl disable serial-getty@ttyAMA0.service
+
+- Reboot the RPi:
+sudo reboot
+
 * Build de firmware and upload to ZUMSpot:
 cd ~
 - Install the necessary software tools:
