@@ -53,17 +53,17 @@ else
 			DFU_RST=./STM32F10X_Lib/utils/linux64/upload-reset
 			DFU_UTIL=./STM32F10X_Lib/utils/linux64/dfu-util
 			ST_FLASH=./STM32F10X_Lib/utils/linux64/st-flash
-			STM32FLASH=./STM32F10X_Lib/utils/linux64/stm32flash	
+			STM32FLASH=./STM32F10X_Lib/utils/linux64/stm32flash
     	else ifeq ($(shell uname -m),armv7l)
 			DFU_RST=./STM32F10X_Lib/utils/rpi32/upload-reset
 			DFU_UTIL=./STM32F10X_Lib/utils/rpi32/dfu-util
 			ST_FLASH=./STM32F10X_Lib/utils/rpi32/st-flash
-			STM32FLASH=./STM32F10X_Lib/utils/rpi32/stm32flash	
+			STM32FLASH=./STM32F10X_Lib/utils/rpi32/stm32flash
 		else
 			DFU_RST=./STM32F10X_Lib/utils/linux/upload-reset
 			DFU_UTIL=./STM32F10X_Lib/utils/linux/dfu-util
 			ST_FLASH=./STM32F10X_Lib/utils/linux/st-flash
-			STM32FLASH=./STM32F10X_Lib/utils/linux/stm32flash		
+			STM32FLASH=./STM32F10X_Lib/utils/linux/stm32flash
     	endif
     endif
 
@@ -71,7 +71,7 @@ else
 		DFU_RST=./STM32F10X_Lib/utils/macosx/upload-reset
 		DFU_UTIL=./STM32F10X_Lib/utils/macosx/dfu-util
 		ST_FLASH=./STM32F10X_Lib/utils/macosx/st-flash
-		STM32FLASH=./STM32F10X_Lib/utils/macosx/stm32flash	
+		STM32FLASH=./STM32F10X_Lib/utils/macosx/stm32flash
     endif
 endif
 
@@ -181,6 +181,15 @@ serial:
 serial-bl:
 	$(STM32FLASH) -v -w STM32F10X_Lib/utils/bootloader/generic_boot20_pc13.bin -g 0x0 $(devser)
 	$(STM32FLASH) -v -w bin/$(BINBIN) -g 0x0 -S 0x08002000 $(devser)
+	
+zumspot-pi:
+ifneq ($(wildcard /usr/local/bin/stm32flash),)
+	/usr/local/bin/stm32flash -v -w bin/$(BINBIN) -g 0x0 -R -i 20,-21,21:-20,21 /dev/ttyAMA0
+endif
+
+ifneq ($(wildcard /usr/bin/stm32flash),)
+	/usr/bin/stm32flash -v -w bin/$(BINBIN) -g 0x0 -R -i 20,-21,21:-20,21 /dev/ttyAMA0
+endif
 
 dfu:
 ifdef devser

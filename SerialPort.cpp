@@ -236,7 +236,6 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
   dmrDMOTX.setTXDelay(txDelay);
   
   dmrDMORX.setColorCode(colorCode);
-  dmrDMOTX.setColorCode(colorCode);
 
   io.setLoDevYSF(ysfLoDev);
   

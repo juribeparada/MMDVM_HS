@@ -41,8 +41,6 @@
 #define ADF7021_14_7456
 // For 12.2880 MHz:
 // #define ADF7021_12_2880
-// Original 19.68 MHz, not working, only for experimentation:
-// #define ADF7021_19_6800
 
 // AFC is enabled by default in D-Star
 
