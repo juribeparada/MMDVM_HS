@@ -251,6 +251,10 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
   ADF7021_TX_REG0 |= (uint32_t) N_divider << 19;   // frequency;
   ADF7021_TX_REG0 |= (uint32_t) F_divider << 4;    // frequency;
 
+#if defined(TEST_TX)
+  modemState = STATE_DSTAR;
+#endif
+
   switch (modemState) {
     case STATE_DSTAR:
       // Dev: 1200 Hz, symb rate = 4800
@@ -377,8 +381,12 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
   AD7021_control_word = ADF7021_REG2;
   Send_AD7021_control();
  
-  // TEST MODE (disabled) (15)
-  AD7021_control_word = 0x000E000F;
+  // TEST DAC (14)
+#if defined(TEST_DAC)
+  AD7021_control_word = 0x0000001E;
+#else
+  AD7021_control_word = 0x0000000E;
+#endif
   Send_AD7021_control();
 
   // AGC (auto, defaults) (9)
@@ -400,7 +408,18 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
   // 3FSK/4FSK DEMOD (13)
   AD7021_control_word = ADF7021_REG13;
   Send_AD7021_control();
-
+  
+#if defined(TEST_TX)
+  PTT_pin(HIGH); 
+  AD7021_control_word = ADF7021_TX_REG0;         
+  Send_AD7021_control();
+  // TEST MODE (TX carrier only) (15)
+  AD7021_control_word = 0x000E010F;
+#else
+  // TEST MODE (disabled) (15)
+  AD7021_control_word = 0x000E000F;
+#endif
+  Send_AD7021_control();
 }
 
 void CIO::interrupt()
