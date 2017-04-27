@@ -30,6 +30,17 @@ dtoverlay=pi3-disable-bt
 - Reboot the RPi:
 sudo reboot
 
+* Enable serial port /dev/ttyAMA0 (Raspberry Pi 2 only):
+- Edit /boot/cmdline.txt
+sudo nano /boot/cmdline.txt
+(remove the text: console=serial0,115200)
+
+- Disable services:
+sudo systemctl disable serial-getty@ttyAMA0.service
+
+- Reboot the RPi:
+sudo reboot
+
 * Build de firmware and upload to ZUMSpot:
 cd ~
 - Install the necessary software tools:
@@ -75,3 +86,64 @@ nano MMDVM.ini
 
 - Execute MMDVMHost:
 ./MMDVMHost MMDVM.ini
+
+2) ZUMSpot USB:
+
+* Windows:
+coming soon...
+
+* Linux:
+coming soon...
+
+3) Makefile options:
+
+make clean: delete all objects files *.o, for starting a new firmware building.
+
+make: it builds a standard firmware (without USB bootloader support).
+
+make bl: it builds a firmware with USB bootloader support.
+
+make zumspot-pi: upload the firmware to a ZUMSpot Pi version (using internal RPi serial port) 
+
+make dfu [devser=/dev/ttyXXX]: upload firmware using USB bootloader. "devser" is optional,
+and it corresponds to the USB serial port device name. This option permits to perform a reset
+to enter to booloader mode (DFU). If you don't use "devser", you have to press the reset button
+of the ZUMSpot just before using this command.
+
+make serial devser=/dev/ttyXXX: upload standard firmware using serial port bootloader method.
+
+make serial-bl devser=/dev/ttyXXX: upload firmware with USB bootloader support using serial
+port bootloader method.
+
+make stlink: upload standard firmware using ST-Link interface.
+
+make stlink-bl: upload firmware with USB bootloader support using ST-Link interface.
+
+make ocd: upload standard firmware using ST-Link interface. This method uses a local
+openocd installation.
+
+make ocd-bl: upload firmware with USB bootloader support using ST-Link interface. This
+method uses a local openocd installation.
+
+* Common Makefile commands:
+- Serial programming (first programming, transfer the USB bootloader):
+make clean
+make bl
+sudo make serial-bl devser=/dev/ttyUSB0
+
+- USB programming (you have already transfered the USB bootloader):
+make clean
+make bl
+sudo make dfu (reset ZUMSpot before) or
+sudo make dfu devser=/dev/ttyACM0 (/dev/ttyACM0 is the device name of ZUMSpot USB under
+Raspbian)
+
+- ZUMSpot Pi (no USB support needed):
+make clean
+make
+sudo make zumspot-pi
+
+4) Config.h options:
+
+coming soon...
+

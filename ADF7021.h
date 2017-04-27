@@ -34,6 +34,14 @@ http://www.analog.com/en/products/rf-microwave/integrated-transceivers-transmitt
 www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 */
 
+/***** Test modes ****/
+// Enable SWD pin to access the demodulator output signal
+// See application note AN-852 and ADF7021 datasheet, page 60
+// #define TEST_DAC
+
+// Transmit the carrier frequency
+// #define TEST_TX
+
 /****** Support for 14.7456 MHz TCXO (modified RF7021SE boards) ******/
 #if defined(ADF7021_14_7456)
 
@@ -55,9 +63,15 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 
 // TX/RX CLOCK register (REG 03)
 #define ADF7021_REG3_DSTAR       0x2A4C4193
+#if defined(TEST_DAC)
+#define ADF7021_REG3_DMR         0x2A4C04D3
+#define ADF7021_REG3_YSF         0x2A4C04D3
+#define ADF7021_REG3_P25         0x2A4C04D3
+#else
 #define ADF7021_REG3_DMR         0x2A4C80D3
 #define ADF7021_REG3_YSF         0x2A4C80D3
 #define ADF7021_REG3_P25         0x2A4C80D3
+#endif
 
 // Discriminator bandwith, demodulator (REG 04)
 // Bug in ADI evaluation software, use datasheet formula (4FSK)
@@ -69,7 +83,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 
 // Post demodulator bandwith (REG 04)
 #define ADF7021_POST_BW_DSTAR    10U
-#define ADF7021_POST_BW_DMR      65U
+#define ADF7021_POST_BW_DMR      100U
 #define ADF7021_POST_BW_YSF      20U
 #define ADF7021_POST_BW_P25      6U
 
@@ -104,76 +118,6 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define AFC_OFFSET_P25           0
 #endif
 
-/****** Support for 19.6800 MHz TCXO (original RF7021SE boards) ******/
-#elif defined(ADF7021_19_6800)
-
-// R = 4
-#define ADF7021_PFD              4920000.0
-
-// PLL (REG 01)
-#define ADF7021_REG1_VHF1        0x021F5041
-#define ADF7021_REG1_VHF2        0x021F5041
-#define ADF7021_REG1_UHF1        0x00575041
-#define ADF7021_REG1_UHF2        0x00535041
-
-// Deviation of modulator (REG 02)
-#define ADF7021_DEV_DSTAR        32U
-#define ADF7021_DEV_DMR          17U
-#define ADF7021_DEV_YSF_L        14U
-#define ADF7021_DEV_YSF_H        27U
-#define ADF7021_DEV_P25          16U
-
-// TX/RX CLOCK register (REG 03)
-#define ADF7021_REG3_DSTAR       0x2B1449E3
-#define ADF7021_REG3_DMR         0x2B148123
-#define ADF7021_REG3_YSF         0x2B148123
-#define ADF7021_REG3_P25         0x2B148123
-
-// Discriminator bandwith, demodulator (REG 04)
-// Bug in ADI evaluation software, use datasheet formula (4FSK)
-#define ADF7021_DISC_BW_DSTAR    597U // K=85
-#define ADF7021_DISC_BW_DMR      393U // K=32
-#define ADF7021_DISC_BW_YSF_L    394U // K=32
-#define ADF7021_DISC_BW_YSF_H    344U // K=28
-#define ADF7021_DISC_BW_P25      394U // K=32
-
-// Post demodulator bandwith (REG 04)
-#define ADF7021_POST_BW_DSTAR    10U
-#define ADF7021_POST_BW_DMR      65U
-#define ADF7021_POST_BW_YSF      20U
-#define ADF7021_POST_BW_P25      6U
-
-// IF filter (REG 05)
-#define ADF7021_REG5             0x00003155
-
-// IF CAL (coarse cal, defaults) (REG 06)
-#define ADF7021_REG6             0x050972C6
-
-// AFC (REG 10)
-#define ADF7021_REG10_DSTAR      0x0C96355A
-
-#if defined(ADF7021_ENABLE_4FSK_AFC)
-#define ADF7021_REG10_DMR        0x01FE355A
-#define ADF7021_REG10_YSF        0x01FE355A
-#define ADF7021_REG10_P25        0x01FE355A
-#if defined(ADF7021_AFC_POS)
-#define AFC_OFFSET_DMR           -250
-#define AFC_OFFSET_YSF           -250
-#define AFC_OFFSET_P25           -250
-#else
-#define AFC_OFFSET_DMR           250
-#define AFC_OFFSET_YSF           250
-#define AFC_OFFSET_P25           250
-#endif
-#else
-#define ADF7021_REG10_DMR        0x049E354A
-#define ADF7021_REG10_YSF        0x049E354A
-#define ADF7021_REG10_P25        0x049E354A
-#define AFC_OFFSET_DMR           0
-#define AFC_OFFSET_YSF           0
-#define AFC_OFFSET_P25           0
-#endif
-
 /****** Support for 12.2880 MHz TCXO ******/
 #elif defined(ADF7021_12_2880)
 
@@ -195,9 +139,15 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 
 // TX/RX CLOCK register (REG 03)
 #define ADF7021_REG3_DSTAR       0x29EC4153
+#if defined(TEST_DAC)
+#define ADF7021_REG3_DMR         0x29EC0493
+#define ADF7021_REG3_YSF         0x29EC0493
+#define ADF7021_REG3_P25         0x29EC0493
+#else
 #define ADF7021_REG3_DMR         0x29ECA093
 #define ADF7021_REG3_YSF         0x29ECA093
 #define ADF7021_REG3_P25         0x29ECA093
+#endif
 
 // Discriminator bandwith, demodulator (REG 04)
 // Bug in ADI evaluation software, use datasheet formula (4FSK)
@@ -209,7 +159,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 
 // Post demodulator bandwith (REG 04)
 #define ADF7021_POST_BW_DSTAR    10U
-#define ADF7021_POST_BW_DMR      65U
+#define ADF7021_POST_BW_DMR      100U
 #define ADF7021_POST_BW_YSF      20U
 #define ADF7021_POST_BW_P25      6U
 

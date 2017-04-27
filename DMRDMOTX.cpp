@@ -23,6 +23,8 @@
 #include "Config.h"
 #include "Globals.h"
 
+const uint8_t DMR_SYNC = 0x5FU;
+
 CDMRDMOTX::CDMRDMOTX() :
 m_fifo(),
 m_poBuffer(),
@@ -43,7 +45,7 @@ void CDMRDMOTX::process()
       m_delay = false;
 
       for (unsigned int i = 0U; i < 72U; i++)
-        m_poBuffer[m_poLen++] = 0x00U;
+        m_poBuffer[m_poLen++] = DMR_SYNC;
 
       for (unsigned int i = 0U; i < DMR_FRAME_LENGTH_BYTES; i++)
         m_poBuffer[i] = m_fifo.get();
@@ -58,7 +60,7 @@ void CDMRDMOTX::process()
     while (space > 8U) {
       if (m_delay) {
         m_poPtr++;
-        writeByte(0U);
+        writeByte(DMR_SYNC);
       } else
         writeByte(m_poBuffer[m_poPtr++]);   
 
