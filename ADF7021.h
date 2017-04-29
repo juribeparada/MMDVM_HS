@@ -46,6 +46,9 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #if defined(ADF7021_14_7456)
 
 // R = 4
+// DEMOD_CLK = 2.4576 MHz (DSTAR)
+// DEMOD_CLK = 4.9152 MHz (DMR, YSF_L, P25)
+// DEMOD_CLK = 7.3728 MHz (YSF_H)
 #define ADF7021_PFD              3686400.0
 
 // PLL (REG 01)
@@ -65,11 +68,13 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_REG3_DSTAR       0x2A4C4193
 #if defined(TEST_DAC)
 #define ADF7021_REG3_DMR         0x2A4C04D3
-#define ADF7021_REG3_YSF         0x2A4C04D3
+#define ADF7021_REG3_YSF_L       0x2A4C04D3
+#define ADF7021_REG3_YSF_H       0x2A4C0493
 #define ADF7021_REG3_P25         0x2A4C04D3
 #else
 #define ADF7021_REG3_DMR         0x2A4C80D3
-#define ADF7021_REG3_YSF         0x2A4C80D3
+#define ADF7021_REG3_YSF_L       0x2A4C80D3
+#define ADF7021_REG3_YSF_H       0x2A4CC093
 #define ADF7021_REG3_P25         0x2A4C80D3
 #endif
 
@@ -77,13 +82,13 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 // Bug in ADI evaluation software, use datasheet formula (4FSK)
 #define ADF7021_DISC_BW_DSTAR    522U // K=85
 #define ADF7021_DISC_BW_DMR      393U // K=32
-#define ADF7021_DISC_BW_YSF_L    394U // K=32
-#define ADF7021_DISC_BW_YSF_H    344U // K=28
+#define ADF7021_DISC_BW_YSF_L    393U // K=32
+#define ADF7021_DISC_BW_YSF_H    516U // K=28
 #define ADF7021_DISC_BW_P25      394U // K=32
 
 // Post demodulator bandwith (REG 04)
 #define ADF7021_POST_BW_DSTAR    10U
-#define ADF7021_POST_BW_DMR      100U
+#define ADF7021_POST_BW_DMR      150U
 #define ADF7021_POST_BW_YSF      20U
 #define ADF7021_POST_BW_P25      6U
 
@@ -122,6 +127,8 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #elif defined(ADF7021_12_2880)
 
 // R = 2
+// DEMOD_CLK = 2.4576 MHz (DSTAR)
+// DEMOD_CLK = 6.1440 MHz (DMR, YSF_H, YSF_L, P25)
 #define ADF7021_PFD              6144000.0
 
 // PLL (REG 01)
@@ -141,11 +148,13 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_REG3_DSTAR       0x29EC4153
 #if defined(TEST_DAC)
 #define ADF7021_REG3_DMR         0x29EC0493
-#define ADF7021_REG3_YSF         0x29EC0493
+#define ADF7021_REG3_YSF_L       0x29EC0493
+#define ADF7021_REG3_YSF_H       0x29EC0493
 #define ADF7021_REG3_P25         0x29EC0493
 #else
 #define ADF7021_REG3_DMR         0x29ECA093
-#define ADF7021_REG3_YSF         0x29ECA093
+#define ADF7021_REG3_YSF_L       0x29ECA093
+#define ADF7021_REG3_YSF_H       0x29ECA093
 #define ADF7021_REG3_P25         0x29ECA093
 #endif
 
@@ -153,13 +162,13 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 // Bug in ADI evaluation software, use datasheet formula (4FSK)
 #define ADF7021_DISC_BW_DSTAR    522U // K=85
 #define ADF7021_DISC_BW_DMR      491U // K=32
-#define ADF7021_DISC_BW_YSF_L    493U // K=32
+#define ADF7021_DISC_BW_YSF_L    491U // K=32
 #define ADF7021_DISC_BW_YSF_H    430U // K=28
 #define ADF7021_DISC_BW_P25      493U // K=32
 
 // Post demodulator bandwith (REG 04)
 #define ADF7021_POST_BW_DSTAR    10U
-#define ADF7021_POST_BW_DMR      100U
+#define ADF7021_POST_BW_DMR      150U
 #define ADF7021_POST_BW_YSF      20U
 #define ADF7021_POST_BW_P25      6U
 
@@ -200,15 +209,15 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #if defined(ADF7021_N_VER)
 
 #define ADF7021_SLICER_TH_DSTAR  0U
-#define ADF7021_SLICER_TH_DMR    48U
-#define ADF7021_SLICER_TH_YSF_L  32U
-#define ADF7021_SLICER_TH_YSF_H  63U
+#define ADF7021_SLICER_TH_DMR    51U
+#define ADF7021_SLICER_TH_YSF_L  35U
+#define ADF7021_SLICER_TH_YSF_H  69U
 #define ADF7021_SLICER_TH_P25    43U
 
 #else
 
 #define ADF7021_SLICER_TH_DSTAR  0U
-#define ADF7021_SLICER_TH_DMR    54U
+#define ADF7021_SLICER_TH_DMR    57U
 #define ADF7021_SLICER_TH_YSF_L  38U
 #define ADF7021_SLICER_TH_YSF_H  75U
 #define ADF7021_SLICER_TH_P25    52U
