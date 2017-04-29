@@ -148,8 +148,18 @@ void CSerialPort::getStatus()
     reply[6U] = 0U;
 
   if (m_dmrEnable) {
+#if defined(DUPLEX)
+    if (m_duplex) {
+      reply[7U] = dmrTX.getSpace1();
+      reply[8U] = dmrTX.getSpace2();
+    } else {
       reply[7U] = 10U;
       reply[8U] = dmrDMOTX.getSpace();
+    }
+#else
+    reply[7U] = 10U;
+    reply[8U] = dmrDMOTX.getSpace();
+#endif
   } else {
     reply[7U] = 0U;
     reply[8U] = 0U;
@@ -235,6 +245,13 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
   p25TX.setTXDelay(txDelay);
   dmrDMOTX.setTXDelay(txDelay);
   
+#if defined(DUPLEX)
+  dmrTX.setColorCode(colorCode);
+  dmrRX.setColorCode(colorCode);
+  dmrRX.setDelay(dmrDelay);
+  dmrIdleRX.setColorCode(colorCode);
+#endif
+
   dmrDMORX.setColorCode(colorCode);
 
   io.setLoDevYSF(ysfLoDev);
@@ -310,18 +327,30 @@ void CSerialPort::setMode(MMDVM_STATE modemState)
       break;
     case STATE_DSTAR:
       DEBUG1("Mode set to D-Star");
+#if defined(DUPLEX)
+      dmrIdleRX.reset();
+      dmrRX.reset();
+#endif
       dmrDMORX.reset();
       ysfRX.reset();
       p25RX.reset();
       break;
     case STATE_YSF:
       DEBUG1("Mode set to System Fusion");
+#if defined(DUPLEX)
+      dmrIdleRX.reset();
+      dmrRX.reset();
+#endif
       dmrDMORX.reset();
       dstarRX.reset();
       p25RX.reset();
       break;
     case STATE_P25:
       DEBUG1("Mode set to P25");
+#if defined(DUPLEX)
+      dmrIdleRX.reset();
+      dmrRX.reset();
+#endif
       dmrDMORX.reset();
       dstarRX.reset();
       ysfRX.reset();
@@ -458,12 +487,34 @@ void CSerialPort::process()
             break;
 
           case MMDVM_DMR_DATA1:
+          #if defined(DUPLEX)
+            if (m_dmrEnable) {
+              if (m_modemState == STATE_IDLE || m_modemState == STATE_DMR) {
+                if (m_duplex)
+                  err = dmrTX.writeData1(m_buffer + 3U, m_len - 3U);
+              }
+            }
+            if (err == 0U) {
+              if (m_modemState == STATE_IDLE)
+                setMode(STATE_DMR);
+            } else {
+              DEBUG2("Received invalid DMR data", err);
+              sendNAK(err);
+            }
+          #endif
             break;
 
           case MMDVM_DMR_DATA2:
             if (m_dmrEnable) {
               if (m_modemState == STATE_IDLE || m_modemState == STATE_DMR) {
+              #if defined(DUPLEX)
+                if (m_duplex)
+                  err = dmrTX.writeData2(m_buffer + 3U, m_len - 3U);
+                else
                   err = dmrDMOTX.writeData(m_buffer + 3U, m_len - 3U);
+              #else
+                  err = dmrDMOTX.writeData(m_buffer + 3U, m_len - 3U);
+              #endif
               }
             }
             if (err == 0U) {
@@ -476,12 +527,48 @@ void CSerialPort::process()
             break;
 
           case MMDVM_DMR_START:
+          #if defined(DUPLEX)
+            if (m_dmrEnable) {
+              err = 4U;
+              if (m_len == 4U) {
+                if (m_buffer[3U] == 0x01U && m_modemState == STATE_DMR) {
+                  if (!m_tx)
+                    dmrTX.setStart(true);
+                  err = 0U;
+                } else if (m_buffer[3U] == 0x00U && m_modemState == STATE_DMR) {
+                  if (m_tx)
+                    dmrTX.setStart(false);
+                  err = 0U;
+                }
+              }
+            }
+            if (err != 0U) {
+              DEBUG2("Received invalid DMR start", err);
+              sendNAK(err);
+            }
+          #endif
             break;
 
           case MMDVM_DMR_SHORTLC:
+          #if defined(DUPLEX)
+            if (m_dmrEnable)
+              err = dmrTX.writeShortLC(m_buffer + 3U, m_len - 3U);
+            if (err != 0U) {
+              DEBUG2("Received invalid DMR Short LC", err);
+              sendNAK(err);
+            }
+          #endif
             break;
 
           case MMDVM_DMR_ABORT:
+          #if defined(DUPLEX)
+            if (m_dmrEnable)
+              err = dmrTX.writeAbort(m_buffer + 3U, m_len - 3U);
+            if (err != 0U) {
+              DEBUG2("Received invalid DMR Abort", err);
+              sendNAK(err);
+            }
+          #endif
             break;
 
           case MMDVM_YSF_DATA:

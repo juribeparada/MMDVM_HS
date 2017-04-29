@@ -33,6 +33,9 @@
 // Support for ADF7021-N version 
 // #define ADF7021_N_VER
 
+// Enable duplex mode with dual ADF7021
+// #define DUPLEX
+
 // Bidirectional Data pin (Enable Standard TX/RX Data Interface of ADF7021):
 #define BIDIR_DATA_PIN
 
