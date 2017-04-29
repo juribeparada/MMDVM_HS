@@ -128,8 +128,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 
 // R = 2
 // DEMOD_CLK = 2.4576 MHz (DSTAR)
-// DEMOD_CLK = 4.0960 MHz (DMR, YSF_L, P25)
-// DEMOD_CLK = 6.1440 MHz (YSF_H)
+// DEMOD_CLK = 6.1440 MHz (DMR, YSF_H, YSF_L, P25)
 #define ADF7021_PFD              6144000.0
 
 // PLL (REG 01)
@@ -163,7 +162,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 // Bug in ADI evaluation software, use datasheet formula (4FSK)
 #define ADF7021_DISC_BW_DSTAR    522U // K=85
 #define ADF7021_DISC_BW_DMR      491U // K=32
-#define ADF7021_DISC_BW_YSF_L    493U // K=32
+#define ADF7021_DISC_BW_YSF_L    491U // K=32
 #define ADF7021_DISC_BW_YSF_H    430U // K=28
 #define ADF7021_DISC_BW_P25      493U // K=32
 
