@@ -210,7 +210,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #if defined(ADF7021_N_VER)
 
 #define ADF7021_SLICER_TH_DSTAR  0U
-#define ADF7021_SLICER_TH_DMR    48U
+#define ADF7021_SLICER_TH_DMR    51U
 #define ADF7021_SLICER_TH_YSF_L  32U
 #define ADF7021_SLICER_TH_YSF_H  63U
 #define ADF7021_SLICER_TH_P25    43U
