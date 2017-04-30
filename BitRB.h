@@ -37,15 +37,16 @@ public:
   
   uint16_t getData() const;
 
-  bool put(uint8_t bit);
+  bool put(uint8_t bit, uint8_t control);
 
-  bool get(uint8_t& bit);
+  bool get(uint8_t& bit, uint8_t& control);
 
   bool hasOverflowed();
 
 private:
   uint16_t           m_length;
   volatile uint8_t*  m_bits;
+  volatile uint8_t*  m_control;
   volatile uint16_t  m_head;
   volatile uint16_t  m_tail;
   volatile bool      m_full;

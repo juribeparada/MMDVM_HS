@@ -425,6 +425,7 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
 void CIO::interrupt()
 {
   uint8_t bit = 0;
+  uint8_t control  = MARK_NONE;
   
   if (!m_started)
     return;
@@ -449,7 +450,7 @@ void CIO::interrupt()
   // we set the TX bit at TXD low, sampling of ADF7021 happens at rising clock
   if (m_tx && clk == 0) {
 
-    m_txBuffer.get(bit);
+    m_txBuffer.get(bit, control);
     even = !even; 
 
     // use this for tracking issues
@@ -498,7 +499,7 @@ void CIO::interrupt()
     else
       bit = 0;
 
-    m_rxBuffer.put(bit);
+    m_rxBuffer.put(bit, control);
   }
   
   if (torx_request == true && even == false && m_tx && clk == 0) { 

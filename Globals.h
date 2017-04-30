@@ -35,10 +35,21 @@ enum MMDVM_STATE {
   STATE_P25       = 4
 };
 
+const uint8_t  MARK_SLOT1 = 0x08U;
+const uint8_t  MARK_SLOT2 = 0x04U;
+const uint8_t  MARK_NONE  = 0x00U;
+
 #include "IO.h"
 #include "SerialPort.h"
 #include "DMRDMORX.h"
 #include "DMRDMOTX.h"
+
+#if defined(DUPLEX)
+#include "DMRIdleRX.h"
+#include "DMRRX.h"
+#include "DMRTX.h"
+#endif
+
 #include "DStarRX.h"
 #include "DStarTX.h"
 #include "YSFRX.h"
@@ -68,6 +79,12 @@ extern CSerialPort serial;
 
 extern CDStarRX dstarRX;
 extern CDStarTX dstarTX;
+
+#if defined(DUPLEX)
+extern CDMRIdleRX dmrIdleRX;
+extern CDMRRX dmrRX;
+extern CDMRTX dmrTX;
+#endif
 
 extern CDMRDMORX dmrDMORX;
 extern CDMRDMOTX dmrDMOTX;

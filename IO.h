@@ -78,7 +78,7 @@ public:
 #endif
 
   // IO API
-  void      write(uint8_t* data, uint16_t length);
+  void      write(uint8_t* data, uint16_t length, const uint8_t* control = NULL);
   uint16_t  getSpace(void) const;
   void      process(void);
   bool      hasTXOverflow(void);

@@ -1,5 +1,6 @@
 /*
  *   Copyright (C) 2015,2016 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2017 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -19,16 +20,17 @@
 #if !defined(DMRRX_H)
 #define  DMRRX_H
 
+#include "Config.h"
+
 #if defined(DUPLEX)
 
-#include "Config.h"
 #include "DMRSlotRX.h"
 
 class CDMRRX {
 public:
   CDMRRX();
 
-  void samples(const q15_t* samples, const uint16_t* rssi, const uint8_t* control, uint8_t length);
+  void databit(bool bit, const uint8_t control);
 
   void setColorCode(uint8_t colorCode);
   void setDelay(uint8_t delay);

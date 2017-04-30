@@ -42,6 +42,12 @@ bool m_dcd = false;
 CDStarRX   dstarRX;
 CDStarTX   dstarTX;
 
+#if defined(DUPLEX)
+CDMRIdleRX dmrIdleRX;
+CDMRRX     dmrRX;
+CDMRTX     dmrTX;
+#endif
+
 CDMRDMORX  dmrDMORX;
 CDMRDMOTX  dmrDMOTX;
 
@@ -69,9 +75,17 @@ void loop()
   if (m_dstarEnable && m_modemState == STATE_DSTAR)
     dstarTX.process();
 
-  if (m_dmrEnable && m_modemState == STATE_DMR)
+  if (m_dmrEnable && m_modemState == STATE_DMR) {
+#if defined(DUPLEX)
+    if (m_duplex)
+      dmrTX.process();
+    else
+      dmrDMOTX.process();
+#else
     dmrDMOTX.process();
-
+#endif
+  }
+  
   if (m_ysfEnable && m_modemState == STATE_YSF)
     ysfTX.process();
 

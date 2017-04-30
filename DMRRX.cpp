@@ -1,5 +1,6 @@
 /*
  *   Copyright (C) 2015,2016 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2017 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -16,9 +17,10 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include "Config.h"
+
 #if defined(DUPLEX)
 
-#include "Config.h"
 #include "Globals.h"
 #include "DMRRX.h"
 
@@ -28,25 +30,23 @@ m_slot2RX(true)
 {
 }
 
-void CDMRRX::samples(const q15_t* samples, const uint16_t* rssi, const uint8_t* control, uint8_t length)
+void CDMRRX::databit(bool bit, const uint8_t control)
 {
   bool dcd1 = false;
   bool dcd2 = false;
 
-  for (uint16_t i = 0U; i < length; i++) {
-    switch (control[i]) {
-      case MARK_SLOT1:
-        m_slot1RX.start();
-        break;
-      case MARK_SLOT2:
-        m_slot2RX.start();
-        break;
-      default:
-        break;
-    }
+  switch (control) {
+    case MARK_SLOT1:
+      m_slot1RX.start();
+      break;
+    case MARK_SLOT2:
+      m_slot2RX.start();
+      break;
+    default:
+      break;
 
-    dcd1 = m_slot1RX.processSample(samples[i], rssi[i]);
-    dcd2 = m_slot2RX.processSample(samples[i], rssi[i]);
+    dcd1 = m_slot1RX.databit(bit);
+    dcd2 = m_slot2RX.databit(bit);
   }
 
   io.setDecode(dcd1 || dcd2);

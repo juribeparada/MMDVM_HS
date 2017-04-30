@@ -63,6 +63,7 @@ void CIO::process()
 {
   uint8_t bit;
   uint32_t scantime;
+  uint8_t  control;
   
   m_ledCount++;
   
@@ -116,7 +117,7 @@ void CIO::process()
   }
 
   if (m_rxBuffer.getData() >= 1U) {
-    m_rxBuffer.get(bit);
+    m_rxBuffer.get(bit, control);
     
     switch (m_modemState_prev) {
       case STATE_DSTAR:
@@ -179,14 +180,18 @@ void CIO::start()
   m_started = true;
 }
 
-void CIO::write(uint8_t* data, uint16_t length)
+void CIO::write(uint8_t* data, uint16_t length, const uint8_t* control)
 {
   if (!m_started)
     return;
 
-  for (uint16_t i = 0U; i < length; i++)
-    m_txBuffer.put(data[i]);
-
+  for (uint16_t i = 0U; i < length; i++) {
+    if (control == NULL)
+      m_txBuffer.put(data[i], MARK_NONE);
+    else
+      m_txBuffer.put(data[i], control[i]);
+  }
+  
   // Switch the transmitter on if needed
   if (!m_tx) {
     setTX();

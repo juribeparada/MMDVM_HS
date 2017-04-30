@@ -1,5 +1,6 @@
 /*
  *   Copyright (C) 2015 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2017 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -19,34 +20,30 @@
 #if !defined(DMRIDLERX_H)
 #define  DMRIDLERX_H
 
+#include "Config.h"
+
 #if defined(DUPLEX)
 
-#include "Config.h"
 #include "DMRDefines.h"
 
 class CDMRIdleRX {
 public:
   CDMRIdleRX();
 
-  void samples(const q15_t* samples, uint8_t length);
+  void databit(bool bit);
 
   void setColorCode(uint8_t colorCode);
 
   void reset();
 
 private:
-  uint32_t m_bitBuffer[DMR_RADIO_SYMBOL_LENGTH];
-  q15_t    m_buffer[DMR_FRAME_LENGTH_SAMPLES];
-  uint16_t m_bitPtr;
+  uint64_t m_patternBuffer;
+  uint8_t  m_buffer[DMR_FRAME_LENGTH_BITS];
   uint16_t m_dataPtr;
   uint16_t m_endPtr;
-  q31_t    m_maxCorr;
-  q15_t    m_centre;
-  q15_t    m_threshold;
   uint8_t  m_colorCode;
 
-  void processSample(q15_t sample);
-  void samplesToBits(uint16_t start, uint8_t count, uint8_t* buffer, uint16_t offset, q15_t centre, q15_t threshold);
+  void bitsToBytes(uint16_t start, uint8_t count, uint8_t* buffer);
 };
 
 #endif

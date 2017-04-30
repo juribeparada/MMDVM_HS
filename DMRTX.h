@@ -1,6 +1,7 @@
 /*
  *   Copyright (C) 2015,2016,2017 by Jonathan Naylor G4KLX
  *   Copyright (C) 2016 by Colin Durbridge G4EML
+ *   Copyright (C) 2017 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -20,9 +21,10 @@
 #if !defined(DMRTX_H)
 #define  DMRTX_H
 
+#include "Config.h"
+
 #if defined(DUPLEX)
 
-#include "Config.h"
 #include "DMRDefines.h"
 
 #include "SerialRB.h"
@@ -47,7 +49,6 @@ public:
   uint8_t writeAbort(const uint8_t* data, uint8_t length);
 
   void setStart(bool start);
-  void setCal(bool start);
 
   void process();
 
@@ -58,8 +59,6 @@ public:
 
 private:
   CSerialRB                        m_fifo[2U];
-  arm_fir_interpolate_instance_q15 m_modFilter;
-  q15_t                            m_modState[16U];    // blockSize + phaseLength - 1, 4 + 9 - 1 plus some spare
   DMRTXSTATE                       m_state;
   uint8_t                          m_idle[DMR_FRAME_LENGTH_BYTES];
   uint8_t                          m_cachPtr;
@@ -74,7 +73,6 @@ private:
 
   void createData(uint8_t slotIndex);
   void createCACH(uint8_t txSlotIndex, uint8_t rxSlotIndex);
-  void createCal();
   void writeByte(uint8_t c, uint8_t control);
 };
 

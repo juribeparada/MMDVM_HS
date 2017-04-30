@@ -24,12 +24,14 @@ Boston, MA  02110-1301, USA.
 CBitRB::CBitRB(uint16_t length) :
 m_length(length),
 m_bits(NULL),
+m_control(NULL),
 m_head(0U),
 m_tail(0U),
 m_full(false),
 m_overflow(false)
 {
-  m_bits = new uint8_t[length];
+  m_bits    = new uint8_t[length];
+  m_control = new uint8_t[length];
 }
 
 uint16_t CBitRB::getSpace() const
@@ -59,14 +61,15 @@ uint16_t CBitRB::getData() const
     return m_length - m_tail + m_head;
 }
 
-bool CBitRB::put(uint8_t bit)
+bool CBitRB::put(uint8_t bit, uint8_t control)
 {
   if (m_full) {
     m_overflow = true;
     return false;
   }
 
-  m_bits[m_head] = bit;
+  m_bits[m_head]    = bit;
+  m_control[m_head] = control;
 
   m_head++;
   if (m_head >= m_length)
@@ -78,12 +81,13 @@ bool CBitRB::put(uint8_t bit)
   return true;
 }
 
-bool CBitRB::get(uint8_t& bit)
+bool CBitRB::get(uint8_t& bit, uint8_t& control)
 {
   if (m_head == m_tail && !m_full)
     return false;
 
-  bit  = m_bits[m_tail];
+  bit     = m_bits[m_tail];
+  control = m_control[m_tail];
 
   m_full = false;
 
