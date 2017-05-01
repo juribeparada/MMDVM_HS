@@ -38,6 +38,9 @@ volatile uint32_t  AD7021_control_word;
 
 uint32_t           ADF7021_RX_REG0;
 uint32_t           ADF7021_TX_REG0;
+uint32_t           ADF7021_REG1;
+uint32_t           div2;
+uint8_t            m_control;
 
 static  void Send_AD7021_control_shift()
 {
@@ -73,6 +76,24 @@ void Send_AD7021_control(bool doSle)
     Send_AD7021_control_slePulse();
   }
 }
+
+#if defined(DUPLEX)
+static  void Send_AD7021_control_sle2Pulse()
+{
+  io.SLE2_pin(HIGH);
+  io.dlybit();
+  io.SLE2_pin(LOW);
+}
+
+void Send_AD7021_control2(bool doSle)
+{
+  Send_AD7021_control_shift();
+
+  if (doSle) {
+    Send_AD7021_control_sle2Pulse();
+  }
+}
+#endif
 
 #if defined(SEND_RSSI_DATA)
 uint16_t CIO::readRSSI()
@@ -152,9 +173,7 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
   float    divider;
   uint8_t  N_divider;
   uint16_t F_divider;
-  uint32_t div2;
 
-  uint32_t ADF7021_REG1  = 0;
   uint32_t ADF7021_REG2  = 0;
   uint32_t ADF7021_REG3  = 0;
   uint32_t ADF7021_REG4  = 0;
@@ -420,12 +439,182 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
   AD7021_control_word = 0x000E000F;
 #endif
   Send_AD7021_control();
+  
+#if defined(DUPLEX)
+if(m_duplex)
+  ifConf2(modemState);
+#endif
 }
+
+#if defined(DUPLEX)
+void CIO::ifConf2(MMDVM_STATE modemState)
+{
+  uint32_t ADF7021_REG2  = 0;
+  uint32_t ADF7021_REG3  = 0;
+  uint32_t ADF7021_REG4  = 0;
+  uint32_t ADF7021_REG10 = 0;
+  uint32_t ADF7021_REG13 = 0;
+
+  switch (modemState) {
+    case STATE_DSTAR:
+      // Dev: 1200 Hz, symb rate = 4800
+
+      ADF7021_REG3 = ADF7021_REG3_DSTAR;
+      ADF7021_REG10 = ADF7021_REG10_DSTAR;
+    
+      // K=32
+      ADF7021_REG4  = (uint32_t) 0b0100                    << 0;   // register 4
+      ADF7021_REG4 |= (uint32_t) 0b001                     << 4;   // mode, GMSK
+      ADF7021_REG4 |= (uint32_t) 0b1                       << 7;
+      ADF7021_REG4 |= (uint32_t) 0b10                      << 8;
+      ADF7021_REG4 |= (uint32_t) ADF7021_DISC_BW_DSTAR     << 10;  // Disc BW
+      ADF7021_REG4 |= (uint32_t) ADF7021_POST_BW_DSTAR     << 20;  // Post dem BW
+      ADF7021_REG4 |= (uint32_t) 0b10                      << 30;  // IF filter
+
+      ADF7021_REG13 = (uint32_t) 0b1101      << 0;   // register 13
+      ADF7021_REG13 |= (uint32_t) ADF7021_SLICER_TH_DSTAR  << 4;   // slicer threshold
+
+      ADF7021_REG2 = (uint32_t) 0b00                       << 28;  // clock normal
+      ADF7021_REG2 |= (uint32_t) (ADF7021_DEV_DSTAR / div2)<< 19;  // deviation
+      ADF7021_REG2 |= (uint32_t) 0b001                     << 4;   // modulation (GMSK)
+      break;
+      
+    case STATE_DMR:
+      // Dev: +1 symb 648 Hz, symb rate = 4800
+    
+      ADF7021_REG3 = ADF7021_REG3_DMR;
+      ADF7021_REG10 = ADF7021_REG10_DMR;
+
+      // K=32
+      ADF7021_REG4  = (uint32_t) 0b0100                    << 0;   // register 4
+      ADF7021_REG4 |= (uint32_t) 0b011                     << 4;   // mode, 4FSK
+      ADF7021_REG4 |= (uint32_t) 0b0                       << 7;
+      ADF7021_REG4 |= (uint32_t) 0b11                      << 8;
+      ADF7021_REG4 |= (uint32_t) ADF7021_DISC_BW_DMR       << 10;  // Disc BW
+      ADF7021_REG4 |= (uint32_t) ADF7021_POST_BW_DMR       << 20;  // Post dem BW
+      ADF7021_REG4 |= (uint32_t) 0b10                      << 30;  // IF filter
+
+      ADF7021_REG13 = (uint32_t) 0b1101                    << 0;   // register 13
+      ADF7021_REG13 |= (uint32_t) ADF7021_SLICER_TH_DMR    << 4;   // slicer threshold
+
+      ADF7021_REG2 = (uint32_t) 0b10                       << 28;  // invert data (and RC alpha = 0.5)
+      ADF7021_REG2 |= (uint32_t) (ADF7021_DEV_DMR / div2)  << 19;  // deviation
+      ADF7021_REG2 |= (uint32_t) 0b111                     << 4;   // modulation (RC 4FSK)
+      break;
+      
+    case STATE_YSF:
+      // Dev: +1 symb 900 Hz, symb rate = 4800
+
+      ADF7021_REG3 = (m_LoDevYSF ? ADF7021_REG3_YSF_L : ADF7021_REG3_YSF_H);
+      ADF7021_REG10 = ADF7021_REG10_YSF;
+
+      // K=28
+      ADF7021_REG4  = (uint32_t) 0b0100                    << 0;   // register 4
+      ADF7021_REG4 |= (uint32_t) 0b011                     << 4;   // mode, 4FSK
+      ADF7021_REG4 |= (uint32_t) 0b0                       << 7;
+      ADF7021_REG4 |= (uint32_t) 0b11                      << 8;
+      ADF7021_REG4 |= (uint32_t) (m_LoDevYSF ? ADF7021_DISC_BW_YSF_L : ADF7021_DISC_BW_YSF_H) << 10;  // Disc BW
+      ADF7021_REG4 |= (uint32_t) ADF7021_POST_BW_YSF       << 20;  // Post dem BW
+      ADF7021_REG4 |= (uint32_t) 0b10                      << 30;  // IF filter
+
+      ADF7021_REG13 = (uint32_t) 0b1101                    << 0;   // register 13
+      ADF7021_REG13 |= (uint32_t) (m_LoDevYSF ? ADF7021_SLICER_TH_YSF_L : ADF7021_SLICER_TH_YSF_H) << 4;   // slicer threshold
+
+      ADF7021_REG2 = (uint32_t) 0b10                       << 28;  // invert data (and RC alpha = 0.5)
+      ADF7021_REG2 |= (uint32_t) ((m_LoDevYSF ? ADF7021_DEV_YSF_L : ADF7021_DEV_YSF_H) / div2)  << 19;  // deviation
+      ADF7021_REG2 |= (uint32_t) 0b111                     << 4;   // modulation (RC 4FSK)
+      break;
+      
+    case STATE_P25:
+      // Dev: +1 symb 600 Hz, symb rate = 4800
+
+      ADF7021_REG3 = ADF7021_REG3_P25;
+      ADF7021_REG10 = ADF7021_REG10_P25;
+
+      // K=32
+      ADF7021_REG4  = (uint32_t) 0b0100                    << 0;   // register 4
+      ADF7021_REG4 |= (uint32_t) 0b011                     << 4;   // mode, 4FSK
+      ADF7021_REG4 |= (uint32_t) 0b0                       << 7;
+      ADF7021_REG4 |= (uint32_t) 0b11                      << 8;
+      ADF7021_REG4 |= (uint32_t) ADF7021_DISC_BW_P25       << 10;  // Disc BW
+      ADF7021_REG4 |= (uint32_t) ADF7021_POST_BW_P25       << 20;  // Post dem BW
+      ADF7021_REG4 |= (uint32_t) 0b10                      << 30;  // IF filter
+
+      ADF7021_REG13 = (uint32_t) 0b1101                    << 0;   // register 13
+      ADF7021_REG13 |= (uint32_t) ADF7021_SLICER_TH_P25    << 4;   // slicer threshold
+
+      ADF7021_REG2 = (uint32_t) 0b10                       << 28;  // invert data (and RC alpha = 0.5)
+      ADF7021_REG2 |= (uint32_t) (ADF7021_DEV_P25 / div2)  << 19;  // deviation
+      ADF7021_REG2 |= (uint32_t) 0b111                     << 4;   // modulation (RC 4FSK)
+      break;
+      
+    default:
+      break;
+  }
+
+  // VCO/OSCILLATOR (1)
+  AD7021_control_word = ADF7021_REG1;
+  Send_AD7021_control2();
+
+  // TX/RX CLOCK (3)
+  AD7021_control_word = ADF7021_REG3;
+  Send_AD7021_control2();
+
+  // DEMOD (4)
+  AD7021_control_word = ADF7021_REG4;
+  Send_AD7021_control2();
+
+  // IF FILTER (5)
+  AD7021_control_word = ADF7021_REG5;
+  Send_AD7021_control2();
+  
+  // Delay for coarse IF filter calibration
+  delay_ifcal_coarse();
+
+  // Frequency RX (0) and set to RX only
+  AD7021_control_word = ADF7021_RX_REG0;
+  Send_AD7021_control2();
+
+  // MODULATION (2)
+  ADF7021_REG2 |= (uint32_t) 0b0010;               // register 2
+  ADF7021_REG2 |= (uint32_t) m_power       << 13;  // power level
+  ADF7021_REG2 |= (uint32_t) 0b110001      << 7;   // PA  
+  AD7021_control_word = ADF7021_REG2;
+  Send_AD7021_control2();
+ 
+  // TEST DAC (14)
+  AD7021_control_word = 0x0000000E;
+  Send_AD7021_control2();
+
+  // AGC (auto, defaults) (9)
+  AD7021_control_word = 0x000231E9;
+  Send_AD7021_control2();
+
+  // AFC (10)
+  AD7021_control_word = ADF7021_REG10;
+  Send_AD7021_control2();
+
+  // SYNC WORD DET (11)
+  AD7021_control_word = 0x0000003B;
+  Send_AD7021_control2();
+
+  // SWD/THRESHOLD (12)
+  AD7021_control_word = 0x0000010C;
+  Send_AD7021_control2();
+
+  // 3FSK/4FSK DEMOD (13)
+  AD7021_control_word = ADF7021_REG13;
+  Send_AD7021_control2();
+  
+  // TEST MODE (disabled) (15)
+  AD7021_control_word = 0x000E000F;
+  Send_AD7021_control2();
+}
+#endif
 
 void CIO::interrupt()
 {
   uint8_t bit = 0;
-  uint8_t control  = MARK_NONE;
   
   if (!m_started)
     return;
@@ -450,7 +639,7 @@ void CIO::interrupt()
   // we set the TX bit at TXD low, sampling of ADF7021 happens at rising clock
   if (m_tx && clk == 0) {
 
-    m_txBuffer.get(bit, control);
+    m_txBuffer.get(bit, m_control);
     even = !even; 
 
     // use this for tracking issues
@@ -493,13 +682,13 @@ void CIO::interrupt()
   }
   
   // we sample the RX bit at rising TXD clock edge, so TXD must be 1 and we are not in tx mode
-  if (!m_tx && clk == 1) {
+  if (!m_tx && clk == 1 && !m_duplex) {
     if(RXD_pin())
       bit = 1;
     else
       bit = 0;
 
-    m_rxBuffer.put(bit, control);
+    m_rxBuffer.put(bit, m_control);
   }
   
   if (torx_request == true && even == false && m_tx && clk == 0) { 
@@ -533,6 +722,22 @@ void CIO::interrupt()
   if(m_scanPauseCnt != 0)
     m_scanPauseCnt++;
 }
+
+#if defined(DUPLEX)
+void CIO::interrupt2()
+{
+  uint8_t bit = 0;
+  
+  if(m_duplex) {
+    if(RXD2_pin())
+      bit = 1;
+    else
+      bit = 0;
+
+    m_rxBuffer.put(bit, m_control);
+  }
+}
+#endif
 
 //======================================================================================================================
 void CIO::setTX()

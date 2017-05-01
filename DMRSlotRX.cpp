@@ -17,19 +17,19 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#define  WANT_DEBUG
-
 #include "Config.h"
 
 #if defined(DUPLEX)
+
+#define  WANT_DEBUG
 
 #include "Globals.h"
 #include "DMRSlotRX.h"
 #include "DMRSlotType.h"
 #include "Utils.h"
 
-const uint16_t SCAN_START = 400U;
-const uint16_t SCAN_END   = 490U;
+const uint16_t SCAN_START = 170U;
+const uint16_t SCAN_END   = 190U;
 
 const uint8_t MAX_SYNC_BYTES_ERRS   = 1U;
 
@@ -64,6 +64,7 @@ void CDMRSlotRX::start()
 {
   m_dataPtr  = 0U;
   m_delayPtr = 0U;
+  m_patternBuffer = 0U;
   m_control  = CONTROL_NONE;
 }
 
@@ -86,7 +87,7 @@ bool CDMRSlotRX::databit(bool bit)
     return m_state != DMRRXS_NONE;
 
   // Ensure that the buffer doesn't overflow
-  if (m_dataPtr > m_endPtr || m_dataPtr >= 900U)
+  if (m_dataPtr > m_endPtr || m_dataPtr >= 400U)
     return m_state != DMRRXS_NONE;
 
   m_buffer[m_dataPtr] = bit;
@@ -94,12 +95,11 @@ bool CDMRSlotRX::databit(bool bit)
   m_patternBuffer <<= 1;
   if (bit)
     m_patternBuffer |= 0x01U;
-
+    
   if (m_state == DMRRXS_NONE) {
     if (m_dataPtr >= SCAN_START && m_dataPtr <= SCAN_END)
       correlateSync(true);
   } else {
-
     uint16_t min = m_syncPtr - 1U;
     uint16_t max = m_syncPtr + 1U;
     if (m_dataPtr >= min && m_dataPtr <= max)
@@ -217,7 +217,7 @@ void CDMRSlotRX::correlateSync(bool first)
   m_syncPtr = m_dataPtr;
   m_startPtr = m_dataPtr - DMR_SLOT_TYPE_LENGTH_BITS / 2U - DMR_INFO_LENGTH_BITS / 2U - DMR_SYNC_LENGTH_BITS + 1;
   m_endPtr   = m_dataPtr + DMR_SLOT_TYPE_LENGTH_BITS / 2U + DMR_INFO_LENGTH_BITS / 2U;
-  DEBUG4("SYNC MS Data found pos/start/end:", m_dataPtr, m_startPtr, m_endPtr);
+  DEBUG4("SYNC corr MS Data found pos/start/end:", m_dataPtr, m_startPtr, m_endPtr);
   
   } else if (countBits64((m_patternBuffer & DMR_SYNC_BITS_MASK) ^ DMR_MS_VOICE_SYNC_BITS) <= MAX_SYNC_BYTES_ERRS) {
 
@@ -225,7 +225,7 @@ void CDMRSlotRX::correlateSync(bool first)
   m_syncPtr  = m_dataPtr;
   m_startPtr = m_dataPtr - DMR_SLOT_TYPE_LENGTH_BITS / 2U - DMR_INFO_LENGTH_BITS / 2U - DMR_SYNC_LENGTH_BITS + 1;
   m_endPtr   = m_dataPtr + DMR_SLOT_TYPE_LENGTH_BITS / 2U + DMR_INFO_LENGTH_BITS / 2U;
-  DEBUG4("SYNC MS Voice found pos/start/end: ", m_dataPtr, m_startPtr, m_endPtr);
+  DEBUG4("SYNC corr MS Voice found pos/start/end: ", m_dataPtr, m_startPtr, m_endPtr);
   }
 }
 

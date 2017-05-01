@@ -44,10 +44,10 @@ void CDMRRX::databit(bool bit, const uint8_t control)
       break;
     default:
       break;
-
-    dcd1 = m_slot1RX.databit(bit);
-    dcd2 = m_slot2RX.databit(bit);
   }
+
+  dcd1 = m_slot1RX.databit(bit);
+  dcd2 = m_slot2RX.databit(bit);
 
   io.setDecode(dcd1 || dcd2);
 }

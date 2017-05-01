@@ -227,6 +227,9 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define bitRead(value, bit) (((value) >> (bit)) & 0x01)
 
 void Send_AD7021_control(bool doSle = true);
+#if defined(DUPLEX)
+void Send_AD7021_control2(bool doSle = true);
+#endif
 
 #endif
 

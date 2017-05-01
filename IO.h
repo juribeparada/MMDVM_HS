@@ -20,6 +20,7 @@
 #if !defined(CIO_H)
 #define  CIO_H
 
+#include "Config.h"
 #include "Globals.h"
 #include "BitRB.h"
 
@@ -53,6 +54,10 @@ public:
   void     SDATA_pin(bool on);
   bool     SREAD_pin(void);
   void     SLE_pin(bool on);
+#if defined(DUPLEX)
+  void     SLE2_pin(bool on);
+  bool     RXD2_pin(void);
+#endif
   void     CE_pin(bool on);
   bool     RXD_pin(void);
   bool     CLK_pin(void);
@@ -71,6 +76,9 @@ public:
   void     P25_pin(bool on);
   void     COS_pin(bool on);
   void     interrupt(void);
+#if defined(DUPLEX)
+  void     interrupt2(void);
+#endif
   void     resetWatchdog(void);
 
 #if defined(BIDIR_DATA_PIN)
@@ -92,6 +100,9 @@ public:
   void      setTX(void);
   void      setRX(bool doSle = true);
   void      ifConf(MMDVM_STATE modemState, bool reset);
+#if defined(DUPLEX)
+  void      ifConf2(MMDVM_STATE modemState);
+#endif
   void      start(void);
   void      startInt(void);
   

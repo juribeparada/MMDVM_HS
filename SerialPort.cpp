@@ -231,7 +231,9 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
   if (colorCode > 15U)
     return 4U;
     
+#if defined(DUPLEX)
   uint8_t dmrDelay = data[7U];
+#endif
 
   m_modemState  = modemState;
 

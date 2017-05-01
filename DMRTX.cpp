@@ -18,7 +18,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-// #define WANT_DEBUG
+//#define WANT_DEBUG
 
 #include "Config.h"
 
@@ -220,6 +220,7 @@ void CDMRTX::writeByte(uint8_t c, uint8_t control)
 {
   uint8_t bit;
   uint8_t mask = 0x80U;
+  uint8_t control_tmp;
 
   for (uint8_t i = 0U; i < 8U; i++, c <<= 1) {
     if ((c & mask) == mask)
@@ -227,10 +228,13 @@ void CDMRTX::writeByte(uint8_t c, uint8_t control)
     else
       bit = 0U;
     
-    if( i != 3U)
-      control = MARK_NONE;
+    control_tmp = MARK_NONE;
+    
+    if( i == 0U)
+      control_tmp = control;
       
-    io.write(&bit, 1, &control);
+    io.write(&bit, 1, &control_tmp);
+
   }
 }
 

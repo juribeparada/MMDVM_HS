@@ -48,7 +48,7 @@ public:
 private:
   bool        m_slot;
   uint64_t    m_patternBuffer;
-  uint8_t     m_buffer[900U];
+  uint8_t     m_buffer[400U];
   uint16_t    m_dataPtr;
   uint16_t    m_syncPtr;
   uint16_t    m_startPtr;

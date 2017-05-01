@@ -52,9 +52,12 @@
 #define PIN_SREAD      PB6
 #define PIN_SDATA      PB7
 #define PIN_SLE        PB8
+#define PIN_SLE2       PA6
 #define PIN_CE         PC14
 #define PIN_RXD        PB4
+#define PIN_RXD2       PA4
 #define PIN_TXD        PB3
+#define PIN_TXD2       PA5
 #define PIN_CLKOUT     PA15
 #define PIN_LED        PC13
 #define PIN_DEB        PB9
@@ -71,9 +74,12 @@
 #define PIN_SREAD      PB7
 #define PIN_SDATA      PB6
 #define PIN_SLE        PB8
+#define PIN_SLE2       PA6
 #define PIN_CE         PC14
 #define PIN_RXD        PB4
+#define PIN_RXD2       PA4
 #define PIN_TXD        PB3
+#define PIN_TXD2       PA5
 #define PIN_CLKOUT     PA15
 #define PIN_LED        PC13
 #define PIN_DEB        PB9
@@ -116,6 +122,14 @@ extern "C" {
   }
 }
 
+#if defined(DUPLEX)
+extern "C" {
+  void EXT_IRQHandler2(void) {
+    io.interrupt2();
+  }
+}
+#endif
+
 void CIO::delay_ifcal_coarse() {
   delayMicroseconds(300);
 }
@@ -152,6 +166,12 @@ void CIO::Init()
   pinMode(PIN_PTT_LED, OUTPUT);
   pinMode(PIN_COS_LED, OUTPUT);
   
+#if defined(DUPLEX)
+  pinMode(PIN_SLE2, OUTPUT);
+  pinMode(PIN_RXD2, INPUT);
+  pinMode(PIN_TXD2, INPUT);
+#endif
+  
 #if defined(BIDIR_DATA_PIN)
   pinMode(PIN_TXD, INPUT);
 #else
@@ -179,6 +199,10 @@ void CIO::startInt()
   attachInterrupt(digitalPinToInterrupt(PIN_CLKOUT), EXT_IRQHandler, CHANGE);
 #endif
 
+#endif
+
+#if defined(DUPLEX)
+  attachInterrupt(PIN_TXD2, EXT_IRQHandler2, RISING);
 #endif
 }
 
@@ -212,6 +236,18 @@ void CIO::SLE_pin(bool on)
 {
   digitalWrite(PIN_SLE, on ? HIGH : LOW);
 }
+
+#if defined(DUPLEX)
+void CIO::SLE2_pin(bool on) 
+{
+  digitalWrite(PIN_SLE2, on ? HIGH : LOW);
+}
+
+bool CIO::RXD2_pin()
+{
+  return digitalRead(PIN_RXD2) == HIGH;
+}
+#endif
 
 void CIO::CE_pin(bool on) 
 {

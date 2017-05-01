@@ -124,7 +124,17 @@ void CIO::process()
         dstarRX.databit(bit);
         break;
       case STATE_DMR:
+#if defined(DUPLEX)
+        if (m_duplex) {
+          if (m_tx)
+            dmrRX.databit(bit, control);
+          else
+            dmrIdleRX.databit(bit);
+        } else
+          dmrDMORX.databit(bit);
+#else
         dmrDMORX.databit(bit);
+#endif
         break;
       case STATE_YSF:
         ysfRX.databit(bit);

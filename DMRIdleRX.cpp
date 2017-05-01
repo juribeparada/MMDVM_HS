@@ -67,19 +67,19 @@ void CDMRIdleRX::databit(bool bit)
   }
 
   if (m_dataPtr == m_endPtr) {
-    uint16_t ptr = m_endPtr + 2;
+    uint16_t ptr = m_endPtr + 1;
 
     if (ptr >= DMR_FRAME_LENGTH_BITS)
 	  ptr -= DMR_FRAME_LENGTH_BITS;
 
     uint8_t frame[DMR_FRAME_LENGTH_BYTES + 1U];
-    bitsToBytes(ptr, DMR_FRAME_LENGTH_BITS, frame + 1U);
+    bitsToBytes(ptr, DMR_FRAME_LENGTH_BYTES, frame + 1U);
 
     uint8_t colorCode;
     uint8_t dataType;
     CDMRSlotType slotType;
     slotType.decode(frame + 1U, colorCode, dataType);
-
+    
     if (colorCode == m_colorCode && dataType == DT_CSBK) {
       frame[0U] = CONTROL_IDLE | CONTROL_DATA | DT_CSBK;
       serial.writeDMRData(false, frame, DMR_FRAME_LENGTH_BYTES + 1U);
