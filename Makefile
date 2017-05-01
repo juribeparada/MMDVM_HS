@@ -59,6 +59,11 @@ else
 			DFU_UTIL=./STM32F10X_Lib/utils/rpi32/dfu-util
 			ST_FLASH=./STM32F10X_Lib/utils/rpi32/st-flash
 			STM32FLASH=./STM32F10X_Lib/utils/rpi32/stm32flash
+    	else ifeq ($(shell uname -m),armv6l)
+			DFU_RST=./STM32F10X_Lib/utils/rpi32/upload-reset
+			DFU_UTIL=./STM32F10X_Lib/utils/rpi32/dfu-util
+			ST_FLASH=./STM32F10X_Lib/utils/rpi32/st-flash
+			STM32FLASH=./STM32F10X_Lib/utils/rpi32/stm32flash
 		else
 			DFU_RST=./STM32F10X_Lib/utils/linux/upload-reset
 			DFU_UTIL=./STM32F10X_Lib/utils/linux/dfu-util
