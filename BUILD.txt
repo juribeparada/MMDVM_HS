@@ -279,8 +279,8 @@ SLE            PB8
 SREAD          PB7
 SDATA          PB6
 SCLK           PB5
-DATA           PB4 (TxRxData)
-DCLK           PB3 (TxRxCLK)
+DATA           PB4 (TxRxData)*
+DCLK           PB3 (TxRxCLK)*
 CLKOUT         PA15 (jumper wire in RF7021SE)
 PAC            PB14 (PTT LED)
 VCC            3.3 V
@@ -288,8 +288,8 @@ GND            Ground
 
 - Second RF7021SE board (duplex mode, experimental):
 SLE            PA6
-DATA           PA4
-DCLK           PA5
+DATA           PA4 (TxRxData)*
+DCLK           PA5 (TxRxCLK)*
 PAC            NC
 CLKOUT         NC
 VCC            3.3 V
@@ -314,3 +314,6 @@ DSTAR_LED      PB12
 - Misc pins:
 PIN_LED        PC13 (status led)
 PIN_DEB        PB9 (debugging pin)
+
+* You could install a serie resistor (10 - 100 ohms) in each TxRxData and TxRxCLK lines, for
+reducing EMI.
