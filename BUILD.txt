@@ -1,5 +1,5 @@
 Building instructions:
- 
+===================== 
 1) Raspberry Pi with ZUMSpot Pi:
 
 * Download latest Raspbian image and install to a micro SD
@@ -90,10 +90,91 @@ nano MMDVM.ini
 2) ZUMSpot USB:
 
 * Windows:
-coming soon...
+- Download and install the version 1.6.9 of the Arduino IDE:
+https://www.arduino.cc/en/Main/OldSoftwareReleases#previous
 
-* Linux:
-coming soon...
+- Download STM32duino (Arduino for STM32) from this URL:
+https://github.com/rogerclarkmelbourne/Arduino_STM32/tree/ZUMspot
+
+- Unzip to create the Arduino_STM32 folder
+
+- Copy Arduino_STM32 folder in:
+My Documents/Arduino/hardware
+
+- Install the USB bootloader to STM32F103. Follow the instructions:
+https://github.com/rogerclarkmelbourne/Arduino_STM32/wiki/stm32duino-bootloader
+
+- Start the Arduino IDE. Open the MMDVM_HS.ino file in the MMDVM_HS folder.
+
+- Under the menu "Tools" select "Board" and then select:
+Board: Generic STM32F103C Series
+Variant: STM32F103C8 (20k RAM, 64k Flash)
+CPU Speed: 72 MHz (Normal)
+Upload method: STM32duino bootloader (you have transfered the USB bootloader before)
+Serial port: COMx (Maple Mini)
+
+- Edit Config.h according your board:
+#define PI_HAT_7021_REV_03 (only if your board is ZUMSpot USB)
+#define ADF7021_CARRIER_BOARD (only if your board is ZUMSpot Libre Kit)
+#define ENABLE_ADF7021
+#define ADF7021_N_VER (only if your board uses ADF7021N)
+#define BIDIR_DATA_PIN
+#define ADF7021_14_7456
+#define STM32_USB_HOST
+#define ENABLE_SCAN_MODE
+
+- Click the Upload button in the IDE and wait for the transfer.
+
+* Linux Raspbian:
+cd ~
+- Install the necessary software tools:
+sudo apt-get update
+sudo apt-get install gcc-arm-none-eabi gdb-arm-none-eabi
+
+- Download the sources:
+git clone https://github.com/juribeparada/MMDVM_HS
+cd MMDVM_HS/
+git clone https://github.com/juribeparada/STM32F10X_Lib
+
+- Edit Config.h
+nano Config.h
+(and enable):
+#define PI_HAT_7021_REV_03 (only if your board is ZUMSpot USB)
+#define ADF7021_CARRIER_BOARD (only if your board is ZUMSpot Libre Kit)
+#define ENABLE_ADF7021
+#define ADF7021_N_VER (only if your board uses ADF7021N)
+#define BIDIR_DATA_PIN
+#define ADF7021_14_7456
+#define STM32_USB_HOST
+#define ENABLE_SCAN_MODE
+
+- Build the firmware with bootloader support:
+make bl
+
+- Upload bootloader and firmware to ZUMSpot USB board, using serial port first (you
+are using an USB-serial converter with device name /dev/ttyUSB0):
+
+Hold BOOT0 (or move BOOT0 jumper to 1), next press and release RESET
+
+sudo make serial-bl devser=/dev/ttyUSB0
+
+Release BOOT0 (or move BOOT0 jumper to 0)
+
+- For following firmware updates, you could use the USB port directly:
+sudo make dfu devser=/dev/ttyACM0
+
+* Install MMDVMHost:
+cd ~
+git clone https://github.com/g4klx/MMDVMHost/
+cd MMDVMHost/
+make
+
+- Edit MMDVM.ini according your preferences
+nano MMDVM.ini
+(use Port=/dev/ttyACM0 in [Modem])
+
+- Execute MMDVMHost:
+./MMDVMHost MMDVM.ini
 
 3) Makefile options:
 
@@ -145,5 +226,91 @@ sudo make zumspot-pi
 
 4) Config.h options:
 
-coming soon...
+#define PI_HAT_7021_REV_02: enable pinouts for first revision of ZUMSpot Pi. In general is
+not used.
 
+#define PI_HAT_7021_REV_03: enable pinouts support for ZUMSpot Pi or ZUMSpot USB. You have
+to enable this option if you have one of these products.
+
+#define ADF7021_CARRIER_BOARD: enable this option if you have a ZUMSpot Libre Kit (Board with
+modified RF7021SE and Blue Pill STM32F103).
+
+#define ENABLE_ADF7021: add support for ADF7021 (all boards, enabled by default).
+
+#define ADF7021_N_VER: enable support for narrow band version of ADF7021 (ADF7021N). Disabled
+by default, in general all boards will have just ADF7021.
+
+#define DUPLEX: enable duplex mode with dual ADF7021. It is still under development.
+
+#define BIDIR_DATA_PIN: enable Standard TX/RX Data Interface of ADF7021 (enabled by default, 
+needed for scanning mode detection feature).
+
+#define ADF7021_14_7456: select this option if your board uses a 14.7456 MHz (enabled by default).
+
+#define ADF7021_12_2880: select this option if your board uses a 12.2880 MHz.
+
+#define ADF7021_ENABLE_4FSK_AFC: enable AFC support for DMR, YSF and P25. This is experimental,
+depending on your frequency offset this option will improve or not your BER reception.
+
+#define ADF7021_AFC_POS: enable this option if you can not receive any signal after enable the
+ADF7021_ENABLE_4FSK_AFC option.
+
+#define STM32_USART1_HOST: enable direct serial host communication with ZUMSpot (using USART1
+PA9 and PA10 pins). Disable STM32_USB_HOST if you enable this option. Enable this if you have
+a ZUMSpot Pi. You don't need to enable this option if you will transfer the bootloader.
+
+#define STM32_USB_HOST: enable USB host communication with ZUMSpot (using STM32F103 USB
+interface). Disable STM32_USART1_HOST if you enable this option. Enable this if you have
+a ZUMSpot USB or ZUMSpot Libre Kit.
+
+#define ENABLE_SCAN_MODE: enable automatic mode detection in ZUMSpot. This is based on
+scanning over all enabled modes, and you could have some detection delay. Enabled by default.
+
+#define SEND_RSSI_DATA: enable RSSI reports to MMDVMHost. It is already converted to dBm.
+
+#define SERIAL_REPEATER: enable a second serial port (USART2, pins PA2 and PA3) for Nextion
+LCD display.
+
+Pinout definitions for ZUMSpot Libre Kit (Carrier board):
+=========================================================
+- Main RF7021SE board:
+CE             PC14
+SLE            PB8
+SREAD          PB7
+SDATA          PB6
+SCLK           PB5
+DATA           PB4 (TxRxData)
+DCLK           PB3 (TxRxCLK)
+CLKOUT         PA15 (jumper wire in RF7021SE)
+PAC            PB14 (PTT LED)
+VCC            3.3 V
+GND            Ground
+
+- Second RF7021SE board (duplex mode, experimental):
+SLE            PA6
+DATA           PA4
+DCLK           PA5
+PAC            NC
+CLKOUT         NC
+VCC            3.3 V
+GND            Ground
+
+SDATA, SREAD, SCLK and CE are shared with the main ADF7021.
+
+- Serial ports:
+TXD            PA9 (serial port host communication)
+RXD            PA10 (serial port host communication)
+DISP_TXD       PA2 (Nextion LCD serial repeater)
+DISP_RXD       PA3 (Nextion LCD serial repeater)
+
+- Status LEDs:
+COS_LED        PB15
+PTT_LED        PB14
+P25_LED        PB0
+YSF_LED        PB1
+DMR_LED        PB13
+DSTAR_LED      PB12
+
+- Misc pins:
+PIN_LED        PC13 (status led)
+PIN_DEB        PB9 (debugging pin)
