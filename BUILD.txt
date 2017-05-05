@@ -45,7 +45,7 @@ sudo reboot
 cd ~
 - Install the necessary software tools:
 sudo apt-get update
-sudo apt-get install gcc-arm-none-eabi gdb-arm-none-eabi
+sudo apt-get install gcc-arm-none-eabi gdb-arm-none-eabi libstdc++-arm-none-eabi-newlib libnewlib-arm-none-eabi
 git clone https://git.code.sf.net/p/stm32flash/code stm32flash
 cd stm32flash
 make
@@ -104,6 +104,12 @@ My Documents/Arduino/hardware
 - Install the USB bootloader to STM32F103. Follow the instructions:
 https://github.com/rogerclarkmelbourne/Arduino_STM32/wiki/stm32duino-bootloader
 
+- Download the source (zip file) of MMDVM_HS from https://github.com/juribeparada/MMDVM_HS
+(Do not download or install the STM32F103 libraries, STM32F10X_Lib, they are not necessary
+under STM32duino).
+
+- Unzip MMDVM_HS-master.zip in a local folder.
+
 - Start the Arduino IDE. Open the MMDVM_HS.ino file in the MMDVM_HS folder.
 
 - Under the menu "Tools" select "Board" and then select:
@@ -125,11 +131,16 @@ Serial port: COMx (Maple Mini)
 
 - Click the Upload button in the IDE and wait for the transfer.
 
+- Once the transfer is completed, press the RESET button of the board. In the case of
+ZUMSpot Libre Kit, you will see the LED (PC13) of the blue pill blinking.
+
+- Once you connect with MMDVMHost, the LED will blink fast in the ZUMSpot Libre Kit.
+
 * Linux Raspbian:
 cd ~
 - Install the necessary software tools:
 sudo apt-get update
-sudo apt-get install gcc-arm-none-eabi gdb-arm-none-eabi
+sudo apt-get install gcc-arm-none-eabi gdb-arm-none-eabi libstdc++-arm-none-eabi-newlib libnewlib-arm-none-eabi
 
 - Download the sources:
 git clone https://github.com/juribeparada/MMDVM_HS
@@ -279,8 +290,8 @@ SLE            PB8
 SREAD          PB7
 SDATA          PB6
 SCLK           PB5
-DATA           PB4 (TxRxData)
-DCLK           PB3 (TxRxCLK)
+DATA           PB4 (TxRxData)*
+DCLK           PB3 (TxRxCLK)*
 CLKOUT         PA15 (jumper wire in RF7021SE)
 PAC            PB14 (PTT LED)
 VCC            3.3 V
@@ -288,8 +299,8 @@ GND            Ground
 
 - Second RF7021SE board (duplex mode, experimental):
 SLE            PA6
-DATA           PA4
-DCLK           PA5
+DATA           PA4 (TxRxData)*
+DCLK           PA5 (TxRxCLK)*
 PAC            NC
 CLKOUT         NC
 VCC            3.3 V
@@ -314,3 +325,6 @@ DSTAR_LED      PB12
 - Misc pins:
 PIN_LED        PC13 (status led)
 PIN_DEB        PB9 (debugging pin)
+
+* You could install a serie resistor (10 - 100 ohms) in each TxRxData and TxRxCLK lines, for
+reducing EMI.
