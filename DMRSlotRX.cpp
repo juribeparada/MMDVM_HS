@@ -28,9 +28,6 @@
 #include "DMRSlotType.h"
 #include "Utils.h"
 
-const uint16_t SCAN_START = 170U;
-const uint16_t SCAN_END   = 190U;
-
 const uint8_t MAX_SYNC_BYTES_ERRS   = 1U;
 
 const uint8_t MAX_SYNC_LOST_FRAMES  = 13U;
@@ -41,8 +38,8 @@ const uint8_t CONTROL_NONE  = 0x00U;
 const uint8_t CONTROL_VOICE = 0x20U;
 const uint8_t CONTROL_DATA  = 0x40U;
 
-CDMRSlotRX::CDMRSlotRX(bool slot) :
-m_slot(slot),
+CDMRSlotRX::CDMRSlotRX() :
+m_slot(false),
 m_patternBuffer(0x00U),
 m_buffer(),
 m_dataPtr(0U),
@@ -60,12 +57,10 @@ m_type(0U)
 {
 }
 
-void CDMRSlotRX::start()
+void CDMRSlotRX::start(bool slot)
 {
-  m_dataPtr  = 0U;
+  m_slot = slot;
   m_delayPtr = 0U;
-  m_patternBuffer = 0U;
-  m_control  = CONTROL_NONE;
 }
 
 void CDMRSlotRX::reset()
@@ -77,6 +72,7 @@ void CDMRSlotRX::reset()
   m_syncCount = 0U;
   m_state     = DMRRXS_NONE;
   m_startPtr  = 0U;
+  m_patternBuffer = 0U;
   m_endPtr    = NOENDPTR;
 }
 
@@ -86,10 +82,6 @@ bool CDMRSlotRX::databit(bool bit)
   if (m_delayPtr < m_delay)
     return m_state != DMRRXS_NONE;
 
-  // Ensure that the buffer doesn't overflow
-  if (m_dataPtr > m_endPtr || m_dataPtr >= 400U)
-    return m_state != DMRRXS_NONE;
-
   m_buffer[m_dataPtr] = bit;
   
   m_patternBuffer <<= 1;
@@ -97,17 +89,27 @@ bool CDMRSlotRX::databit(bool bit)
     m_patternBuffer |= 0x01U;
     
   if (m_state == DMRRXS_NONE) {
-    if (m_dataPtr >= SCAN_START && m_dataPtr <= SCAN_END)
-      correlateSync(true);
+    correlateSync();
   } else {
-    uint16_t min = m_syncPtr - 1U;
-    uint16_t max = m_syncPtr + 1U;
-    if (m_dataPtr >= min && m_dataPtr <= max)
-      correlateSync(false);
+
+    uint16_t min  = m_syncPtr + DMR_BUFFER_LENGTH_BITS - 2;
+    uint16_t max  = m_syncPtr + 2;
+
+    if (min >= DMR_BUFFER_LENGTH_BITS)
+      min -= DMR_BUFFER_LENGTH_BITS;
+    if (max >= DMR_BUFFER_LENGTH_BITS)
+      max -= DMR_BUFFER_LENGTH_BITS;
+
+    if (min < max) {
+      if (m_dataPtr >= min && m_dataPtr <= max)
+        correlateSync();
+    } else {
+      if (m_dataPtr >= min || m_dataPtr <= max)
+        correlateSync();
+    }
   }
 
   if (m_dataPtr == m_endPtr) {
-    uint8_t frame[DMR_FRAME_LENGTH_BYTES + 3U];
     frame[0U] = m_control;
 
     bitsToBytes(m_startPtr, DMR_FRAME_LENGTH_BYTES, frame + 1U);
@@ -202,30 +204,49 @@ bool CDMRSlotRX::databit(bool bit)
         }
       }
     }
+    
+    // End of this slot, reset some items for the next slot.
+    m_control = CONTROL_NONE;
   }
 
   m_dataPtr++;
 
+  if (m_dataPtr >= DMR_BUFFER_LENGTH_BITS)
+    m_dataPtr = 0U;
+
   return m_state != DMRRXS_NONE;
 }
 
-void CDMRSlotRX::correlateSync(bool first)
+void CDMRSlotRX::correlateSync()
 {  
   if (countBits64((m_patternBuffer & DMR_SYNC_BITS_MASK) ^ DMR_MS_DATA_SYNC_BITS) <= MAX_SYNC_BYTES_ERRS) {
 
   m_control = CONTROL_DATA;
   m_syncPtr = m_dataPtr;
-  m_startPtr = m_dataPtr - DMR_SLOT_TYPE_LENGTH_BITS / 2U - DMR_INFO_LENGTH_BITS / 2U - DMR_SYNC_LENGTH_BITS + 1;
+
+  m_startPtr = m_dataPtr + DMR_BUFFER_LENGTH_BITS - DMR_SLOT_TYPE_LENGTH_BITS / 2U - DMR_INFO_LENGTH_BITS / 2U - DMR_SYNC_LENGTH_BITS + 1;
+  if (m_startPtr >= DMR_BUFFER_LENGTH_BITS)
+    m_startPtr -= DMR_BUFFER_LENGTH_BITS;
+
   m_endPtr   = m_dataPtr + DMR_SLOT_TYPE_LENGTH_BITS / 2U + DMR_INFO_LENGTH_BITS / 2U;
-  DEBUG4("SYNC corr MS Data found pos/start/end:", m_dataPtr, m_startPtr, m_endPtr);
+  if (m_endPtr >= DMR_BUFFER_LENGTH_BITS)
+    m_endPtr -= DMR_BUFFER_LENGTH_BITS;
+    
+  //DEBUG4("SYNC corr MS Data found pos/start/end:", m_dataPtr, m_startPtr, m_endPtr);
   
   } else if (countBits64((m_patternBuffer & DMR_SYNC_BITS_MASK) ^ DMR_MS_VOICE_SYNC_BITS) <= MAX_SYNC_BYTES_ERRS) {
 
   m_control  = CONTROL_VOICE;
   m_syncPtr  = m_dataPtr;
-  m_startPtr = m_dataPtr - DMR_SLOT_TYPE_LENGTH_BITS / 2U - DMR_INFO_LENGTH_BITS / 2U - DMR_SYNC_LENGTH_BITS + 1;
+  m_startPtr = m_dataPtr + DMR_BUFFER_LENGTH_BITS - DMR_SLOT_TYPE_LENGTH_BITS / 2U - DMR_INFO_LENGTH_BITS / 2U - DMR_SYNC_LENGTH_BITS + 1;
+  if (m_startPtr >= DMR_BUFFER_LENGTH_BITS)
+    m_startPtr -= DMR_BUFFER_LENGTH_BITS;
+    
   m_endPtr   = m_dataPtr + DMR_SLOT_TYPE_LENGTH_BITS / 2U + DMR_INFO_LENGTH_BITS / 2U;
-  DEBUG4("SYNC corr MS Voice found pos/start/end: ", m_dataPtr, m_startPtr, m_endPtr);
+  if (m_endPtr >= DMR_BUFFER_LENGTH_BITS)
+    m_endPtr -= DMR_BUFFER_LENGTH_BITS;
+    
+  //DEBUG4("SYNC corr MS Voice found pos/start/end: ", m_dataPtr, m_startPtr, m_endPtr);
   }
 }
 
@@ -243,6 +264,9 @@ void CDMRSlotRX::bitsToBytes(uint16_t start, uint8_t count, uint8_t* buffer)
     buffer[i] |= ((m_buffer[start + 7U] & 0x01) << 0);
 
     start += 8U;
+
+    if (start >= DMR_BUFFER_LENGTH_BITS)
+      start -= DMR_BUFFER_LENGTH_BITS;
   }
 }
 
@@ -253,7 +277,7 @@ void CDMRSlotRX::setColorCode(uint8_t colorCode)
 
 void CDMRSlotRX::setDelay(uint8_t delay)
 {
-  m_delay = delay;
+  m_delay = delay / 5;
 }
 
 void CDMRSlotRX::writeRSSIData(uint8_t* frame)

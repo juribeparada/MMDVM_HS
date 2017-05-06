@@ -40,7 +40,6 @@ uint32_t           ADF7021_RX_REG0;
 uint32_t           ADF7021_TX_REG0;
 uint32_t           ADF7021_REG1;
 uint32_t           div2;
-uint8_t            m_control;
 
 static  void Send_AD7021_control_shift()
 {

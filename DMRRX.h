@@ -38,8 +38,7 @@ public:
   void reset();
 
 private:
-  CDMRSlotRX m_slot1RX;
-  CDMRSlotRX m_slot2RX;
+  CDMRSlotRX m_slotRX;
 };
 
 #endif

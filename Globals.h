@@ -81,6 +81,7 @@ extern CDStarRX dstarRX;
 extern CDStarTX dstarTX;
 
 #if defined(DUPLEX)
+extern uint8_t m_control;
 extern CDMRIdleRX dmrIdleRX;
 extern CDMRRX dmrRX;
 extern CDMRTX dmrTX;

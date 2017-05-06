@@ -227,12 +227,12 @@ void CDMRTX::writeByte(uint8_t c, uint8_t control)
       bit = 1U;
     else
       bit = 0U;
-    
+   
     control_tmp = MARK_NONE;
     
-    if( i == 0U)
+    if( i == 7U || i == 6U)
       control_tmp = control;
-      
+
     io.write(&bit, 1, &control_tmp);
 
   }
@@ -271,7 +271,7 @@ void CDMRTX::createData(uint8_t slotIndex)
 void CDMRTX::createCACH(uint8_t txSlotIndex, uint8_t rxSlotIndex)
 {
   m_frameCount++;
-
+          
   if (m_cachPtr >= 12U)
     m_cachPtr = 0U;
 

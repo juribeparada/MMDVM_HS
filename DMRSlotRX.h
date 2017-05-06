@@ -26,6 +26,8 @@
 
 #include "DMRDefines.h"
 
+const uint16_t DMR_BUFFER_LENGTH_BITS = 576U;
+
 enum DMRRX_STATE {
   DMRRXS_NONE,
   DMRRXS_VOICE,
@@ -34,9 +36,9 @@ enum DMRRX_STATE {
 
 class CDMRSlotRX {
 public:
-  CDMRSlotRX(bool slot);
+  CDMRSlotRX();
 
-  void start();
+  void start(bool slot);
 
   bool databit(bool bit);
 
@@ -48,7 +50,8 @@ public:
 private:
   bool        m_slot;
   uint64_t    m_patternBuffer;
-  uint8_t     m_buffer[400U];
+  uint8_t     m_buffer[DMR_BUFFER_LENGTH_BITS];
+  uint8_t     frame[DMR_FRAME_LENGTH_BYTES + 3U];
   uint16_t    m_dataPtr;
   uint16_t    m_syncPtr;
   uint16_t    m_startPtr;
@@ -62,7 +65,7 @@ private:
   uint8_t     m_n;
   uint8_t     m_type;
 
-  void correlateSync(bool first);
+  void correlateSync();
   void bitsToBytes(uint16_t start, uint8_t count, uint8_t* buffer);
   void writeRSSIData(uint8_t* frame);
 };

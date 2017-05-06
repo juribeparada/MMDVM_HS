@@ -39,6 +39,7 @@ CDStarRX   dstarRX;
 CDStarTX   dstarTX;
 
 #if defined(DUPLEX)
+uint8_t    m_control;
 CDMRIdleRX dmrIdleRX;
 CDMRRX     dmrRX;
 CDMRTX     dmrTX;

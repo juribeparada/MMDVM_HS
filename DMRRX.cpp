@@ -24,50 +24,39 @@
 #include "Globals.h"
 #include "DMRRX.h"
 
-CDMRRX::CDMRRX() :
-m_slot1RX(false),
-m_slot2RX(true)
+CDMRRX::CDMRRX()
 {
 }
 
 void CDMRRX::databit(bool bit, const uint8_t control)
 {
-  bool dcd1 = false;
-  bool dcd2 = false;
-
   switch (control) {
     case MARK_SLOT1:
-      m_slot1RX.start();
+      m_slotRX.start(false);
       break;
     case MARK_SLOT2:
-      m_slot2RX.start();
+      m_slotRX.start(true);
       break;
     default:
       break;
   }
-
-  dcd1 = m_slot1RX.databit(bit);
-  dcd2 = m_slot2RX.databit(bit);
-
-  io.setDecode(dcd1 || dcd2);
+  
+  io.setDecode(m_slotRX.databit(bit));
 }
 
 void CDMRRX::setColorCode(uint8_t colorCode)
 {
-  m_slot1RX.setColorCode(colorCode);
-  m_slot2RX.setColorCode(colorCode);
+  m_slotRX.setColorCode(colorCode);
 }
 
 void CDMRRX::setDelay(uint8_t delay)
 {
-  m_slot1RX.setDelay(delay);
-  m_slot2RX.setDelay(delay);
+  m_slotRX.setDelay(delay);
 }
 
 void CDMRRX::reset()
 {
-  m_slot1RX.reset();
-  m_slot2RX.reset();
+  m_slotRX.reset();
 }
 
 #endif
