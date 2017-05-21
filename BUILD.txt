@@ -282,8 +282,8 @@ scanning over all enabled modes, and you could have some detection delay. Enable
 #define SERIAL_REPEATER: enable a second serial port (USART2, pins PA2 and PA3) for Nextion
 LCD display.
 
-Pinout definitions for ZUMSpot Libre Kit (Carrier board):
-=========================================================
+Pinout definitions for ZUMSpot Libre Kit (Carrier board, RF7021SE + STM32F103 board):
+=====================================================================================
 - Main RF7021SE board:
 CE             PC14
 SLE            PB8
@@ -328,3 +328,39 @@ PIN_DEB        PB9 (debugging pin)
 
 * You could install a serie resistor (10 - 100 ohms) in each TxRxData and TxRxCLK lines, for
 reducing EMI.
+
+Pinout definitions for Arduino Due/Zero + RF7021SE:
+===================================================
+Use STM32duino + Arduino IDE for building the code 
+
+- Main RF7021SE board:
+CE            12
+SLE            6
+SREAD          5
+SDATA          4   // 2 in Arduino Zero Pro
+SCLK           3 
+DATA           7 (TxRxData)*
+DCLK           8 (TxRxCLK)*
+CLKOUT         2   // 4 in Arduino Zero Pro  (jumper wire in RF7021SE)
+PAC            9 (PTT LED)
+VCC            3.3 V
+GND            Ground
+
+- Serial ports:
+USB Arduino Programming Port (host communication)
+
+- Status LEDs:
+COS_LED       10
+PTT_LED        9
+P25_LED       17
+YSF_LED       16
+DMR_LED       15
+DSTAR_LED     14
+
+- Misc pins:
+PIN_LED       13
+PIN_DEB       11
+
+* You could install a serie resistor (10 - 100 ohms) in each TxRxData and TxRxCLK lines, for
+reducing EMI.
+
