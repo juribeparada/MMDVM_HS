@@ -28,7 +28,7 @@
 #include "DMRSlotType.h"
 #include "Utils.h"
 
-const uint8_t MAX_SYNC_BYTES_ERRS   = 1U;
+const uint8_t MAX_SYNC_BYTES_ERRS   = 3U;
 
 const uint8_t MAX_SYNC_LOST_FRAMES  = 13U;
 
@@ -254,17 +254,28 @@ void CDMRSlotRX::bitsToBytes(uint16_t start, uint8_t count, uint8_t* buffer)
 {
   for (uint8_t i = 0U; i < count; i++) {
     buffer[i]  = 0U;
-    buffer[i] |= ((m_buffer[start + 0U] & 0x01) << 7);
-    buffer[i] |= ((m_buffer[start + 1U] & 0x01) << 6);
-    buffer[i] |= ((m_buffer[start + 2U] & 0x01) << 5);
-    buffer[i] |= ((m_buffer[start + 3U] & 0x01) << 4);
-    buffer[i] |= ((m_buffer[start + 4U] & 0x01) << 3);
-    buffer[i] |= ((m_buffer[start + 5U] & 0x01) << 2);
-    buffer[i] |= ((m_buffer[start + 6U] & 0x01) << 1);
-    buffer[i] |= ((m_buffer[start + 7U] & 0x01) << 0);
-
-    start += 8U;
-
+    buffer[i] |= ((m_buffer[start++] & 0x01) << 7);
+    if (start >= DMR_BUFFER_LENGTH_BITS)
+      start -= DMR_BUFFER_LENGTH_BITS;
+    buffer[i] |= ((m_buffer[start++] & 0x01) << 6);
+    if (start >= DMR_BUFFER_LENGTH_BITS)
+      start -= DMR_BUFFER_LENGTH_BITS;
+    buffer[i] |= ((m_buffer[start++] & 0x01) << 5);
+    if (start >= DMR_BUFFER_LENGTH_BITS)
+      start -= DMR_BUFFER_LENGTH_BITS;
+    buffer[i] |= ((m_buffer[start++] & 0x01) << 4);
+    if (start >= DMR_BUFFER_LENGTH_BITS)
+      start -= DMR_BUFFER_LENGTH_BITS;
+    buffer[i] |= ((m_buffer[start++] & 0x01) << 3);
+    if (start >= DMR_BUFFER_LENGTH_BITS)
+      start -= DMR_BUFFER_LENGTH_BITS;
+    buffer[i] |= ((m_buffer[start++] & 0x01) << 2);
+    if (start >= DMR_BUFFER_LENGTH_BITS)
+      start -= DMR_BUFFER_LENGTH_BITS;
+    buffer[i] |= ((m_buffer[start++] & 0x01) << 1);
+    if (start >= DMR_BUFFER_LENGTH_BITS)
+      start -= DMR_BUFFER_LENGTH_BITS;
+    buffer[i] |= ((m_buffer[start++] & 0x01) << 0);
     if (start >= DMR_BUFFER_LENGTH_BITS)
       start -= DMR_BUFFER_LENGTH_BITS;
   }
