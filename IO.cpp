@@ -32,7 +32,6 @@ m_txBuffer(TX_RINGBUFFER_SIZE),
 m_LoDevYSF(false),
 m_ledCount(0U),
 m_scanEnable(false),
-m_modeTimerCnt(0U),
 m_scanPauseCnt(0U),
 m_scanPos(0U),
 m_ledValue(true),
@@ -57,6 +56,8 @@ m_watchdog(0U)
   SCLK_pin(LOW);
   SDATA_pin(LOW);
   SLE_pin(LOW);
+  
+  m_modeTimerCnt = 0;
 }
 
 void CIO::process()

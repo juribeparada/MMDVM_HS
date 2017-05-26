@@ -53,6 +53,8 @@ const uint16_t RX_RINGBUFFER_SIZE = 120U;
 extern MMDVM_STATE m_modemState;
 extern MMDVM_STATE m_modemState_prev;
 
+extern uint32_t m_modeTimerCnt;
+
 extern bool m_dstarEnable;
 extern bool m_dmrEnable;
 extern bool m_ysfEnable;
