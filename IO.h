@@ -124,7 +124,6 @@ private:
   bool               m_LoDevYSF;
   uint32_t           m_ledCount;
   bool               m_scanEnable;
-  uint32_t           m_modeTimerCnt;
   uint32_t           m_scanPauseCnt;
   uint8_t            m_scanPos;
   uint8_t            m_TotalModes;

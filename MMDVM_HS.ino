@@ -25,6 +25,8 @@
 MMDVM_STATE m_modemState = STATE_IDLE;
 MMDVM_STATE m_modemState_prev = STATE_IDLE;
 
+uint32_t m_modeTimerCnt;
+
 bool m_dstarEnable = true;
 bool m_dmrEnable   = true;
 bool m_ysfEnable   = true;

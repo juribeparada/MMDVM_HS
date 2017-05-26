@@ -30,6 +30,11 @@ const unsigned int SYNC_POS        = 21U * DSTAR_DATA_LENGTH_BITS;
 const unsigned int SYNC_SCAN_START = SYNC_POS - 3U;
 const unsigned int SYNC_SCAN_END   = SYNC_POS + 3U;
 
+// D-Star preamble sequence (only 32 bits of 101010...)
+const uint32_t PREAMBLE_MASK = 0xFFFFFFFFU;
+const uint32_t PREAMBLE_DATA = 0xAAAAAAAAU;
+const uint8_t  PREAMBLE_ERRS = 2U;
+
 // D-Star bit order version of 0x55 0x55 0x6E 0x0A
 const uint32_t FRAME_SYNC_DATA = 0x00557650U;
 const uint32_t FRAME_SYNC_MASK = 0x00FFFFFFU;
@@ -284,9 +289,21 @@ void CDStarRX::processNone(bool bit)
   if (bit)
     m_patternBuffer |= 0x01U;
 
+  // Fuzzy matching of the preamble sync sequence
+  if (countBits32((m_patternBuffer & PREAMBLE_MASK) ^ PREAMBLE_DATA) <= PREAMBLE_ERRS) {
+    DEBUG1("DStarRX: preamble detected, fuzzy");
+
+    // Extend scan period in D-Star, once preamble is detected
+    m_modeTimerCnt = 0;
+
+    m_rxState = DSRXS_NONE;
+
+    return;
+  }
+
   // Fuzzy matching of the frame sync sequence
   if (countBits32((m_patternBuffer & FRAME_SYNC_MASK) ^ FRAME_SYNC_DATA) <= FRAME_SYNC_ERRS) {
-    DEBUG1("DStarRX: found frame sync in None");
+    DEBUG1("DStarRX: found frame sync in None, fuzzy");
 
     ::memset(m_rxBuffer, 0x00U, DSTAR_FEC_SECTION_LENGTH_BYTES);
     m_rxBufferBits = 0U;
@@ -297,7 +314,7 @@ void CDStarRX::processNone(bool bit)
 
   // Exact matching of the data sync bit sequence
   if (countBits32((m_patternBuffer & DATA_SYNC_MASK) ^ DATA_SYNC_DATA) == 0U) {
-    DEBUG1("DStarRX: found data sync in None");
+    DEBUG1("DStarRX: found data sync in None, exact");
     
     io.setDecode(true);
 
