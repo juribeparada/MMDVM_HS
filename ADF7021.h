@@ -62,7 +62,11 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_DEV_DMR          23U
 #define ADF7021_DEV_YSF_L        18U
 #define ADF7021_DEV_YSF_H        36U
+#if defined(ENABLE_P25_WIDE)
+#define ADF7021_DEV_P25          32U
+#else
 #define ADF7021_DEV_P25          22U
+#endif
 
 // TX/RX CLOCK register (REG 03)
 #define ADF7021_REG3_DSTAR       0x2A4C4193
@@ -142,7 +146,11 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_DEV_DMR          14U
 #define ADF7021_DEV_YSF_L        11U
 #define ADF7021_DEV_YSF_H        21U
+#if defined(ENABLE_P25_WIDE)
+#define ADF7021_DEV_P25          21U
+#else
 #define ADF7021_DEV_P25          14U
+#endif
 
 // TX/RX CLOCK register (REG 03)
 #define ADF7021_REG3_DSTAR       0x29EC4153
@@ -220,7 +228,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_SLICER_TH_DMR    57U
 #define ADF7021_SLICER_TH_YSF_L  38U
 #define ADF7021_SLICER_TH_YSF_H  75U
-#define ADF7021_SLICER_TH_P25    52U
+#define ADF7021_SLICER_TH_P25    47U
 
 #endif
 

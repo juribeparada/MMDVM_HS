@@ -62,4 +62,7 @@
 // Enable Nextion LCD serial port repeater:
 // #define SERIAL_REPEATER
 
+// Enable P25 Wide modulation
+// #define ENABLE_P25_WIDE
+
 #endif
