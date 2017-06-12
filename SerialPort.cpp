@@ -23,6 +23,10 @@
 #include "Config.h"
 #include "Globals.h"
 
+#if defined(MADEBYMAKEFILE)
+#include "GitVersion.h"
+#endif
+
 #include "SerialPort.h"
 
 const uint8_t MMDVM_FRAME_START  = 0xE0U;
@@ -74,9 +78,14 @@ const uint8_t MMDVM_DEBUG5       = 0xF5U;
 #define DESCRIPTION              "MMDVM_HS-ADF7021 20170521 (D-Star/DMR/YSF/P25)"
 #endif
 
+#if defined(GITVERSION)
+#define concat(a, b) a " GitID #" b ""
+const char HARDWARE[] = concat(DESCRIPTION, GITVERSION);
+#else
 #define concat(a, b, c) a " (Build: " b " " c ")"
 const char HARDWARE[] = concat(DESCRIPTION, __TIME__, __DATE__);
- 
+#endif
+
 const uint8_t PROTOCOL_VERSION   = 1U;
 
 CSerialPort::CSerialPort() :
