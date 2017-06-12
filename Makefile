@@ -107,8 +107,8 @@ BINBIN=outp.bin
 MCFLAGS=-mcpu=cortex-m3 -march=armv7-m -mthumb -Wall -Wextra
 
 # COMPILE FLAGS
-DEFS_HS=-DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DHSE_VALUE=$(OSC) -DVECT_TAB_OFFSET=0x0
-DEFS_HS_BL=-DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DHSE_VALUE=$(OSC) -DVECT_TAB_OFFSET=0x2000
+DEFS_HS=-DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DHSE_VALUE=$(OSC) -DVECT_TAB_OFFSET=0x0 -DMADEBYMAKEFILE
+DEFS_HS_BL=-DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DHSE_VALUE=$(OSC) -DVECT_TAB_OFFSET=0x2000 -DMADEBYMAKEFILE
 
 CFLAGS=-c $(MCFLAGS) $(INCLUDES) -DCUSTOM_NEW -DNO_EXCEPTIONS -Wno-unused-parameter
 CXXFLAGS=-c $(MCFLAGS) $(INCLUDES) -DCUSTOM_NEW -DNO_EXCEPTIONS -Wno-unused-parameter
@@ -138,6 +138,7 @@ debug: CXXFLAGS+=-g $(DEFS_HS)
 debug: LDFLAGS+=-g
 debug: release
 
+release: GitVersion.h
 release: $(BINDIR)
 release: $(BINDIR)/$(BINHEX)
 release: $(BINDIR)/$(BINBIN)
@@ -172,6 +173,7 @@ $(BINDIR)/$(BINELF): $(OBJECTS)
 
 clean:
 	$(CLEANCMD)
+	$(RM) GitVersion.h
 	
 stlink:
 	$(ST_FLASH) write bin/$(BINBIN) 0x8000000
@@ -230,3 +232,14 @@ ifneq ($(wildcard /opt/openocd/bin/openocd),)
 	/opt/openocd/bin/openocd -f /opt/openocd/scripts/interface/stlink-v2-1.cfg -f /opt/openocd/share/openocd/scripts/target/stm32f1x.cfg -c "program STM32F10X_Lib/utils/bootloader/generic_boot20_pc13.bin verify reset exit 0x08000000"
 	/opt/openocd/bin/openocd -f /opt/openocd/scripts/interface/stlink-v2-1.cfg -f /opt/openocd/share/openocd/scripts/target/stm32f1x.cfg -c "program bin/$(BINBIN) verify reset exit 0x08002000"
 endif
+
+# Export the current git version if the index file exists, else 000...
+GitVersion.h: .FORCE
+ifneq ("$(wildcard .git/index)","")
+	echo "#define GITVERSION \"$(shell git rev-parse --short HEAD)\"" > $@
+else
+	echo "#define GITVERSION \"0000000\"" > $@
+endif
+
+.FORCE:
+
