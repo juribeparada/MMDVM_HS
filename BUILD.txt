@@ -282,6 +282,10 @@ scanning over all enabled modes, and you could have some detection delay. Enable
 #define SERIAL_REPEATER: enable a second serial port (USART2, pins PA2 and PA3) for Nextion
 LCD display.
 
+#define ENABLE_P25_WIDE: enable support for Motorola Wide P25 mod/demod in XTS3000 radios. Using
+this mode improves RX BER. You need to enable this mode in your radio for each conventional
+personalities.
+
 Pinout definitions for ZUMSpot Libre Kit (Carrier board, RF7021SE + STM32F103 board):
 =====================================================================================
 - Main RF7021SE board:
