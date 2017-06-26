@@ -50,12 +50,11 @@ public:
   void writeDebug(const char* text, int16_t n1, int16_t n2, int16_t n3);
   void writeDebug(const char* text, int16_t n1, int16_t n2, int16_t n3, int16_t n4);
 
-  void writeAssert(bool cond, const char* text, const char* file, long line);
-
 private:
   uint8_t m_buffer[256U];
   uint8_t m_ptr;
   uint8_t m_len;
+  bool    m_debug;
 
   void    sendACK();
   void    sendNAK(uint8_t err);
