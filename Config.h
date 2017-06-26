@@ -20,11 +20,11 @@
 #define  CONFIG_H
 
 // Select one board:
-// 1) Initial release of Pi HAT:
+// 1) Initial release of ZUM-Spot Pi:
 // #define PI_HAT_7021_REV_02
-// 2) ZUM-Spot USB v0.1 and Pi HAT v0.3:
+// 2) ZUM-Spot USB and ZUM-Spot Pi HAT:
 // #define PI_HAT_7021_REV_03
-// 3) Board with modified RF7021SE and Blue Pill STM32F103 (initial tests)
+// 3) ZUM-Spot Libre Kit or board with modified RF7021SE and Blue Pill STM32F103
 #define ADF7021_CARRIER_BOARD
 
 // Enable ADF7021 support:
@@ -42,9 +42,8 @@
 // For 12.2880 MHz:
 // #define ADF7021_12_2880
 
-// AFC is enabled by default in D-Star
-
 // Enable AFC support for DMR, YSF and P25 (experimental)
+// AFC is already enabled by default in D-Star
 // #define ADF7021_ENABLE_4FSK_AFC
 // Configure AFC with positive initial frequency offset
 // #define ADF7021_AFC_POS
