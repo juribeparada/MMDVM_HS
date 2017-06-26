@@ -21,8 +21,6 @@
 
 #if defined(DUPLEX)
 
-#define  WANT_DEBUG
-
 #include "Globals.h"
 #include "DMRSlotRX.h"
 #include "DMRSlotType.h"
