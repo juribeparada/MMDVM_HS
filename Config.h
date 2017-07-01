@@ -19,7 +19,7 @@
 #if !defined(CONFIG_H)
 #define  CONFIG_H
 
-// Select one board:
+// Select one board (STM32F103 based boards):
 // 1) Initial release of ZUM-Spot Pi:
 // #define PI_HAT_7021_REV_02
 // 2) ZUM-Spot USB and ZUM-Spot Pi HAT:
