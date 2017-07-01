@@ -87,16 +87,19 @@ nano MMDVM.ini
 - Execute MMDVMHost:
 ./MMDVMHost MMDVM.ini
 
-2) ZUMSpot USB:
+2) ZUMSpot Libre Kit and ZUMSpot USB:
 
 * Windows:
-- Download and install the version 1.6.9 of the Arduino IDE:
-https://www.arduino.cc/en/Main/OldSoftwareReleases#previous
+- Download and install the Arduino IDE:
+https://www.arduino.cc/en/Main/Software
+
+- Run Arduino IDE. On the Tools menu, select the Boards manager, and install the "Arduino SAM"
+Boards from the list of available boards.
 
 - Download STM32duino (Arduino for STM32) from this URL:
 https://github.com/rogerclarkmelbourne/Arduino_STM32/tree/ZUMspot
 
-- Unzip to create the Arduino_STM32 folder
+- Unzip and change the main folder "Arduino_STM32-ZUMSpot" to "Arduino_STM32"
 
 - Copy Arduino_STM32 folder in:
 My Documents/Arduino/hardware
@@ -104,11 +107,19 @@ My Documents/Arduino/hardware
 - Install the USB bootloader to STM32F103. Follow the instructions:
 https://github.com/rogerclarkmelbourne/Arduino_STM32/wiki/stm32duino-bootloader
 
+- Connect the ZUMSpot USB to your PC. Install the USB Mapple driver using the bat file: 
+My Documents/Arduino/hardware/Arduino_STM32/drivers/win/install_drivers.bat
+(you may also check: http://wiki.stm32duino.com/index.php?title=Windows_driver_installation)
+
+- You have to be sure that Windows detect your ZUMSpot as an USB serial device COMx (please
+see Windows Device Manager)
+
 - Download the source (zip file) of MMDVM_HS from https://github.com/juribeparada/MMDVM_HS
-(Do not download or install the STM32F103 libraries, STM32F10X_Lib, they are not necessary
+(Do not download or install the STM32F103 library, STM32F10X_Lib, this is not necessary
 under STM32duino).
 
-- Unzip MMDVM_HS-master.zip in a local folder.
+- Unzip MMDVM_HS-master.zip and change the folder name to "MMDVM_HS". The path name to this
+folder can't have spaces.
 
 - Start the Arduino IDE. Open the MMDVM_HS.ino file in the MMDVM_HS folder.
 
@@ -131,8 +142,9 @@ Serial port: COMx (Maple Mini)
 
 - Click the Upload button in the IDE and wait for the transfer.
 
-- Once the transfer is completed, press the RESET button of the board. In the case of
-ZUMSpot Libre Kit, you will see the LED (PC13) of the blue pill blinking.
+- Once the transfer is completed, press the RESET button of the board or disconnect and
+connect the USB cable. In the case of ZUMSpot Libre Kit, you will see the LED (PC13) of
+the blue pill blinking.
 
 - Once you connect with MMDVMHost, the LED will blink fast in the ZUMSpot Libre Kit.
 
