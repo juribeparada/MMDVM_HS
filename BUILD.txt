@@ -296,7 +296,7 @@ SDATA          PB6
 SCLK           PB5
 DATA           PB4 (TxRxData)*
 DCLK           PB3 (TxRxCLK)*
-CLKOUT         PA15 (jumper wire in RF7021SE)
+CLKOUT         PA15 (jumper wire in RF7021SE, not needed with BIDIR_DATA_PIN enabled)
 PAC            PB14 (PTT LED)
 VCC            3.3 V
 GND            Ground
@@ -335,7 +335,7 @@ reducing EMI.
 
 Pinout definitions for Arduino Due/Zero + RF7021SE:
 ===================================================
-Use STM32duino + Arduino IDE for building the code 
+Use Arduino IDE for building the code 
 
 - Main RF7021SE board:
 CE            12
@@ -345,7 +345,7 @@ SDATA          4   // 2 in Arduino Zero Pro
 SCLK           3 
 DATA           7 (TxRxData)*
 DCLK           8 (TxRxCLK)*
-CLKOUT         2   // 4 in Arduino Zero Pro  (jumper wire in RF7021SE)
+CLKOUT         2   // 4 in Arduino Zero Pro  (jumper wire in RF7021SE, not needed with BIDIR_DATA_PIN enabled)
 PAC            9 (PTT LED)
 VCC            3.3 V
 GND            Ground
@@ -368,3 +368,39 @@ PIN_DEB       11
 * You could install a serie resistor (10 - 100 ohms) in each TxRxData and TxRxCLK lines, for
 reducing EMI.
 
+Pinout definitions for Teensy (3.1, 3.2, 3.5 or 3.6) + RF7021SE:
+===================================================
+Use Teensyduino + Arduino IDE for building the code 
+
+- Main RF7021SE board:
+CE             6
+SLE            5
+SREAD          4
+SDATA          3
+SCLK           2
+DATA           7 (TxRxData)*
+DCLK           8 (TxRxCLK)*
+CLKOUT         22 (jumper wire in RF7021SE, not needed with BIDIR_DATA_PIN enabled)
+PAC            14 (PTT LED)
+VCC            3.3 V
+GND            Ground
+
+- Serial ports:
+Teensy USB Port (host communication)
+DISP_TXD       1 (Nextion LCD serial repeater)
+DISP_RXD       0 (Nextion LCD serial repeater)
+
+- Status LEDs:
+COS_LED       15
+PTT_LED       14
+P25_LED       19
+YSF_LED       18
+DMR_LED       17
+DSTAR_LED     16
+
+- Misc pins:
+PIN_LED       13
+PIN_DEB       23
+
+* You could install a serie resistor (10 - 100 ohms) in each TxRxData and TxRxCLK lines, for
+reducing EMI.
