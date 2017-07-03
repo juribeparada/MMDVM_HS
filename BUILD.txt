@@ -57,6 +57,8 @@ git clone https://github.com/juribeparada/MMDVM_HS
 cd MMDVM_HS/
 git clone https://github.com/juribeparada/STM32F10X_Lib
 
+(Please do not download any different code inside MMDVM_HS folder)
+
 - Edit Config.h
 nano Config.h
 (and enable):
@@ -87,16 +89,19 @@ nano MMDVM.ini
 - Execute MMDVMHost:
 ./MMDVMHost MMDVM.ini
 
-2) ZUMSpot USB:
+2) ZUMSpot Libre Kit and ZUMSpot USB:
 
 * Windows:
-- Download and install the version 1.6.9 of the Arduino IDE:
-https://www.arduino.cc/en/Main/OldSoftwareReleases#previous
+- Download and install the Arduino IDE:
+https://www.arduino.cc/en/Main/Software
+
+- Run Arduino IDE. On the Tools menu, select the Boards manager, and install the "Arduino SAM"
+Boards from the list of available boards.
 
 - Download STM32duino (Arduino for STM32) from this URL:
 https://github.com/rogerclarkmelbourne/Arduino_STM32/tree/ZUMspot
 
-- Unzip to create the Arduino_STM32 folder
+- Unzip and change the main folder "Arduino_STM32-ZUMSpot" to "Arduino_STM32"
 
 - Copy Arduino_STM32 folder in:
 My Documents/Arduino/hardware
@@ -104,11 +109,19 @@ My Documents/Arduino/hardware
 - Install the USB bootloader to STM32F103. Follow the instructions:
 https://github.com/rogerclarkmelbourne/Arduino_STM32/wiki/stm32duino-bootloader
 
+- Connect the ZUMSpot USB to your PC. Install the USB Mapple driver using the bat file: 
+My Documents/Arduino/hardware/Arduino_STM32/drivers/win/install_drivers.bat
+(you may also check: http://wiki.stm32duino.com/index.php?title=Windows_driver_installation)
+
+- You have to be sure that Windows detect your ZUMSpot as an USB serial device COMx (please
+see Windows Device Manager)
+
 - Download the source (zip file) of MMDVM_HS from https://github.com/juribeparada/MMDVM_HS
-(Do not download or install the STM32F103 libraries, STM32F10X_Lib, they are not necessary
+(Do not download or install the STM32F103 library, STM32F10X_Lib, this is not necessary
 under STM32duino).
 
-- Unzip MMDVM_HS-master.zip in a local folder.
+- Unzip MMDVM_HS-master.zip and change the folder name to "MMDVM_HS". The path name to this
+folder can't have spaces.
 
 - Start the Arduino IDE. Open the MMDVM_HS.ino file in the MMDVM_HS folder.
 
@@ -131,8 +144,9 @@ Serial port: COMx (Maple Mini)
 
 - Click the Upload button in the IDE and wait for the transfer.
 
-- Once the transfer is completed, press the RESET button of the board. In the case of
-ZUMSpot Libre Kit, you will see the LED (PC13) of the blue pill blinking.
+- Once the transfer is completed, press the RESET button of the board or disconnect and
+connect the USB cable. In the case of ZUMSpot Libre Kit, you will see the LED (PC13) of
+the blue pill blinking.
 
 - Once you connect with MMDVMHost, the LED will blink fast in the ZUMSpot Libre Kit.
 
@@ -146,6 +160,8 @@ sudo apt-get install gcc-arm-none-eabi gdb-arm-none-eabi libstdc++-arm-none-eabi
 git clone https://github.com/juribeparada/MMDVM_HS
 cd MMDVM_HS/
 git clone https://github.com/juribeparada/STM32F10X_Lib
+
+(Please do not download any different code inside MMDVM_HS folder)
 
 - Edit Config.h
 nano Config.h
@@ -296,7 +312,7 @@ SDATA          PB6
 SCLK           PB5
 DATA           PB4 (TxRxData)*
 DCLK           PB3 (TxRxCLK)*
-CLKOUT         PA15 (jumper wire in RF7021SE)
+CLKOUT         PA15 (jumper wire in RF7021SE, not needed with BIDIR_DATA_PIN enabled)
 PAC            PB14 (PTT LED)
 VCC            3.3 V
 GND            Ground
@@ -335,7 +351,7 @@ reducing EMI.
 
 Pinout definitions for Arduino Due/Zero + RF7021SE:
 ===================================================
-Use STM32duino + Arduino IDE for building the code 
+Use Arduino IDE for building the code 
 
 - Main RF7021SE board:
 CE            12
@@ -345,7 +361,7 @@ SDATA          4   // 2 in Arduino Zero Pro
 SCLK           3 
 DATA           7 (TxRxData)*
 DCLK           8 (TxRxCLK)*
-CLKOUT         2   // 4 in Arduino Zero Pro  (jumper wire in RF7021SE)
+CLKOUT         2   // 4 in Arduino Zero Pro  (jumper wire in RF7021SE, not needed with BIDIR_DATA_PIN enabled)
 PAC            9 (PTT LED)
 VCC            3.3 V
 GND            Ground
@@ -368,3 +384,39 @@ PIN_DEB       11
 * You could install a serie resistor (10 - 100 ohms) in each TxRxData and TxRxCLK lines, for
 reducing EMI.
 
+Pinout definitions for Teensy (3.1, 3.2, 3.5 or 3.6) + RF7021SE:
+===================================================
+Use Teensyduino + Arduino IDE for building the code 
+
+- Main RF7021SE board:
+CE             6
+SLE            5
+SREAD          4
+SDATA          3
+SCLK           2
+DATA           7 (TxRxData)*
+DCLK           8 (TxRxCLK)*
+CLKOUT         22 (jumper wire in RF7021SE, not needed with BIDIR_DATA_PIN enabled)
+PAC            14 (PTT LED)
+VCC            3.3 V
+GND            Ground
+
+- Serial ports:
+Teensy USB Port (host communication)
+DISP_TXD       1 (Nextion LCD serial repeater)
+DISP_RXD       0 (Nextion LCD serial repeater)
+
+- Status LEDs:
+COS_LED       15
+PTT_LED       14
+P25_LED       19
+YSF_LED       18
+DMR_LED       17
+DSTAR_LED     16
+
+- Misc pins:
+PIN_LED       13
+PIN_DEB       23
+
+* You could install a serie resistor (10 - 100 ohms) in each TxRxData and TxRxCLK lines, for
+reducing EMI.

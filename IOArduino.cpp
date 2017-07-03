@@ -94,6 +94,26 @@
 #error "Either PI_HAT_7021_REV_02, PI_HAT_7021_REV_03, or ADF7021_CARRIER_BOARD need to be defined"
 #endif
 
+#elif defined(__MK20DX256__) || defined(__MK64FX512__) || defined(__MK66FX1M0__)
+
+// Teensy pin definitions
+#define PIN_SCLK       2 
+#define PIN_SDATA      3
+#define PIN_SREAD      4
+#define PIN_SLE        5
+#define PIN_CE         6
+#define PIN_RXD        7
+#define PIN_TXD        8
+#define PIN_CLKOUT    22
+#define PIN_LED       13
+#define PIN_DEB       23
+#define PIN_DSTAR_LED 16
+#define PIN_DMR_LED   17
+#define PIN_YSF_LED   18
+#define PIN_P25_LED   19
+#define PIN_PTT_LED   14
+#define PIN_COS_LED   15
+
 #else
 
 // Arduino pin definitions (Due and Zero)
