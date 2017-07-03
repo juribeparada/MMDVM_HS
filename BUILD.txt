@@ -57,6 +57,8 @@ git clone https://github.com/juribeparada/MMDVM_HS
 cd MMDVM_HS/
 git clone https://github.com/juribeparada/STM32F10X_Lib
 
+(Please do not download any different code inside MMDVM_HS folder)
+
 - Edit Config.h
 nano Config.h
 (and enable):
@@ -158,6 +160,8 @@ sudo apt-get install gcc-arm-none-eabi gdb-arm-none-eabi libstdc++-arm-none-eabi
 git clone https://github.com/juribeparada/MMDVM_HS
 cd MMDVM_HS/
 git clone https://github.com/juribeparada/STM32F10X_Lib
+
+(Please do not download any different code inside MMDVM_HS folder)
 
 - Edit Config.h
 nano Config.h
