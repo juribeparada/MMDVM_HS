@@ -47,8 +47,8 @@ enum MMDVM_STATE {
 #include "P25TX.h"
 #include "Debug.h"
 
-const uint16_t TX_RINGBUFFER_SIZE = 256U;
-const uint16_t RX_RINGBUFFER_SIZE = 256U;
+const uint16_t TX_RINGBUFFER_SIZE = 512U;
+const uint16_t RX_RINGBUFFER_SIZE = 512U;
 
 extern MMDVM_STATE m_modemState;
 extern MMDVM_STATE m_modemState_prev;
