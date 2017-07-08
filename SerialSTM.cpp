@@ -208,7 +208,7 @@ void InitUSART1(int speed)
   RXSerialfifoinit1();
 }
 
-uint8_t AvailUSART1(void)
+uint8_t AvailUSART1()
 {
   if (RXSerialfifolevel1() > 0U)
     return 1U;
@@ -216,7 +216,7 @@ uint8_t AvailUSART1(void)
     return 0U;
 }
 
-uint8_t ReadUSART1(void)
+uint8_t ReadUSART1()
 {
   uint8_t data_c = RXSerialfifo1[RXSerialfifotail1];
 
@@ -403,7 +403,7 @@ void InitUSART2(int speed)
   RXSerialfifoinit2();
 }
 
-uint8_t AvailUSART2(void)
+uint8_t AvailUSART2()
 {
   if (RXSerialfifolevel2() > 0U)
     return 1U;
@@ -411,7 +411,7 @@ uint8_t AvailUSART2(void)
     return 0U;
 }
 
-uint8_t ReadUSART2(void)
+uint8_t ReadUSART2()
 {
   uint8_t data_c = RXSerialfifo2[RXSerialfifotail2];
 
@@ -468,7 +468,7 @@ int CSerialPort::availableInt(uint8_t n)
       return AvailUSART2();
     #endif
     default:
-      return false;
+      return 0;
   }
 }
 
