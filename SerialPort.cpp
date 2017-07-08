@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2013,2015,2016,2017 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2013,2015,2016 by Jonathan Naylor G4KLX
  *   Copyright (C) 2016 by Colin Durbridge G4EML
  *   Copyright (C) 2016, 2017 by Andy Uribe CA6JAU
  *
@@ -90,8 +90,7 @@ CSerialPort::CSerialPort() :
 m_buffer(),
 m_ptr(0U),
 m_len(0U),
-m_debug(false),
-m_repeat()
+m_debug(false)
 {
 }
 
@@ -537,11 +536,12 @@ void CSerialPort::process()
             }
             break;
 
+#if defined(SERIAL_REPEATER)
           case MMDVM_SERIAL:
-            for (uint8_t i = 3U; i < m_len; i++)
-              m_repeat.put(m_buffer[i]);
+            writeInt(3U, m_buffer + 3U, m_len - 3U);
             break;
-            
+#endif
+
           default:
             // Handle this, send a NAK back
             sendNAK(1U);
@@ -555,20 +555,7 @@ void CSerialPort::process()
   }
 
 #if defined(SERIAL_REPEATER)
-  // Write any outgoing serial data
-  uint16_t space = m_repeat.getData();
-  if (space > 0U) {
-    int avail = availableForWriteInt(3U);
-    if (avail < space)
-      space = avail;
-
-    for (uint16_t i = 0U; i < space; i++) {
-      uint8_t c = m_repeat.get();
-      writeInt(3U, &c, 1U);
-    }
-  }
-
-  // Read any incoming serial data
+  // Drain any incoming serial data
   while (availableInt(3U))
     readInt(3U);
 #endif
