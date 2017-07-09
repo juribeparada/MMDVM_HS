@@ -497,8 +497,8 @@ void CSerialPort::writeInt(uint8_t n, const uint8_t* data, uint16_t length, bool
       usbserial.write(data, length);
       if (flush)
         usbserial.flush();
-      break;
     #endif
+      break;
     #if defined(SERIAL_REPEATER)
     case 3U:
       WriteUSART2(data, length);

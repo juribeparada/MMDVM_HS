@@ -62,7 +62,7 @@ int CSerialPort::availableInt(uint8_t n)
       return Serial1.available();
     #endif
     default:
-      return false;
+      return 0;
   }
 }
 
@@ -92,21 +92,19 @@ void CSerialPort::writeInt(uint8_t n, const uint8_t* data, uint16_t length, bool
     case 1U:
     #if defined(STM32_USART1_HOST) && defined(__STM32F1__)
       Serial1.write(data, length);
-      break;
     #else
       Serial.write(data, length);
       if (flush)
         Serial.flush();
-      break;
     #endif
+      break;
     case 3U:
     #if defined(SERIAL_REPEATER) && defined(__STM32F1__)
       Serial2.write(data, length);
-      break;
     #elif defined(SERIAL_REPEATER) && (defined(__MK20DX256__) || defined(__MK64FX512__) || defined(__MK66FX1M0__))
       Serial1.write(data, length);
-      break;
     #endif
+      break;
     default:
       break;
   }
