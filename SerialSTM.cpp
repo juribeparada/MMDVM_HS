@@ -52,7 +52,6 @@ extern "C" {
 
 /* ************* USART1 ***************** */
 
-volatile uint32_t intcount1;
 volatile uint8_t  TXSerialfifo1[TX_SERIAL_FIFO_SIZE];
 volatile uint8_t  RXSerialfifo1[RX_SERIAL_FIFO_SIZE];
 volatile uint16_t TXSerialfifohead1, TXSerialfifotail1;
@@ -139,7 +138,6 @@ void USART1_IRQHandler()
     }
 
     USART_ClearITPendingBit(USART1, USART_IT_RXNE);
-    intcount1++;
   }
 
   if (USART_GetITStatus(USART1, USART_IT_TXE)) {
@@ -245,7 +243,6 @@ extern "C" {
 
 /* ************* USART2 ***************** */
 
-volatile uint32_t intcount2;
 volatile uint8_t  TXSerialfifo2[TX_SERIAL_FIFO_SIZE];
 volatile uint8_t  RXSerialfifo2[RX_SERIAL_FIFO_SIZE];
 volatile uint16_t TXSerialfifohead2, TXSerialfifotail2;
@@ -317,7 +314,6 @@ uint8_t TXSerialfifoput2(uint8_t next)
 void USART2_IRQHandler()
 {
   uint8_t c;
-  io.DEB_pin(HIGH);
   
   if (USART_GetITStatus(USART2, USART_IT_RXNE)) {
     c = (uint8_t) USART_ReceiveData(USART2);
@@ -333,7 +329,6 @@ void USART2_IRQHandler()
     }
 
     USART_ClearITPendingBit(USART2, USART_IT_RXNE);
-    intcount2++;
   }
 
   if (USART_GetITStatus(USART2, USART_IT_TXE)) {
