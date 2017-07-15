@@ -24,7 +24,9 @@
 // #define PI_HAT_7021_REV_02
 // 2) ZUM-Spot USB and ZUM-Spot Pi HAT:
 // #define PI_HAT_7021_REV_03
-// 3) ZUM-Spot Libre Kit or board with modified RF7021SE and Blue Pill STM32F103
+// 3) ZUM-Spot Libre Kit
+// #define ZUMSPOT_LIBRE
+// 4) board with modified RF7021SE and Blue Pill STM32F103
 #define ADF7021_CARRIER_BOARD
 
 // Enable ADF7021 support:

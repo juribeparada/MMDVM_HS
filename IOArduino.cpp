@@ -65,7 +65,7 @@
 #define PIN_PTT_LED    PB14
 #define PIN_COS_LED    PB15
 
-#elif defined(ADF7021_CARRIER_BOARD)
+#elif defined(ADF7021_CARRIER_BOARD) || defined(ZUMSPOT_LIBRE)
 
 #define PIN_SCLK       PB5
 #define PIN_SREAD      PB7
@@ -85,7 +85,7 @@
 #define PIN_COS_LED    PB15
 
 #else
-#error "Either PI_HAT_7021_REV_02, PI_HAT_7021_REV_03, or ADF7021_CARRIER_BOARD need to be defined"
+#error "Either PI_HAT_7021_REV_02, PI_HAT_7021_REV_03, ZUMSPOT_LIBRE or ADF7021_CARRIER_BOARD need to be defined"
 #endif
 
 #elif defined(__MK20DX256__) || defined(__MK64FX512__) || defined(__MK66FX1M0__)
@@ -150,7 +150,7 @@ void CIO::Init()
 
 #if defined(PI_HAT_7021_REV_02)
   afio_cfg_debug_ports(AFIO_DEBUG_NONE);
-#elif defined(PI_HAT_7021_REV_03) || defined(ADF7021_CARRIER_BOARD)
+#elif defined(PI_HAT_7021_REV_03) || defined(ADF7021_CARRIER_BOARD) || defined(ZUMSPOT_LIBRE)
   afio_cfg_debug_ports(AFIO_DEBUG_SW_ONLY);
 #endif
 

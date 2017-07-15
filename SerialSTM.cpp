@@ -44,7 +44,7 @@ USART2 - TXD PA2  - RXD PA3
 #define TX_SERIAL_FIFO_SIZE 256U
 #define RX_SERIAL_FIFO_SIZE 256U
 
-#if defined(STM32_USART1_HOST)
+#if defined(STM32_USART1_HOST) || defined(SERIAL_REPEATER)
 
 extern "C" {
   void USART1_IRQHandler();
@@ -439,9 +439,13 @@ void CSerialPort::beginInt(uint8_t n, int speed)
       usbserial.begin();
     #endif
       break;
-    #if defined(SERIAL_REPEATER)
+    #if defined(SERIAL_REPEATER) && (defined(STM32_USART1_HOST) || defined(ZUMSPOT_LIBRE))
     case 3U:
       InitUSART2(speed);
+      break;
+    #elif defined(SERIAL_REPEATER)
+    case 3U:
+      InitUSART1(speed);
       break;
     #endif
     default:
@@ -458,9 +462,12 @@ int CSerialPort::availableInt(uint8_t n)
     #elif defined(STM32_USB_HOST)
       return usbserial.available();
     #endif
-    #if defined(SERIAL_REPEATER)
+    #if defined(SERIAL_REPEATER) && (defined(STM32_USART1_HOST) || defined(ZUMSPOT_LIBRE))
     case 3U: 
       return AvailUSART2();
+    #elif defined(SERIAL_REPEATER)
+    case 3U: 
+      return AvailUSART1();
     #endif
     default:
       return 0;
@@ -476,9 +483,12 @@ uint8_t CSerialPort::readInt(uint8_t n)
     #elif defined(STM32_USB_HOST)
       return usbserial.read();
     #endif
-    #if defined(SERIAL_REPEATER)
+    #if defined(SERIAL_REPEATER) && (defined(STM32_USART1_HOST) || defined(ZUMSPOT_LIBRE))
     case 3U:
       return ReadUSART2();
+    #elif defined(SERIAL_REPEATER)
+    case 3U:
+      return ReadUSART1();
     #endif
     default:
       return 0U;
@@ -499,11 +509,17 @@ void CSerialPort::writeInt(uint8_t n, const uint8_t* data, uint16_t length, bool
         usbserial.flush();
     #endif
       break;
-    #if defined(SERIAL_REPEATER)
+    #if defined(SERIAL_REPEATER) && (defined(STM32_USART1_HOST) || defined(ZUMSPOT_LIBRE))
     case 3U:
       WriteUSART2(data, length);
       if (flush)
         TXSerialFlush2();
+      break;
+    #elif defined(SERIAL_REPEATER)
+    case 3U:
+      WriteUSART1(data, length);
+      if (flush)
+        TXSerialFlush1();
       break;
     #endif
     default:
