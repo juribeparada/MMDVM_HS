@@ -71,9 +71,9 @@ const uint8_t MMDVM_DEBUG4       = 0xF4U;
 const uint8_t MMDVM_DEBUG5       = 0xF5U;
 
 #if defined(ADF7021_N_VER)
-#define DESCRIPTION              "MMDVM_HS-ADF7021N 20170521 (D-Star/DMR/YSF/P25)"
+#define DESCRIPTION              "MMDVM_HS-ADF7021N 20170715 (DStar/DMR/YSF/P25)"
 #else
-#define DESCRIPTION              "MMDVM_HS-ADF7021 20170521 (D-Star/DMR/YSF/P25)"
+#define DESCRIPTION              "MMDVM_HS-ADF7021 20170715 (DStar/DMR/YSF/P25)"
 #endif
 
 #if defined(GITVERSION)
