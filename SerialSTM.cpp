@@ -439,15 +439,13 @@ void CSerialPort::beginInt(uint8_t n, int speed)
       usbserial.begin();
     #endif
       break;
+    case 3U:
     #if defined(SERIAL_REPEATER)
-    case 3U:
       InitUSART2(speed);
-      break;
     #elif defined(SERIAL_REPEATER_USART1)
-    case 3U:
       InitUSART1(speed);
-      break;
     #endif
+      break;
     default:
       break;
   }   
@@ -462,11 +460,10 @@ int CSerialPort::availableInt(uint8_t n)
     #elif defined(STM32_USB_HOST)
       return usbserial.available();
     #endif
-    #if defined(SERIAL_REPEATER)
     case 3U: 
+    #if defined(SERIAL_REPEATER)
       return AvailUSART2();
     #elif defined(SERIAL_REPEATER_USART1)
-    case 3U: 
       return AvailUSART1();
     #endif
     default:
@@ -483,11 +480,10 @@ uint8_t CSerialPort::readInt(uint8_t n)
     #elif defined(STM32_USB_HOST)
       return usbserial.read();
     #endif
-    #if defined(SERIAL_REPEATER)
     case 3U:
+    #if defined(SERIAL_REPEATER)
       return ReadUSART2();
     #elif defined(SERIAL_REPEATER_USART1)
-    case 3U:
       return ReadUSART1();
     #endif
     default:
@@ -509,19 +505,17 @@ void CSerialPort::writeInt(uint8_t n, const uint8_t* data, uint16_t length, bool
         usbserial.flush();
     #endif
       break;
-    #if defined(SERIAL_REPEATER)
     case 3U:
+    #if defined(SERIAL_REPEATER)
       WriteUSART2(data, length);
       if (flush)
         TXSerialFlush2();
-      break;
     #elif defined(SERIAL_REPEATER_USART1)
-    case 3U:
       WriteUSART1(data, length);
       if (flush)
         TXSerialFlush1();
-      break;
     #endif
+      break;
     default:
       break;
   }
