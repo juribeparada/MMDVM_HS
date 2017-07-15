@@ -44,7 +44,7 @@ USART2 - TXD PA2  - RXD PA3
 #define TX_SERIAL_FIFO_SIZE 256U
 #define RX_SERIAL_FIFO_SIZE 256U
 
-#if defined(STM32_USART1_HOST)
+#if defined(STM32_USART1_HOST) || defined(SERIAL_REPEATER_USART1)
 
 extern "C" {
   void USART1_IRQHandler();
@@ -443,6 +443,10 @@ void CSerialPort::beginInt(uint8_t n, int speed)
     case 3U:
       InitUSART2(speed);
       break;
+    #elif defined(SERIAL_REPEATER_USART1)
+    case 3U:
+      InitUSART1(speed);
+      break;
     #endif
     default:
       break;
@@ -461,6 +465,9 @@ int CSerialPort::availableInt(uint8_t n)
     #if defined(SERIAL_REPEATER)
     case 3U: 
       return AvailUSART2();
+    #elif defined(SERIAL_REPEATER_USART1)
+    case 3U: 
+      return AvailUSART1();
     #endif
     default:
       return 0;
@@ -479,6 +486,9 @@ uint8_t CSerialPort::readInt(uint8_t n)
     #if defined(SERIAL_REPEATER)
     case 3U:
       return ReadUSART2();
+    #elif defined(SERIAL_REPEATER_USART1)
+    case 3U:
+      return ReadUSART1();
     #endif
     default:
       return 0U;
@@ -504,6 +514,12 @@ void CSerialPort::writeInt(uint8_t n, const uint8_t* data, uint16_t length, bool
       WriteUSART2(data, length);
       if (flush)
         TXSerialFlush2();
+      break;
+    #elif defined(SERIAL_REPEATER_USART1)
+    case 3U:
+      WriteUSART1(data, length);
+      if (flush)
+        TXSerialFlush1();
       break;
     #endif
     default:

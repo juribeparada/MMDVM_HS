@@ -58,8 +58,10 @@
 // Send RSSI value:
 // #define SEND_RSSI_DATA
 
-// Enable Nextion LCD serial port repeater:
+// Enable Nextion LCD serial port repeater on USART2:
 // #define SERIAL_REPEATER
+// Enable Nextion LCD serial port repeater on USART1 (not compatible with ZUM-Spot Libre or STM32_USART1_HOST):
+// #define SERIAL_REPEATER_USART1
 
 // Enable P25 Wide modulation
 // #define ENABLE_P25_WIDE
