@@ -389,7 +389,7 @@ void CSerialPort::start()
 {
   beginInt(1U, 115200);
 
-#if defined(SERIAL_REPEATER)
+#if defined(SERIAL_REPEATER) || defined(SERIAL_REPEATER_USART1)
   beginInt(3U, 9600);
 #endif
 }
@@ -627,7 +627,7 @@ void CSerialPort::process()
             }
             break;
 
-#if defined(SERIAL_REPEATER)
+#if defined(SERIAL_REPEATER) || defined(SERIAL_REPEATER_USART1)
           case MMDVM_SERIAL:
             writeInt(3U, m_buffer + 3U, m_len - 3U);
             break;
@@ -645,7 +645,7 @@ void CSerialPort::process()
     }
   }
 
-#if defined(SERIAL_REPEATER)
+#if defined(SERIAL_REPEATER) || defined(SERIAL_REPEATER_USART1)
   // Drain any incoming serial data
   while (availableInt(3U))
     readInt(3U);

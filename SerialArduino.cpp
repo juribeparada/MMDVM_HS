@@ -37,6 +37,8 @@ void CSerialPort::beginInt(uint8_t n, int speed)
     case 3U:
     #if defined(SERIAL_REPEATER) && defined(__STM32F1__)
       Serial2.begin(speed);
+    #elif defined(SERIAL_REPEATER_USART1) && defined(__STM32F1__)
+      Serial1.begin(speed);
     #elif defined(SERIAL_REPEATER) && (defined(__MK20DX256__) || defined(__MK64FX512__) || defined(__MK66FX1M0__))
       Serial1.begin(speed);
     #endif
@@ -58,6 +60,8 @@ int CSerialPort::availableInt(uint8_t n)
     case 3U:
     #if defined(SERIAL_REPEATER) && defined(__STM32F1__)
       return Serial2.available();
+    #elif defined(SERIAL_REPEATER_USART1) && defined(__STM32F1__)
+      return Serial1.available();
     #elif defined(SERIAL_REPEATER) && (defined(__MK20DX256__) || defined(__MK64FX512__) || defined(__MK66FX1M0__))
       return Serial1.available();
     #endif
@@ -78,6 +82,8 @@ uint8_t CSerialPort::readInt(uint8_t n)
     case 3U:
     #if defined(SERIAL_REPEATER) && defined(__STM32F1__)
       return Serial2.read();
+    #elif defined(SERIAL_REPEATER_USART1) && defined(__STM32F1__)
+      return Serial1.read();
     #elif defined(SERIAL_REPEATER) && (defined(__MK20DX256__) || defined(__MK64FX512__) || defined(__MK66FX1M0__))
       return Serial1.read();
     #endif
@@ -101,6 +107,8 @@ void CSerialPort::writeInt(uint8_t n, const uint8_t* data, uint16_t length, bool
     case 3U:
     #if defined(SERIAL_REPEATER) && defined(__STM32F1__)
       Serial2.write(data, length);
+    #elif defined(SERIAL_REPEATER_USART1) && defined(__STM32F1__)
+      Serial1.write(data, length);
     #elif defined(SERIAL_REPEATER) && (defined(__MK20DX256__) || defined(__MK64FX512__) || defined(__MK66FX1M0__))
       Serial1.write(data, length);
     #endif
