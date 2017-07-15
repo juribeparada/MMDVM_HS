@@ -44,7 +44,7 @@ USART2 - TXD PA2  - RXD PA3
 #define TX_SERIAL_FIFO_SIZE 256U
 #define RX_SERIAL_FIFO_SIZE 256U
 
-#if defined(STM32_USART1_HOST) || defined(SERIAL_REPEATER)
+#if defined(STM32_USART1_HOST) || defined(SERIAL_REPEATER_USART1)
 
 extern "C" {
   void USART1_IRQHandler();
@@ -439,11 +439,11 @@ void CSerialPort::beginInt(uint8_t n, int speed)
       usbserial.begin();
     #endif
       break;
-    #if defined(SERIAL_REPEATER) && (defined(STM32_USART1_HOST) || defined(ZUMSPOT_LIBRE))
+    #if defined(SERIAL_REPEATER)
     case 3U:
       InitUSART2(speed);
       break;
-    #elif defined(SERIAL_REPEATER)
+    #elif defined(SERIAL_REPEATER_USART1)
     case 3U:
       InitUSART1(speed);
       break;
@@ -462,10 +462,10 @@ int CSerialPort::availableInt(uint8_t n)
     #elif defined(STM32_USB_HOST)
       return usbserial.available();
     #endif
-    #if defined(SERIAL_REPEATER) && (defined(STM32_USART1_HOST) || defined(ZUMSPOT_LIBRE))
+    #if defined(SERIAL_REPEATER)
     case 3U: 
       return AvailUSART2();
-    #elif defined(SERIAL_REPEATER)
+    #elif defined(SERIAL_REPEATER_USART1)
     case 3U: 
       return AvailUSART1();
     #endif
@@ -483,10 +483,10 @@ uint8_t CSerialPort::readInt(uint8_t n)
     #elif defined(STM32_USB_HOST)
       return usbserial.read();
     #endif
-    #if defined(SERIAL_REPEATER) && (defined(STM32_USART1_HOST) || defined(ZUMSPOT_LIBRE))
+    #if defined(SERIAL_REPEATER)
     case 3U:
       return ReadUSART2();
-    #elif defined(SERIAL_REPEATER)
+    #elif defined(SERIAL_REPEATER_USART1)
     case 3U:
       return ReadUSART1();
     #endif
@@ -509,13 +509,13 @@ void CSerialPort::writeInt(uint8_t n, const uint8_t* data, uint16_t length, bool
         usbserial.flush();
     #endif
       break;
-    #if defined(SERIAL_REPEATER) && (defined(STM32_USART1_HOST) || defined(ZUMSPOT_LIBRE))
+    #if defined(SERIAL_REPEATER)
     case 3U:
       WriteUSART2(data, length);
       if (flush)
         TXSerialFlush2();
       break;
-    #elif defined(SERIAL_REPEATER)
+    #elif defined(SERIAL_REPEATER_USART1)
     case 3U:
       WriteUSART1(data, length);
       if (flush)
