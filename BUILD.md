@@ -7,14 +7,14 @@ Due and Zero) and Teensy (3.1, 3.2, 3.5 or 3.6) are supported.
 
 # Index
 
-- ZUMSpot RPi
-- ZUMSpot Libre Kit
-- ZUMSpot USB
+- ZUMspot RPi
+- ZUMspot Libre Kit
+- ZUMspot USB
 - Makefile options
 - Config.h options
 - Pinout definitions
  
-# ZUMSpot RPi
+# ZUMspot RPi
 
 Download latest Raspbian image and install to a micro SD
 
@@ -72,7 +72,7 @@ Reboot your RPi:
 
     sudo reboot
 
-### Build de firmware and upload to ZUMSpot RPi
+### Build de firmware and upload to ZUMspot RPi
 
 Install the necessary software tools:
 
@@ -111,7 +111,7 @@ Build the firmware:
 
     make
 
-Upload the firmware to ZUMSpot RPi board:
+Upload the firmware to ZUMspot RPi board:
 
     sudo make zumspot-pi
 
@@ -131,7 +131,7 @@ Execute MMDVMHost:
 
     ./MMDVMHost MMDVM.ini
 
-# ZUMSpot Libre Kit
+# ZUMspot Libre Kit
 
 ## Windows
 
@@ -145,7 +145,7 @@ Download STM32duino (Arduino for STM32) from this URL:
 
     https://github.com/rogerclarkmelbourne/Arduino_STM32/tree/ZUMspot
 
-Unzip and change the extracted folder name "Arduino_STM32-ZUMSpot" to "Arduino_STM32"
+Unzip and change the extracted folder name "Arduino_STM32-ZUMspot" to "Arduino_STM32"
 
 Copy Arduino_STM32 folder in:
 
@@ -155,12 +155,12 @@ Install the USB bootloader to STM32F103. Follow the instructions:
 
     https://github.com/rogerclarkmelbourne/Arduino_STM32/wiki/stm32duino-bootloader
 
-Connect the ZUMSpot Libre Kit to your PC. Install the USB Mapple driver using the bat file 
+Connect the ZUMspot Libre Kit to your PC. Install the USB Mapple driver using the bat file 
 (you may also check http://wiki.stm32duino.com/index.php?title=Windows_driver_installation): 
 
     My Documents/Arduino/hardware/Arduino_STM32/drivers/win/install_drivers.bat
 
-You have to be sure that Windows detect your ZUMSpot as an USB serial device COMx (please
+You have to be sure that Windows detect your ZUMspot as an USB serial device COMx (please
 see Windows Device Manager).
 
 Download the source (zip file) of MMDVM_HS from:
@@ -231,7 +231,7 @@ Build the firmware with bootloader support:
 
     make bl
 
-Upload bootloader and firmware to ZUMSpot Libre Kit, using serial port first (you
+Upload bootloader and firmware to ZUMspot Libre Kit, using serial port first (you
 are using an USB-serial converter with device name /dev/ttyUSB0). Move BOOT0
 jumper to 1, next press and release RESET and execute:
 
@@ -259,7 +259,7 @@ Execute MMDVMHost:
 
     ./MMDVMHost MMDVM.ini
     
-# ZUMSpot USB
+# ZUMspot USB
 
 ## Windows
 
@@ -273,18 +273,18 @@ Download STM32duino (Arduino for STM32) from this URL:
 
     https://github.com/rogerclarkmelbourne/Arduino_STM32/tree/ZUMspot
 
-Unzip and change the extracted folder name "Arduino_STM32-ZUMSpot" to "Arduino_STM32"
+Unzip and change the extracted folder name "Arduino_STM32-ZUMspot" to "Arduino_STM32"
 
 Copy Arduino_STM32 folder in:
 
     My Documents/Arduino/hardware
 
-Connect the ZUMSpot USB to your PC. Install the USB Mapple driver using the bat file: 
+Connect the ZUMspot USB to your PC. Install the USB Mapple driver using the bat file: 
 
     My Documents/Arduino/hardware/Arduino_STM32/drivers/win/install_drivers.bat
     (you may also check: http://wiki.stm32duino.com/index.php?title=Windows_driver_installation)
 
-You have to be sure that Windows detect your ZUMSpot as an USB serial device COMx (please
+You have to be sure that Windows detect your ZUMspot as an USB serial device COMx (please
 see Windows Device Manager)
 
 Download the source (zip file) of MMDVM_HS from:
@@ -354,7 +354,7 @@ Build the firmware with bootloader support:
 
     make bl
 
-Upload the firmware to ZUMSpot USB:
+Upload the firmware to ZUMspot USB:
 
     sudo make dfu devser=/dev/ttyACM0
 
@@ -382,12 +382,12 @@ Execute MMDVMHost:
 
 - make bl: it builds a firmware with USB bootloader support.
 
-- make zumspot-pi: upload the firmware to a ZUMSpot RPi version (using internal RPi serial port) 
+- make zumspot-pi: upload the firmware to a ZUMspot RPi version (using internal RPi serial port) 
 
 - make dfu [devser=/dev/ttyXXX]: upload firmware using USB bootloader. "devser" is optional,
 and it corresponds to the USB serial port device name. This option permits to perform a reset
 to enter to booloader mode (DFU). If you don't use "devser", you have to press the reset button
-of the ZUMSpot just before using this command.
+of the ZUMspot just before using this command.
 
 - make serial devser=/dev/ttyXXX: upload standard firmware using serial port bootloader method.
 
@@ -416,10 +416,10 @@ USB programming (you have already transfered the USB bootloader):
 
     make clean
     make bl
-    sudo make dfu (reset ZUMSpot before) or
-    sudo make dfu devser=/dev/ttyACM0 (/dev/ttyACM0 is the device name of ZUMSpot USB under Raspbian)
+    sudo make dfu (reset ZUMspot before) or
+    sudo make dfu devser=/dev/ttyACM0 (/dev/ttyACM0 is the device name of ZUMspot USB under Raspbian)
 
-ZUMSpot RPi (no USB support needed):
+ZUMspot RPi (no USB support needed):
 
     make clean
     make
@@ -427,13 +427,13 @@ ZUMSpot RPi (no USB support needed):
 
 # Config.h options
 
-- #define PI_HAT_7021_REV_02: enable pinouts for first revision of ZUMSpot RPi. In general is
+- #define PI_HAT_7021_REV_02: enable pinouts for first revision of ZUMspot RPi. In general is
 not used.
 
-- #define PI_HAT_7021_REV_03: enable pinouts support for ZUMSpot RPi or ZUMSpot USB. You have
+- #define PI_HAT_7021_REV_03: enable pinouts support for ZUMspot RPi or ZUMspot USB. You have
 to enable this option if you have one of these products.
 
-- #define ADF7021_CARRIER_BOARD: enable this option if you have a ZUMSpot Libre Kit (Board with
+- #define ADF7021_CARRIER_BOARD: enable this option if you have a ZUMspot Libre Kit (Board with
 modified RF7021SE and Blue Pill STM32F103).
 
 - #define ENABLE_ADF7021: add support for ADF7021 (all boards, enabled by default).
@@ -456,15 +456,15 @@ depending on your frequency offset this option will improve or not your BER rece
 - #define ADF7021_AFC_POS: enable this option if you can not receive any signal after enable the
 ADF7021_ENABLE_4FSK_AFC option.
 
-- #define STM32_USART1_HOST: enable direct serial host communication with ZUMSpot (using USART1
+- #define STM32_USART1_HOST: enable direct serial host communication with ZUMspot (using USART1
 PA9 and PA10 pins). Disable STM32_USB_HOST if you enable this option. Enable this if you have
-a ZUMSpot RPi. You don't need to enable this option if you will transfer the bootloader.
+a ZUMspot RPi. You don't need to enable this option if you will transfer the bootloader.
 
-- #define STM32_USB_HOST: enable USB host communication with ZUMSpot (using STM32F103 USB
+- #define STM32_USB_HOST: enable USB host communication with ZUMspot (using STM32F103 USB
 interface). Disable STM32_USART1_HOST if you enable this option. Enable this if you have
-a ZUMSpot USB or ZUMSpot Libre Kit.
+a ZUMspot USB or ZUMspot Libre Kit.
 
-- #define ENABLE_SCAN_MODE: enable automatic mode detection in ZUMSpot. This is based on
+- #define ENABLE_SCAN_MODE: enable automatic mode detection in ZUMspot. This is based on
 scanning over all enabled modes, and you could have some detection delay. Enabled by default.
 
 - #define SEND_RSSI_DATA: enable RSSI reports to MMDVMHost. It is already converted to dBm.
@@ -478,7 +478,7 @@ personalities.
 
 # Pinout definitions
 
-## Pinout definitions for ZUMSpot Libre Kit
+## Pinout definitions for ZUMspot Libre Kit
 
 This is the carrier board or any board with RF7021SE + STM32F103.
 
