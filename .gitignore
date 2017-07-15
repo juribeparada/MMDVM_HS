@@ -4,3 +4,5 @@
 bin/
 
 GitVersion\.h
+
+STM32F10X_Lib/
