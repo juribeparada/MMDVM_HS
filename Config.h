@@ -20,11 +20,11 @@
 #define  CONFIG_H
 
 // Select one board (STM32F103 based boards):
-// 1) Initial release of ZUM-Spot Pi:
+// 1) Initial release of ZUMspot RPi:
 // #define PI_HAT_7021_REV_02
-// 2) ZUM-Spot USB and ZUM-Spot Pi HAT:
+// 2) ZUMspot USB and ZUMspot RPi HAT:
 // #define PI_HAT_7021_REV_03
-// 3) ZUM-Spot Libre Kit or board with modified RF7021SE and Blue Pill STM32F103
+// 3) ZUMspot Libre Kit or board with modified RF7021SE and Blue Pill STM32F103
 #define ADF7021_CARRIER_BOARD
 
 // Enable ADF7021 support:
@@ -61,8 +61,11 @@
 // Send RSSI value:
 // #define SEND_RSSI_DATA
 
-// Enable Nextion LCD serial port repeater:
+// Enable Nextion LCD serial port repeater on USART2 (ZUMspot Libre Kit and ZUMspot RPi):
 // #define SERIAL_REPEATER
+
+// Enable Nextion LCD serial port repeater on USART1 (Do not use with STM32_USART1_HOST enabled):
+// #define SERIAL_REPEATER_USART1
 
 // Enable P25 Wide modulation
 // #define ENABLE_P25_WIDE

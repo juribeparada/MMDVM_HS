@@ -91,7 +91,7 @@
 #define PIN_COS_LED    PB15
 
 #else
-#error "Either PI_HAT_7021_REV_02, PI_HAT_7021_REV_03, or ADF7021_CARRIER_BOARD need to be defined"
+#error "Either PI_HAT_7021_REV_02, PI_HAT_7021_REV_03 or ADF7021_CARRIER_BOARD need to be defined"
 #endif
 
 #elif defined(__MK20DX256__) || defined(__MK64FX512__) || defined(__MK66FX1M0__)
