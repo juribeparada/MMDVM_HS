@@ -235,10 +235,16 @@ endif
 
 # Export the current git version if the index file exists, else 000...
 GitVersion.h: .FORCE
+ifdef SYSTEMROOT
+	echo #define GITVERSION "0000000" > $@
+else ifdef SystemRoot
+	echo #define GITVERSION "0000000" > $@
+else
 ifneq ("$(wildcard .git/index)","")
 	echo "#define GITVERSION \"$(shell git rev-parse --short HEAD)\"" > $@
 else
 	echo "#define GITVERSION \"0000000\"" > $@
+endif
 endif
 
 .FORCE:
