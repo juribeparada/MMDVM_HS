@@ -133,7 +133,7 @@ Execute MMDVMHost:
 
 # ZUMspot Libre Kit
 
-## Windows
+## Windows with Arduino IDE
 
 Download and install the Arduino IDE:
 
@@ -197,6 +197,66 @@ Click the Upload button in the IDE and wait for the transfer.
 Once the transfer is completed, press the RESET button of the board or disconnect and
 connect the USB cable. You will see the LED (PC13) of the blue pill blinking. Once you connect
 with MMDVMHost, the LED will blink fast.
+
+## Windows with command line
+
+Download the source code (zip file) of MMDVM_HS from:
+
+    https://github.com/juribeparada/MMDVM_HS
+    
+Unzip MMDVM_HS-master.zip and change the folder name to "MMDVM_HS". The path name to this
+folder can't have spaces.
+
+Download the ST libraries STM32F10X_Lib-master.zip from:
+
+    https://github.com/juribeparada/STM32F10X_Lib/
+
+Extract the STM32F10X_Lib-master folder into the same folder as the MMDVM_HS. Change the folder
+name to "STM32F10X_Lib".
+
+Download the GNU make utility:
+
+    http://gnuwin32.sourceforge.net/packages/make.htm
+    
+Download the binaries zip file and extract make.exe and put it in the same directory MMDVM_HS. Download
+the dependencies zip file and extract libintl3.dll and libiconv2.dll and put them in the same directory MMDVM_HS.
+
+Download the GNU ARM embedded toolchain from here:
+
+    https://launchpad.net/gcc-arm-embedded/+download
+
+Currently the direct link to the installer is here:
+
+    https://launchpad.net/gcc-arm-embedded/5.0/5-2016-q3-update/+download/gcc-arm-none-eabi-5_4-2016q3-20160926-win32.exe
+
+Download STM32duino (Arduino for STM32) from this URL (only for USB drivers):
+
+    https://github.com/rogerclarkmelbourne/Arduino_STM32/tree/ZUMspot
+
+Unzip and copy Arduino_STM32-ZUMspot folder in (for example):
+
+    C:\Arduino_STM32-ZUMspot
+    
+Connect the ZUMspot Libre Kit to your PC. Install the USB Mapple driver using the bat file 
+(you may also check http://wiki.stm32duino.com/index.php?title=Windows_driver_installation): 
+
+    C:\Arduino_STM32-ZUMspot\drivers\win\install_drivers.bat
+    
+Once the USB driver is installed, you may delete "C:\Arduino_STM32-ZUMspot" folder.
+
+Launch the "GCC Command Prompt" from "GNU Tools for ARM Embedded Processors" (Start Menu) and
+cd to the folder where you put the MMDVM_HS folder.
+
+Edit Config.h according your preferences. The default Config.h is OK for ZUMSpot Libre Kit.
+
+Build the firmware:
+
+    make clean
+    make bl
+    
+Press the reset button of ZUMspot and upload the firmware:
+
+    make dfu
 
 ## Linux Raspbian
 
