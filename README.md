@@ -6,6 +6,12 @@ This software is intended to be run on STM32F103 microcontroller. You can build 
 
 This software is licenced under the GPL v2 and is intended for amateur and educational use only. Use of this software for commercial purposes is strictly forbidden.
 
+# Important notes
+
+The ADF7021 (or RF7021SE module) must operate with a 14.7456 MHz TCXO and with at least 2 ppm of frequency stability. You could use also 12.2880 MHz TCXO, but this frequency configuration has less testing. Any other TCXO frequency is not supported.
+
+If you can't decode any 4FSK modulation (DMR, YSF and P25) with your ZUMspot, the common solution is to adjust RX frequency offset (RXOffset) in your MMDVM.ini file. Please try with steps of +-100 Hz until to get low BER. If you don't have test equipment, the only procedure is trial and error.
+
 # Quick start
 
 Please see BUILD.md for more details, and also MMDVM Yahoo Groups.
