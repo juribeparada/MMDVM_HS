@@ -6,11 +6,27 @@ This software is intended to be run on STM32F103 microcontroller. You can build 
 
 This software is licenced under the GPL v2 and is intended for amateur and educational use only. Use of this software for commercial purposes is strictly forbidden.
 
+# Features
+
+- Supported modes: D-Star, DMR, Yaesu Fusion and P25 Phase 1
+- Automatic mode detection (scanning)
+- G4KLX software suite: MMDVMHost, ircDDBGateway, YSFGateway, P25Gateway and DMRGateway
+- Bands: 144, 220, 430 and 900 MHz (VHF requires external inductor)
+- Status LEDs (PTT, COR and digital modes)
+- Serial repeater port for Nextion displays
+- Support for native USB port in STM32F103 CPU
+
 # Important notes
 
 The ADF7021 (or RF7021SE module) must operate with a 14.7456 MHz TCXO and with at least 2 ppm of frequency stability. You could use also 12.2880 MHz TCXO, but this frequency configuration has less testing. Any other TCXO frequency is not supported.
 
-If you can't decode any 4FSK modulation (DMR, YSF and P25) with your ZUMspot, the common solution is to adjust RX frequency offset (RXOffset) in your MMDVM.ini file. Please try with steps of +-100 Hz until to get low BER. If you don't have test equipment, the only procedure is trial and error.
+The jumper wire to CLKOUT in RF7021SE module is not longer required for lastest MMDVM_HS firmware. But CE pin connection of ADF7021 is required for proper operation of ZUMspot.
+
+Be aware that some Blue Pill STM32F103 board are defectives. If you have trouble with USB, please check this: http://wiki.stm32duino.com/index.php?title=Blue_Pill
+
+VHF (144-148 MHz) support for ZUMSpot is added by an external 18 nH inductor between L1 and L2 pins of ADF7021.
+
+If you can't decode any 4FSK modulation (DMR, YSF and P25) with your ZUMspot, the common solution is to adjust RX frequency offset (RXOffset) in your MMDVM.ini file. Please try with steps of +-100 Hz until you get low BER. If you don't have test equipment, the only procedure is trial and error. In some cases TXOffset adjustment is also required for proper radio decoding.
 
 # Quick start
 
