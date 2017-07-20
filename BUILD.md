@@ -13,6 +13,7 @@ Due and Zero) and Teensy (3.1, 3.2, 3.5 or 3.6) are supported.
 - Makefile options
 - Config.h options
 - Pinout definitions
+- Hidden functions
  
 # ZUMspot RPi
 
@@ -674,3 +675,11 @@ Misc pins:
 
 You could install a serie resistor (10 - 100 ohms) in each TxRxData and TxRxCLK lines, for
 reducing EMI.
+
+# Hidden functions
+
+You could enable two test modes, if you edit ADF7021.h file before compilation. Please always comment these two #defines for normal operation.
+
+- #define TEST_DAC: Enable SWD pin to access the demodulator output signal. See application note AN-852 and ADF7021 datasheet, page 60.
+
+- #define TEST_TX: Transmit the carrier frequency. This works only with D-Star mode enabled in MMDVM.ini. This test mode will transmit the carrier frequency defined with TXFrequency in MMDVM.ini. This could be useful to determine the frequency offset of your ZUMspot (with test equipment).
