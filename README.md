@@ -15,6 +15,7 @@ This software is licenced under the GPL v2 and is intended for amateur and educa
 - Status LEDs (PTT, COR and digital modes)
 - Serial repeater port for Nextion displays
 - Support for native USB port in STM32F103 CPU
+- Full duplex support with two ADF7021 (experimental)
 
 # Important notes
 
