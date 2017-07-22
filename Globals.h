@@ -82,8 +82,9 @@ extern CSerialPort serial;
 extern CDStarRX dstarRX;
 extern CDStarTX dstarTX;
 
-#if defined(DUPLEX)
 extern uint8_t m_control;
+
+#if defined(DUPLEX)
 extern CDMRIdleRX dmrIdleRX;
 extern CDMRRX dmrRX;
 extern CDMRTX dmrTX;

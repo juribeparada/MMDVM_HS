@@ -281,8 +281,10 @@ void CIO::Init()
   NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
 
   EXTI_InitTypeDef EXTI_InitStructure;
+#if defined(DUPLEX)
   EXTI_InitTypeDef EXTI_InitStructure2;
-  
+#endif
+
   GPIO_InitTypeDef GPIO_InitStruct;
   GPIO_StructInit(&GPIO_InitStruct);
 
@@ -473,7 +475,10 @@ void CIO::Init()
 void CIO::startInt()
 {
   NVIC_InitTypeDef NVIC_InitStructure;
+  
+#if defined(DUPLEX)
   NVIC_InitTypeDef NVIC_InitStructure2;
+#endif
 
 #if defined(PI_HAT_7021_REV_02)
 

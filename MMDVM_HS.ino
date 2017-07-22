@@ -40,8 +40,9 @@ bool m_dcd = false;
 CDStarRX   dstarRX;
 CDStarTX   dstarTX;
 
-#if defined(DUPLEX)
 uint8_t    m_control;
+
+#if defined(DUPLEX)
 CDMRIdleRX dmrIdleRX;
 CDMRRX     dmrRX;
 CDMRTX     dmrTX;
