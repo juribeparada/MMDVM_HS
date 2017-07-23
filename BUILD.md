@@ -517,6 +517,8 @@ depending on your frequency offset this option will improve or not your BER rece
 - #define ADF7021_AFC_POS: enable this option if you can not receive any signal after enable the
 ADF7021_ENABLE_4FSK_AFC option.
 
+- #define ADF7021_DISABLE_RC_4FSK: disable TX Raised Cosine filter for 4FSK modulation in ADF7021. Default TX pulse shaping filter for 4FSK is not optimum for DMR, YSF and P25. Activating this option might improve audio in 4FSK digital modes.
+
 - #define STM32_USART1_HOST: enable direct serial host communication with ZUMspot (using USART1
 PA9 and PA10 pins). Disable STM32_USB_HOST if you enable this option. Enable this if you have
 a ZUMspot RPi. You don't need to enable this option if you will transfer the bootloader.
