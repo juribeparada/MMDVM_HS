@@ -318,7 +318,11 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
 
       ADF7021_REG2 = (uint32_t) 0b10                       << 28;  // invert data (and RC alpha = 0.5)
       ADF7021_REG2 |= (uint32_t) (ADF7021_DEV_DMR / div2)  << 19;  // deviation
+#if defined(ADF7021_DISABLE_RC_4FSK)
+      ADF7021_REG2 |= (uint32_t) 0b011                     << 4;   // modulation (4FSK)
+#else
       ADF7021_REG2 |= (uint32_t) 0b111                     << 4;   // modulation (RC 4FSK)
+#endif
       break;
       
     case STATE_YSF:
@@ -341,7 +345,11 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
 
       ADF7021_REG2 = (uint32_t) 0b10                       << 28;  // invert data (and RC alpha = 0.5)
       ADF7021_REG2 |= (uint32_t) ((m_LoDevYSF ? ADF7021_DEV_YSF_L : ADF7021_DEV_YSF_H) / div2)  << 19;  // deviation
+#if defined(ADF7021_DISABLE_RC_4FSK)
+      ADF7021_REG2 |= (uint32_t) 0b011                     << 4;   // modulation (4FSK)
+#else
       ADF7021_REG2 |= (uint32_t) 0b111                     << 4;   // modulation (RC 4FSK)
+#endif
       break;
       
     case STATE_P25:
@@ -364,7 +372,7 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
 
       ADF7021_REG2 = (uint32_t) 0b10                       << 28;  // invert data (and RC alpha = 0.5)
       ADF7021_REG2 |= (uint32_t) (ADF7021_DEV_P25 / div2)  << 19;  // deviation
-#if defined(ENABLE_P25_WIDE)
+#if defined(ENABLE_P25_WIDE) || defined(ADF7021_DISABLE_RC_4FSK)
       ADF7021_REG2 |= (uint32_t) 0b011                     << 4;   // modulation (4FSK)
 #else
       ADF7021_REG2 |= (uint32_t) 0b111                     << 4;   // modulation (RC 4FSK)
@@ -644,10 +652,7 @@ void CIO::interrupt()
   if (m_tx && clk == 0) {
 
     m_txBuffer.get(bit, m_control);
-    even = !even; 
-
-    // use this for tracking issues
-    // P25_pin(even);
+    even = !even;
 
 #if defined(BIDIR_DATA_PIN)
     if(bit)
@@ -681,7 +686,7 @@ void CIO::interrupt()
       // now do housekeeping
       totx_request = false;
       // first tranmittted bit is always the odd bit
-      even = false;
+      even = ADF7021_EVEN_BIT;
     }
   }
   
@@ -695,7 +700,7 @@ void CIO::interrupt()
     m_rxBuffer.put(bit, m_control);
   }
   
-  if (torx_request == true && even == false && m_tx && clk == 0) { 
+  if (torx_request == true && even == ADF7021_EVEN_BIT && m_tx && clk == 0) { 
       // that is absolutely crucial in 4FSK, see datasheet:
       // enable sle after 1/4 tBit == 26uS when sending MSB (even == false) and clock is low 
       delay_us(26);
@@ -712,9 +717,9 @@ void CIO::interrupt()
       // now do housekeeping
       m_tx = false;
       torx_request = false;
-      //last tranmittted bit is always the even bit
+      // last tranmittted bit is always the even bit
       // since the current bit is a transitional "don't care" bit, never transmitted
-      even = true;
+      even = !ADF7021_EVEN_BIT;
   }  
 
   m_watchdog++;

@@ -240,6 +240,12 @@ void Send_AD7021_control(bool doSle = true);
 void Send_AD7021_control2(bool doSle = true);
 #endif
 
+#if defined(ADF7021_DISABLE_RC_4FSK)
+#define ADF7021_EVEN_BIT  true
+#else
+#define ADF7021_EVEN_BIT  false
+#endif
+
 #endif
 
 #endif

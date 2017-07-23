@@ -51,6 +51,9 @@
 // Configure AFC with positive initial frequency offset
 // #define ADF7021_AFC_POS
 
+// Disable TX Raised Cosine filter for 4FSK modulation in ADF7021
+// #define ADF7021_DISABLE_RC_4FSK
+
 // Host communication selection:
 // #define STM32_USART1_HOST
 #define STM32_USB_HOST
