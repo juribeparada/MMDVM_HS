@@ -39,6 +39,9 @@ const uint8_t  MARK_SLOT1 = 0x08U;
 const uint8_t  MARK_SLOT2 = 0x04U;
 const uint8_t  MARK_NONE  = 0x00U;
 
+// Bidirectional Data pin (Enable Standard TX/RX Data Interface of ADF7021):
+#define BIDIR_DATA_PIN
+
 #include "IO.h"
 #include "SerialPort.h"
 #include "DMRDMORX.h"

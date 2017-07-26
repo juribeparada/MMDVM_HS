@@ -21,6 +21,9 @@
 
 #include "Config.h"
 
+// Select initial release of ZUMspot RPi:
+// #define PI_HAT_7021_REV_02
+
 #if defined(STM32F10X_MD)
 
 #include "Globals.h"

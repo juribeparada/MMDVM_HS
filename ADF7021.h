@@ -36,12 +36,28 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 */
 
 /***** Test modes ****/
-// Enable SWD pin to access the demodulator output signal
-// See application note AN-852 and ADF7021 datasheet, page 60
+
+// Enable SWD pin to access the demodulator output signal:
+// (See application note AN-852 and ADF7021 datasheet, page 60)
 // #define TEST_DAC
 
-// Transmit the carrier frequency
+// Transmit the carrier frequency:
 // #define TEST_TX
+
+/*********************/
+
+// Disable TX Raised Cosine filter for 4FSK modulation in ADF7021:
+// #define ADF7021_DISABLE_RC_4FSK
+
+// Support for ADF7021-N version: 
+// #define ADF7021_N_VER
+
+// Enable AFC support for DMR, YSF and P25 (experimental):
+// (AFC is already enabled by default in D-Star)
+// #define ADF7021_ENABLE_4FSK_AFC
+
+// Configure AFC with positive initial frequency offset:
+// #define ADF7021_AFC_POS
 
 /****** Support for 14.7456 MHz TCXO (modified RF7021SE boards) ******/
 #if defined(ADF7021_14_7456)
