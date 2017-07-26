@@ -47,7 +47,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 /*********************/
 
 // Disable TX Raised Cosine filter for 4FSK modulation in ADF7021:
-// #define ADF7021_DISABLE_RC_4FSK
+#define ADF7021_DISABLE_RC_4FSK
 
 // Support for ADF7021-N version: 
 // #define ADF7021_N_VER
