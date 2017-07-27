@@ -32,7 +32,7 @@ mv ~/MMDVM_HS/bin/outp.bin ~/MMDVM_HS/bin/zumspot_rpi_fw.bin
 make clean
 
 # Building ZUMspot USB
-cp ~/MMDVM_HS/configs/ZUMspot_RPi.h ~/MMDVM_HS/Config.h
+cp ~/MMDVM_HS/configs/ZUMspot_USB.h ~/MMDVM_HS/Config.h
 make bl
 mv ~/MMDVM_HS/bin/outp.bin ~/MMDVM_HS/bin/zumspot_usb_fw.bin
 make clean
