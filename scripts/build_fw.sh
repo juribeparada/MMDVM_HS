@@ -18,6 +18,7 @@
 
 cd ~/MMDVM_HS/
 make clean
+git pull
 
 # Building ZUMspot Libre Kit
 cp ~/MMDVM_HS/configs/ZUMspot_Libre.h ~/MMDVM_HS/Config.h
