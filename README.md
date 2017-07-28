@@ -115,7 +115,6 @@ and enable:
 
     #define PI_HAT_7021_REV_03
     #define ENABLE_ADF7021
-    #define BIDIR_DATA_PIN
     #define ADF7021_14_7456
     #define STM32_USART1_HOST
     #define ENABLE_SCAN_MODE

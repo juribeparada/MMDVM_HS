@@ -103,7 +103,6 @@ and enable:
 
     #define PI_HAT_7021_REV_03
     #define ENABLE_ADF7021
-    #define BIDIR_DATA_PIN
     #define ADF7021_14_7456
     #define STM32_USART1_HOST
     #define ENABLE_SCAN_MODE
@@ -188,7 +187,6 @@ Edit Config.h:
 
     #define ADF7021_CARRIER_BOARD
     #define ENABLE_ADF7021
-    #define BIDIR_DATA_PIN
     #define ADF7021_14_7456
     #define STM32_USB_HOST
     #define ENABLE_SCAN_MODE
@@ -283,7 +281,6 @@ and enable:
 
     #define ADF7021_CARRIER_BOARD
     #define ENABLE_ADF7021
-    #define BIDIR_DATA_PIN
     #define ADF7021_14_7456
     #define STM32_USB_HOST
     #define ENABLE_SCAN_MODE
@@ -372,7 +369,6 @@ Edit Config.h:
 
     #define PI_HAT_7021_REV_03
     #define ENABLE_ADF7021
-    #define BIDIR_DATA_PIN
     #define ADF7021_14_7456
     #define STM32_USB_HOST
     #define ENABLE_SCAN_MODE
@@ -406,7 +402,6 @@ and enable:
 
     #define PI_HAT_7021_REV_03
     #define ENABLE_ADF7021
-    #define BIDIR_DATA_PIN
     #define ADF7021_14_7456
     #define STM32_USB_HOST
     #define ENABLE_SCAN_MODE
@@ -488,9 +483,6 @@ ZUMspot RPi (no USB support needed):
 
 # Config.h options
 
-- #define PI_HAT_7021_REV_02: enable pinouts for first revision of ZUMspot RPi. In general is
-not used.
-
 - #define PI_HAT_7021_REV_03: enable pinouts support for ZUMspot RPi or ZUMspot USB. You have
 to enable this option if you have one of these products.
 
@@ -499,25 +491,11 @@ modified RF7021SE and Blue Pill STM32F103).
 
 - #define ENABLE_ADF7021: add support for ADF7021 (all boards, enabled by default).
 
-- #define ADF7021_N_VER: enable support for narrow band version of ADF7021 (ADF7021N). Disabled
-by default, in general all boards will have just ADF7021.
-
 - #define DUPLEX: enable duplex mode with dual ADF7021. It is still under development.
-
-- #define BIDIR_DATA_PIN: enable Standard TX/RX Data Interface of ADF7021 (enabled by default, 
-needed for scanning mode detection feature).
 
 - #define ADF7021_14_7456: select this option if your board uses a 14.7456 MHz (enabled by default).
 
 - #define ADF7021_12_2880: select this option if your board uses a 12.2880 MHz.
-
-- #define ADF7021_ENABLE_4FSK_AFC: enable AFC support for DMR, YSF and P25. This is experimental,
-depending on your frequency offset this option will improve or not your BER reception.
-
-- #define ADF7021_AFC_POS: enable this option if you can not receive any signal after enable the
-ADF7021_ENABLE_4FSK_AFC option.
-
-- #define ADF7021_DISABLE_RC_4FSK: disable TX Raised Cosine filter for 4FSK modulation in ADF7021. Default TX pulse shaping filter for 4FSK is not optimum for DMR, YSF and P25. Activating this option might improve audio in 4FSK digital modes.
 
 - #define STM32_USART1_HOST: enable direct serial host communication with ZUMspot (using USART1
 PA9 and PA10 pins). Disable STM32_USB_HOST if you enable this option. Enable this if you have
@@ -685,3 +663,17 @@ You could enable two test modes, if you edit ADF7021.h file before compilation. 
 - #define TEST_DAC: Enable SWD pin to access the demodulator output signal. See application note AN-852 and ADF7021 datasheet, page 60.
 
 - #define TEST_TX: Transmit the carrier frequency. This works only with D-Star mode enabled in MMDVM.ini. This test mode will transmit the carrier frequency defined with TXFrequency in MMDVM.ini. This could be useful to determine the frequency offset of your ZUMspot (with test equipment).
+
+- #define PI_HAT_7021_REV_02: enable pinouts for first revision of ZUMspot RPi. In general is not used.
+
+- #define ADF7021_N_VER: enable support for narrow band version of ADF7021 (ADF7021N). Disabled by default, in general all boards will have just ADF7021.
+
+- #define BIDIR_DATA_PIN: enable Standard TX/RX Data Interface of ADF7021 (enabled by default, needed for scanning mode detection feature).
+
+- #define ADF7021_ENABLE_4FSK_AFC: enable AFC support for DMR, YSF and P25. This is experimental,
+depending on your frequency offset this option will improve or not your BER reception.
+
+- #define ADF7021_AFC_POS: enable this option if you can not receive any signal after enable the
+ADF7021_ENABLE_4FSK_AFC option.
+
+- #define ADF7021_DISABLE_RC_4FSK: disable TX Raised Cosine filter for 4FSK modulation in ADF7021. Default TX pulse shaping filter for 4FSK is not optimum for DMR, YSF and P25. Activating this option might improve audio in 4FSK digital modes.
