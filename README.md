@@ -38,7 +38,7 @@ Please see BUILD.md for more details, and also MMDVM Yahoo Groups.
 
 ## Binary firmware installation
 
-Please check for latest firmware:
+Please check the latest firmware:
 
     https://github.com/juribeparada/MMDVM_HS/releases
 
@@ -60,16 +60,6 @@ stop your MMDVMHost process and run (you will need the root password):
     ./install_fw_rpi.sh
 
 and wait to complete the upgrading process.
-
-### Windows
-
-Download this Windows firmware upgrade utility (for ZUMspot LibreKit or ZUMspot USB dongle), written by Jon Lee G4TSN:
-
-    www.ircddb.org.uk/zumspot-firmware-uploader/zumspotfirmwareuploader.zip
-
-If you need to install a USB bootloader for a blank STM32F103 board, please see this Jon's document:
-
-    www.ircddb.org.uk/zumspot-firmware-uploader/bootloader_install_ZUMspot1.02.rtf
 
 ## Build from the sources
 
