@@ -36,7 +36,34 @@ If you can't decode any 4FSK modulation (DMR, YSF and P25) with your ZUMspot, th
 
 Please see BUILD.md for more details, and also MMDVM Yahoo Groups.
 
-## ZUMspot Libre Kit (under Linux Raspbian)
+## Binary firmware installation
+
+Please check for latest firmware:
+
+    https://github.com/juribeparada/MMDVM_HS/releases
+
+### Linux or macOS
+
+Download the script (*.sh) that match your ZUMspot board, for automatic firmware upgrade process:
+
+- install_fw_rpi.sh: only for ZUMspot RPi board
+- install_fw_librekit.sh: only for ZUMspot Libre Kit board or generic ZUMspot board
+- install_fw_usb.sh: only for ZUMspot USB dongle
+- install_fw_duplex.sh: only for ZUMspot with dual ADF7021
+
+make the script executable (for example for ZUMspot RPi):
+
+    chmod +x install_fw_rpi.sh
+
+stop your MMDVMHost process and run (you will need the root password):
+
+    ./install_fw_rpi.sh
+
+and wait to complete the upgrading process.
+
+## Build from the sources
+
+### ZUMspot Libre Kit (under Linux Raspbian)
 
 Install the necessary software tools:
 
@@ -58,9 +85,9 @@ Upload the firmware to ZUMspot Libre Kit using the USB port (your Libre Kit has 
 
     sudo make dfu devser=/dev/ttyACM0
 
-## ZUMspot RPi
+### ZUMspot RPi
 
-### Enable serial port in Raspberry Pi 3 or Pi Zero W
+#### Enable serial port in Raspberry Pi 3 or Pi Zero W
 
 This this necessary only if you are installing a fresh copy of Raspbian OS.
 
@@ -87,7 +114,7 @@ Reboot your RPi:
 
     sudo reboot
 
-### Build de firmware and upload to ZUMspot RPi
+#### Build de firmware and upload to ZUMspot RPi
 
 Install the necessary software tools:
 
