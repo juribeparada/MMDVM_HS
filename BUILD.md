@@ -13,7 +13,7 @@ Due and Zero) and Teensy (3.1, 3.2, 3.5 or 3.6) are supported.
 - Makefile options
 - Config.h options
 - Pinout definitions
-- Hidden functions
+- Hidden options
  
 # ZUMspot RPi
 

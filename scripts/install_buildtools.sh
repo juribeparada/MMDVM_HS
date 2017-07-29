@@ -16,8 +16,6 @@
 #   along with this program; if not, write to the Free Software
 #   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-# 
-
 cd ~
 
 # Install the necessary software tools
@@ -36,3 +34,4 @@ cd ~
 git clone https://github.com/juribeparada/MMDVM_HS
 cd MMDVM_HS/
 git clone https://github.com/juribeparada/STM32F10X_Lib
+

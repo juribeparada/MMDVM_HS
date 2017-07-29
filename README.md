@@ -34,7 +34,7 @@ If you can't decode any 4FSK modulation (DMR, YSF and P25) with your ZUMspot, th
 
 # Quick start
 
-Please see BUILD.md for more details, and also MMDVM Yahoo Groups.
+Please see BUILD.md for more details, and also MMDVM Yahoo Groups. You also can check at MMDVM_HS/scripts folder for some automatic tasks.
 
 ## Binary firmware installation
 
@@ -62,6 +62,8 @@ stop your MMDVMHost process and run (you will need the root password):
 and wait to complete the upgrading process.
 
 ## Build from the sources
+
+You could check at MMDVM_HS/configs for common Config.h examples, using different ZUMspot boards.
 
 ### ZUMspot Libre Kit (under Linux Raspbian)
 

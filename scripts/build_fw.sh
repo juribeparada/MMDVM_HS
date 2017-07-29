@@ -45,4 +45,3 @@ mv ~/MMDVM_HS/bin/outp.bin ~/MMDVM_HS/bin/zumspot_duplex_fw.bin
 make clean
 
 cp ~/MMDVM_HS/configs/ZUMspot_Libre.h ~/MMDVM_HS/Config.h
-
