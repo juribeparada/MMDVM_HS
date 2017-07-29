@@ -61,6 +61,16 @@ stop your MMDVMHost process and run (you will need the root password):
 
 and wait to complete the upgrading process.
 
+### Windows
+
+Download this Windows firmware upgrade utility (for ZUMspot LibreKit or ZUMspot USB dongle), written by Jon Lee G4TSN:
+
+    www.ircddb.org.uk/zumspot-firmware-uploader/zumspotfirmwareuploader.zip
+
+If you need to install a USB bootloader for a blank STM32F103 board, please see this Jon's document:
+
+    www.ircddb.org.uk/zumspot-firmware-uploader/bootloader_install_ZUMspot1.02.rtf
+
 ## Build from the sources
 
 ### ZUMspot Libre Kit (under Linux Raspbian)
