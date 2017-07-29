@@ -664,11 +664,9 @@ You could enable two test modes, if you edit ADF7021.h file before compilation. 
 
 - #define TEST_TX: Transmit the carrier frequency. This works only with D-Star mode enabled in MMDVM.ini. This test mode will transmit the carrier frequency defined with TXFrequency in MMDVM.ini. This could be useful to determine the frequency offset of your ZUMspot (with test equipment).
 
-- #define PI_HAT_7021_REV_02: enable pinouts for first revision of ZUMspot RPi. In general is not used.
+Also in ADF7021.h:
 
 - #define ADF7021_N_VER: enable support for narrow band version of ADF7021 (ADF7021N). Disabled by default, in general all boards will have just ADF7021.
-
-- #define BIDIR_DATA_PIN: enable Standard TX/RX Data Interface of ADF7021 (enabled by default, needed for scanning mode detection feature).
 
 - #define ADF7021_ENABLE_4FSK_AFC: enable AFC support for DMR, YSF and P25. This is experimental,
 depending on your frequency offset this option will improve or not your BER reception.
@@ -677,3 +675,12 @@ depending on your frequency offset this option will improve or not your BER rece
 ADF7021_ENABLE_4FSK_AFC option.
 
 - #define ADF7021_DISABLE_RC_4FSK: disable TX Raised Cosine filter for 4FSK modulation in ADF7021. Default TX pulse shaping filter for 4FSK is not optimum for DMR, YSF and P25. Activating this option might improve audio in 4FSK digital modes.
+
+In Globals.h:
+
+- #define BIDIR_DATA_PIN: enable Standard TX/RX Data Interface of ADF7021 (enabled by default, needed for scanning mode detection feature).
+
+In IOSTM.cpp:
+
+- #define PI_HAT_7021_REV_02: enable pinouts for first revision of ZUMspot RPi. In general is not used.
+
