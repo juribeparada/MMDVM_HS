@@ -44,7 +44,7 @@ Please check for latest firmware:
 
 ### Linux or macOS
 
-Download the script (*.sh) that match your ZUMspot board, for automatic firmware upgrade process:
+Download the script (*.sh) that matches with your ZUMspot board:
 
 - install_fw_rpi.sh: only for ZUMspot RPi board
 - install_fw_librekit.sh: only for ZUMspot Libre Kit board or generic ZUMspot board
