@@ -42,6 +42,14 @@ Please check the latest firmware:
 
     https://github.com/juribeparada/MMDVM_HS/releases
 
+### Windows
+
+Download the ZUMspotFW firmware upgrade utility (ZUMspotFW_setup.exe) from the releases section:
+
+    https://github.com/juribeparada/MMDVM_HS/releases/download/v1.0.0/ZUMSpotFW_setup.exe
+
+This utility includes firmwares binaries and USB drivers for Windows 7/8/10. If you have problems with the installer, you can download ZUMspotFW.zip for a manual installation.
+
 ### Linux or macOS
 
 Download the script (*.sh) that matches with your ZUMspot board:
