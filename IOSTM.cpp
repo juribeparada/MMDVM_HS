@@ -658,8 +658,8 @@ static inline void delay_us(uint32_t us) {
                  : "r0");
 }
 
-void CIO::delay_ifcal_coarse() {
-  delay_us(300);
+void CIO::delay_IFcal() {
+  delay_us(10000);
 }
 
 void CIO::delay_reset() {

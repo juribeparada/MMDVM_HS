@@ -288,7 +288,7 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
       ADF7021_REG4 |= (uint32_t) 0b10                      << 8;
       ADF7021_REG4 |= (uint32_t) ADF7021_DISC_BW_DSTAR     << 10;  // Disc BW
       ADF7021_REG4 |= (uint32_t) ADF7021_POST_BW_DSTAR     << 20;  // Post dem BW
-      ADF7021_REG4 |= (uint32_t) 0b10                      << 30;  // IF filter
+      ADF7021_REG4 |= (uint32_t) 0b00                      << 30;  // IF filter (12.5 kHz)
 
       ADF7021_REG13 = (uint32_t) 0b1101      << 0;   // register 13
       ADF7021_REG13 |= (uint32_t) ADF7021_SLICER_TH_DSTAR  << 4;   // slicer threshold
@@ -311,7 +311,7 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
       ADF7021_REG4 |= (uint32_t) 0b11                      << 8;
       ADF7021_REG4 |= (uint32_t) ADF7021_DISC_BW_DMR       << 10;  // Disc BW
       ADF7021_REG4 |= (uint32_t) ADF7021_POST_BW_DMR       << 20;  // Post dem BW
-      ADF7021_REG4 |= (uint32_t) 0b10                      << 30;  // IF filter
+      ADF7021_REG4 |= (uint32_t) 0b10                      << 30;  // IF filter (25 kHz)
 
       ADF7021_REG13 = (uint32_t) 0b1101                    << 0;   // register 13
       ADF7021_REG13 |= (uint32_t) ADF7021_SLICER_TH_DMR    << 4;   // slicer threshold
@@ -338,7 +338,7 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
       ADF7021_REG4 |= (uint32_t) 0b11                      << 8;
       ADF7021_REG4 |= (uint32_t) (m_LoDevYSF ? ADF7021_DISC_BW_YSF_L : ADF7021_DISC_BW_YSF_H) << 10;  // Disc BW
       ADF7021_REG4 |= (uint32_t) ADF7021_POST_BW_YSF       << 20;  // Post dem BW
-      ADF7021_REG4 |= (uint32_t) 0b10                      << 30;  // IF filter
+      ADF7021_REG4 |= (uint32_t) 0b10                      << 30;  // IF filter (25 kHz)
 
       ADF7021_REG13 = (uint32_t) 0b1101                    << 0;   // register 13
       ADF7021_REG13 |= (uint32_t) (m_LoDevYSF ? ADF7021_SLICER_TH_YSF_L : ADF7021_SLICER_TH_YSF_H) << 4;   // slicer threshold
@@ -365,7 +365,7 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
       ADF7021_REG4 |= (uint32_t) 0b11                      << 8;
       ADF7021_REG4 |= (uint32_t) ADF7021_DISC_BW_P25       << 10;  // Disc BW
       ADF7021_REG4 |= (uint32_t) ADF7021_POST_BW_P25       << 20;  // Post dem BW
-      ADF7021_REG4 |= (uint32_t) 0b10                      << 30;  // IF filter
+      ADF7021_REG4 |= (uint32_t) 0b00                      << 30;  // IF filter (12.5 kHz)
 
       ADF7021_REG13 = (uint32_t) 0b1101                    << 0;   // register 13
       ADF7021_REG13 |= (uint32_t) ADF7021_SLICER_TH_P25    << 4;   // slicer threshold
@@ -394,13 +394,17 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
   // DEMOD (4)
   AD7021_control_word = ADF7021_REG4;
   Send_AD7021_control();
+  
+  // IF fine cal (6)
+  AD7021_control_word = ADF7021_REG6;
+  Send_AD7021_control();
 
-  // IF FILTER (5)
+  // IF coarse cal (5)
   AD7021_control_word = ADF7021_REG5;
   Send_AD7021_control();
   
-  // Delay for coarse IF filter calibration
-  delay_ifcal_coarse();
+  // Delay for filter calibration
+  delay_IFcal();
 
   // Frequency RX (0)
   setRX();
@@ -481,7 +485,7 @@ void CIO::ifConf2(MMDVM_STATE modemState)
       ADF7021_REG4 |= (uint32_t) 0b10                      << 8;
       ADF7021_REG4 |= (uint32_t) ADF7021_DISC_BW_DSTAR     << 10;  // Disc BW
       ADF7021_REG4 |= (uint32_t) ADF7021_POST_BW_DSTAR     << 20;  // Post dem BW
-      ADF7021_REG4 |= (uint32_t) 0b10                      << 30;  // IF filter
+      ADF7021_REG4 |= (uint32_t) 0b00                      << 30;  // IF filter (12.5 kHz)
 
       ADF7021_REG13 = (uint32_t) 0b1101      << 0;   // register 13
       ADF7021_REG13 |= (uint32_t) ADF7021_SLICER_TH_DSTAR  << 4;   // slicer threshold
@@ -504,7 +508,7 @@ void CIO::ifConf2(MMDVM_STATE modemState)
       ADF7021_REG4 |= (uint32_t) 0b11                      << 8;
       ADF7021_REG4 |= (uint32_t) ADF7021_DISC_BW_DMR       << 10;  // Disc BW
       ADF7021_REG4 |= (uint32_t) ADF7021_POST_BW_DMR       << 20;  // Post dem BW
-      ADF7021_REG4 |= (uint32_t) 0b10                      << 30;  // IF filter
+      ADF7021_REG4 |= (uint32_t) 0b10                      << 30;  // IF filter (25 kHz)
 
       ADF7021_REG13 = (uint32_t) 0b1101                    << 0;   // register 13
       ADF7021_REG13 |= (uint32_t) ADF7021_SLICER_TH_DMR    << 4;   // slicer threshold
@@ -527,7 +531,7 @@ void CIO::ifConf2(MMDVM_STATE modemState)
       ADF7021_REG4 |= (uint32_t) 0b11                      << 8;
       ADF7021_REG4 |= (uint32_t) (m_LoDevYSF ? ADF7021_DISC_BW_YSF_L : ADF7021_DISC_BW_YSF_H) << 10;  // Disc BW
       ADF7021_REG4 |= (uint32_t) ADF7021_POST_BW_YSF       << 20;  // Post dem BW
-      ADF7021_REG4 |= (uint32_t) 0b10                      << 30;  // IF filter
+      ADF7021_REG4 |= (uint32_t) 0b10                      << 30;  // IF filter (25 kHz)
 
       ADF7021_REG13 = (uint32_t) 0b1101                    << 0;   // register 13
       ADF7021_REG13 |= (uint32_t) (m_LoDevYSF ? ADF7021_SLICER_TH_YSF_L : ADF7021_SLICER_TH_YSF_H) << 4;   // slicer threshold
@@ -550,7 +554,7 @@ void CIO::ifConf2(MMDVM_STATE modemState)
       ADF7021_REG4 |= (uint32_t) 0b11                      << 8;
       ADF7021_REG4 |= (uint32_t) ADF7021_DISC_BW_P25       << 10;  // Disc BW
       ADF7021_REG4 |= (uint32_t) ADF7021_POST_BW_P25       << 20;  // Post dem BW
-      ADF7021_REG4 |= (uint32_t) 0b10                      << 30;  // IF filter
+      ADF7021_REG4 |= (uint32_t) 0b00                      << 30;  // IF filter (12.5 kHz)
 
       ADF7021_REG13 = (uint32_t) 0b1101                    << 0;   // register 13
       ADF7021_REG13 |= (uint32_t) ADF7021_SLICER_TH_P25    << 4;   // slicer threshold
@@ -576,12 +580,16 @@ void CIO::ifConf2(MMDVM_STATE modemState)
   AD7021_control_word = ADF7021_REG4;
   Send_AD7021_control2();
 
-  // IF FILTER (5)
+  // IF fine cal (6)
+  AD7021_control_word = ADF7021_REG6;
+  Send_AD7021_control();
+
+  // IF coarse cal (5)
   AD7021_control_word = ADF7021_REG5;
-  Send_AD7021_control2();
+  Send_AD7021_control();
   
   // Delay for coarse IF filter calibration
-  delay_ifcal_coarse();
+  delay_IFcal();
 
   // Frequency RX (0) and set to RX only
   AD7021_control_word = ADF7021_RX_REG0;

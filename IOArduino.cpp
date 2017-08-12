@@ -132,8 +132,8 @@ extern "C" {
 }
 #endif
 
-void CIO::delay_ifcal_coarse() {
-  delayMicroseconds(300);
+void CIO::delay_IFcal() {
+  delayMicroseconds(10000);
 }
 
 void CIO::delay_reset() {
