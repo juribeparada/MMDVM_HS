@@ -21,7 +21,7 @@ MAC_DEV_USB_SER="/dev/cu.usbmodem1441"
 
 # Check if arguement is supplied for bin path. If not, use default.
 if [ -z "$1" ]; then
-  	BIN_PATH="./bin/outp.bin"
+  	BIN_PATH="../bin/outp.bin"
     echo "No path to bin file supplied, using the default location."
 else
 	BIN_PATH=$1
@@ -86,7 +86,7 @@ sudo killall MMDVMHost >/dev/null 2>&1
 eval sudo $DFU_RST $DEV_USB_SER 750
 
 # Upload the firmware
-eval sudo $DFU_UTIL -D bin/$BIN_PATH -d 1eaf:0003 -a 2 -R -R
+eval sudo $DFU_UTIL -D $BIN_PATH -d 1eaf:0003 -a 2 -R -R
 
 echo
 echo "Please RESET your ZUMspot !"
