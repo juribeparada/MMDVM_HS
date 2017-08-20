@@ -57,8 +57,40 @@ m_watchdog(0U)
   SCLK_pin(LOW);
   SDATA_pin(LOW);
   SLE_pin(LOW);
-  
+
+  selfTest();
+
   m_modeTimerCnt = 0;
+}
+
+void CIO::selfTest()
+{
+  bool ledValue = false;
+  uint32_t ledCount = 0;
+  uint32_t blinks = 0;
+
+  while(true) {
+    ledCount++;
+    delay_us(1000);
+
+    if(ledCount >= 125U) {
+      ledCount = 0U;
+      ledValue = !ledValue;
+
+      LED_pin(!ledValue);
+      PTT_pin(ledValue);
+      DSTAR_pin(ledValue);
+      DMR_pin(ledValue);
+      YSF_pin(ledValue);
+      P25_pin(ledValue);
+      COS_pin(ledValue);
+
+      blinks++;
+
+      if(blinks > 5)
+        break;
+    }
+  }
 }
 
 void CIO::process()

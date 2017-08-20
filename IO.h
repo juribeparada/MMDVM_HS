@@ -50,41 +50,39 @@ public:
   CIO();
 
   // Platform API
-  void     Init(void);
-  void     SCLK_pin(bool on);
-  void     SDATA_pin(bool on);
-  bool     SREAD_pin(void);
-  void     SLE_pin(bool on);
+  void      Init(void);
+  void      SCLK_pin(bool on);
+  void      SDATA_pin(bool on);
+  bool      SREAD_pin(void);
+  void      SLE_pin(bool on);
 #if defined(DUPLEX)
-  void     SLE2_pin(bool on);
-  bool     RXD2_pin(void);
+  void      SLE2_pin(bool on);
+  bool      RXD2_pin(void);
 #endif
-  void     CE_pin(bool on);
-  bool     RXD_pin(void);
-  bool     CLK_pin(void);
+  void      CE_pin(bool on);
+  bool      RXD_pin(void);
+  bool      CLK_pin(void);
   
 #if defined(BIDIR_DATA_PIN)
-  void     RXD_pin_write(bool on);
+  void      RXD_pin_write(bool on);
 #endif
 
-  void     TXD_pin(bool on);
-  void     PTT_pin(bool on);
-  void     LED_pin(bool on);
-  void     DEB_pin(bool on);
-  void     DSTAR_pin(bool on);
-  void     DMR_pin(bool on);
-  void     YSF_pin(bool on);
-  void     P25_pin(bool on);
-  void     COS_pin(bool on);
-  void     interrupt(void);
+  void      TXD_pin(bool on);
+  void      PTT_pin(bool on);
+  void      LED_pin(bool on);
+  void      DEB_pin(bool on);
+  void      DSTAR_pin(bool on);
+  void      DMR_pin(bool on);
+  void      YSF_pin(bool on);
+  void      P25_pin(bool on);
+  void      COS_pin(bool on);
+  void      interrupt(void);
 #if defined(DUPLEX)
-  void     interrupt2(void);
+  void      interrupt2(void);
 #endif
-  void     resetWatchdog(void);
-  uint32_t getWatchdog(void);
   
 #if defined(BIDIR_DATA_PIN)
-  void  Data_dir_out(bool dir);
+  void      Data_dir_out(bool dir);
 #endif
 
   // IO API
@@ -97,6 +95,9 @@ public:
   void      setMode(MMDVM_STATE modemState);
   void      setDecode(bool dcd);
   void      setLoDevYSF(bool ysfLoDev);
+  void      resetWatchdog(void);
+  uint32_t  getWatchdog(void);
+  void      selfTest(void);
 
   // RF interface API
   void      setTX(void);
