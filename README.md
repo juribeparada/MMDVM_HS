@@ -26,7 +26,7 @@ The jumper wire to CLKOUT in RF7021SE module is not longer required for lastest 
 
 Be aware that some Blue Pill STM32F103 board are defectives. If you have trouble with USB, please check this: http://wiki.stm32duino.com/index.php?title=Blue_Pill
 
-VHF (144-148 MHz) support for ZUMSpot is added by an external 18 nH inductor between L1 and L2 pins of ADF7021.
+VHF (144-148 MHz) support for ZUMSpot is added by an external 18 nH inductor between L1 and L2 pins of ADF7021. This will enable dual band (VHF/UHF) operation.
 
 Dual ADF7021 for full duplex operation (#define DUPLEX in Config.h) will work only with a big RX/TX frequency separation (5 MHz or more in UHF band for example) and proper antenna filtering. At the moment #define ADF7021_CARRIER_BOARD (Config.h) with STM32F103 platform is supported. Please see [BUILD.md](BUILD.md) for pinout details.
 
