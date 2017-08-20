@@ -81,7 +81,8 @@ public:
   void     interrupt2(void);
 #endif
   void     resetWatchdog(void);
-
+  uint32_t getWatchdog(void);
+  
 #if defined(BIDIR_DATA_PIN)
   void  Data_dir_out(bool dir);
 #endif

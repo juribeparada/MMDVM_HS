@@ -406,6 +406,10 @@ void CSerialPort::process()
         m_ptr = 1U;
         m_len = 0U;
       }
+      else {
+        m_ptr = 0U;
+        m_len = 0U;
+      }
     } else if (m_ptr == 1U) {
       // Handle the frame length
       m_len = m_buffer[m_ptr] = c;
@@ -645,6 +649,11 @@ void CSerialPort::process()
     }
   }
 
+  if (io.getWatchdog() >= 48000U) {
+    m_ptr = 0U;
+    m_len = 0U;
+  }
+  
 #if defined(SERIAL_REPEATER) || defined(SERIAL_REPEATER_USART1)
   // Drain any incoming serial data
   while (availableInt(3U))
