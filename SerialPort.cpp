@@ -280,7 +280,8 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
     io.ifConf(STATE_P25, true);
   
   io.start();
-
+  printConf();
+  
   return 0U;
 }
 
@@ -1013,3 +1014,16 @@ void CSerialPort::writeDebug(const char* text, int16_t n1, int16_t n2, int16_t n
   writeInt(1U, reply, count, true);
 }
 
+void CSerialPort::printConf()
+{
+  char buff[60];
+  
+  writeDebug("ZUMspot configuration:");
+  sprintf(buff, "TX freq %lu Hz, RX freq %lu Hz", io.TXfreq(), io.RXfreq());
+  writeDebug(buff);
+  writeDebug("D-Star dev (Hz):", io.devDSTAR());
+  writeDebug("DMR +1 sym dev (Hz):", io.devDMR());
+  writeDebug("YSF_H +1 sym dev (Hz):", io.devYSF_H());
+  writeDebug("YSF_L +1 sym dev (Hz):", io.devYSF_L());
+  writeDebug("P25 +1 sym dev (Hz):", io.devP25());
+}

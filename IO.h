@@ -118,8 +118,19 @@ public:
   void      delay_IFcal(void);
   void      delay_reset(void);
   void      delay_us(uint32_t us);
-     
+  uint32_t  RXfreq(void);
+  uint32_t  TXfreq(void);
+  uint16_t  devDSTAR(void);
+  uint16_t  devDMR(void);
+  uint16_t  devYSF_H(void);
+  uint16_t  devYSF_L(void);
+  uint16_t  devP25(void);
+  
 private:
+  uint8_t            m_RX_N_divider;
+  uint16_t           m_RX_F_divider;
+  uint8_t            m_TX_N_divider;
+  uint16_t           m_TX_F_divider;
   
   bool               m_started;
   CBitRB             m_rxBuffer;

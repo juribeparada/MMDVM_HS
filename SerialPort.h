@@ -50,6 +50,8 @@ public:
   void writeDebug(const char* text, int16_t n1, int16_t n2, int16_t n3);
   void writeDebug(const char* text, int16_t n1, int16_t n2, int16_t n3, int16_t n4);
 
+  void printConf();
+
 private:
   uint8_t m_buffer[256U];
   uint8_t m_ptr;

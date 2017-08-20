@@ -41,6 +41,7 @@ uint32_t           ADF7021_RX_REG0;
 uint32_t           ADF7021_TX_REG0;
 uint32_t           ADF7021_REG1;
 uint32_t           div2;
+float              f_div;
 
 static  void Send_AD7021_control_shift()
 {
@@ -171,8 +172,6 @@ uint16_t CIO::readRSSI()
 void CIO::ifConf(MMDVM_STATE modemState, bool reset)
 {
   float    divider;
-  uint8_t  N_divider;
-  uint16_t F_divider;
 
   uint32_t ADF7021_REG2  = 0;
   uint32_t ADF7021_REG3  = 0;
@@ -213,6 +212,11 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
     div2 = 1U;
   }
 
+  if(div2 == 1U)
+    f_div = 2.0;
+  else
+    f_div = 1.0;
+
   switch (modemState) {
     case STATE_DSTAR:
       AFC_OFFSET = 0;
@@ -235,9 +239,9 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
   else
     divider = (m_frequency_rx - 100000 + (2*AFC_OFFSET)) / ADF7021_PFD;
 
-  N_divider = floor(divider);
-  divider = (divider - N_divider) * 32768;
-  F_divider = floor(divider + 0.5);
+  m_RX_N_divider = floor(divider);
+  divider = (divider - m_RX_N_divider) * 32768;
+  m_RX_F_divider = floor(divider + 0.5);
 
   ADF7021_RX_REG0  = (uint32_t) 0b0000;
   
@@ -247,17 +251,17 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
   ADF7021_RX_REG0 |= (uint32_t) 0b01011   << 27;   // mux regulator/uart-spi enabled/receive
 #endif
 
-  ADF7021_RX_REG0 |= (uint32_t) N_divider << 19;   // frequency;
-  ADF7021_RX_REG0 |= (uint32_t) F_divider << 4;    // frequency;
+  ADF7021_RX_REG0 |= (uint32_t) m_RX_N_divider << 19;   // frequency;
+  ADF7021_RX_REG0 |= (uint32_t) m_RX_F_divider << 4;    // frequency;
   
   if( div2 == 1U )
     divider = m_frequency_tx / (ADF7021_PFD / 2U);
   else
     divider = m_frequency_tx / ADF7021_PFD;
 
-  N_divider = floor(divider);
-  divider = (divider - N_divider) * 32768;
-  F_divider = floor(divider + 0.5);
+  m_TX_N_divider = floor(divider);
+  divider = (divider - m_TX_N_divider) * 32768;
+  m_TX_F_divider = floor(divider + 0.5);
 
   ADF7021_TX_REG0  = (uint32_t) 0b0000;            // register 0
 
@@ -267,8 +271,8 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
   ADF7021_TX_REG0 |= (uint32_t) 0b01010   << 27;   // mux regulator/uart-spi enabled/transmit
 #endif
 
-  ADF7021_TX_REG0 |= (uint32_t) N_divider << 19;   // frequency;
-  ADF7021_TX_REG0 |= (uint32_t) F_divider << 4;    // frequency;
+  ADF7021_TX_REG0 |= (uint32_t) m_TX_N_divider << 19;   // frequency;
+  ADF7021_TX_REG0 |= (uint32_t) m_TX_F_divider << 4;    // frequency;
 
 #if defined(TEST_TX)
   modemState = STATE_DSTAR;
@@ -797,9 +801,39 @@ void CIO::setRX(bool doSle)
   }
 }
 
-void CIO::setLoDevYSF(bool on)
+uint32_t CIO::RXfreq(void)
 {
-  m_LoDevYSF = on;
+  return (uint32_t)((ADF7021_PFD / f_div) * ((float)m_RX_N_divider + (((float)m_RX_F_divider) / 32768.0)) + 100000.0);
+}
+
+uint32_t CIO::TXfreq(void)
+{
+  return (uint32_t)((ADF7021_PFD / f_div) * ((float)m_TX_N_divider + (((float)m_TX_F_divider) / 32768.0)));
+}
+
+uint16_t CIO::devDSTAR(void)
+{
+  return (uint16_t)(ADF7021_PFD * (((float)ADF7021_DEV_DSTAR) / f_div) / 65536.0);
+}
+
+uint16_t CIO::devDMR(void)
+{
+  return (uint16_t)(ADF7021_PFD * (((float)ADF7021_DEV_DMR) / f_div) / 65536.0);
+}
+
+uint16_t CIO::devYSF_H(void)
+{
+  return (uint16_t)(ADF7021_PFD * (((float)ADF7021_DEV_YSF_H) / f_div) / 65536.0);
+}
+
+uint16_t CIO::devYSF_L(void)
+{
+  return (uint16_t)(ADF7021_PFD * (((float)ADF7021_DEV_YSF_L) / f_div) / 65536.0);
+}
+
+uint16_t CIO::devP25(void)
+{
+  return (uint16_t)(ADF7021_PFD * (((float)ADF7021_DEV_P25) / f_div) / 65536.0);
 }
 
 #endif
