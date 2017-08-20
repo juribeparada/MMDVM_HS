@@ -145,7 +145,9 @@ void CIO::process()
     m_modeTimerCnt = 0;
     if( (m_modemState == STATE_IDLE) && (m_scanPauseCnt == 0) && m_scanEnable) {
       m_scanPos = (m_scanPos + 1) % m_TotalModes;
+      #if !defined(QUIET_MODE_LEDS)
       setMode(m_Modes[m_scanPos]);
+      #endif
       io.ifConf(m_Modes[m_scanPos], true);
     }
   }
@@ -291,6 +293,11 @@ void CIO::setDecode(bool dcd)
   }
 
   m_dcd = dcd;
+}
+
+void CIO::setLoDevYSF(bool on)
+{
+  m_LoDevYSF = on;
 }
 
 void CIO::resetWatchdog()
