@@ -507,15 +507,13 @@ scanning over all enabled modes, and you could have some detection delay. Enable
 
 - #define SEND_RSSI_DATA: enable RSSI reports to MMDVMHost. It is already converted to dBm.
 
-- #define SERIAL_REPEATER: enable a second serial port (USART2, pins PA2 and PA3) for Nextion
-LCD display.
+- #define SERIAL_REPEATER: enable a second serial port (USART2, pins PA2 and PA3) for Nextion LCD display.
 
-- #define SERIAL_REPEATER_USART1: enable USART1 (pins PA9 and PA10) for Nextion LCD display. Do
-not use with STM32_USART1_HOST enabled, only with USB host communication.
+- #define SERIAL_REPEATER_USART1: enable USART1 (pins PA9 and PA10) for Nextion LCD display. Do not use with STM32_USART1_HOST enabled, only with USB host communication.
 
-- #define ENABLE_P25_WIDE: enable support for Motorola Wide P25 mod/demod in XTS3000 radios. Using
-this mode improves RX BER. You need to enable this mode in your radio for each conventional
-personalities.
+- #define ENABLE_P25_WIDE: enable support for Motorola Wide P25 mod/demod in XTS3000 radios. Using this mode improves RX BER. You need to enable this mode in your radio for each conventional personalities.
+
+- #define QUIET_MODE_LEDS: disable mode LEDs blink during scan mode.
 
 # Pinout definitions
 
