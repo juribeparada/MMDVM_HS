@@ -29,7 +29,7 @@ fi
 
 # Check if bin file exists
 if [ -e $BIN_PATH ]; then
-    echo "Flashing $BIN_PATH"
+    echo "Attempting to flash $BIN_PATH"
 else
     echo "$BIN_PATH doesn't exist!"
     exit 1
