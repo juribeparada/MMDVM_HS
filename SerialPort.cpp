@@ -1019,7 +1019,6 @@ void CSerialPort::printConf()
   char buff[60];
   
   writeDebug("ZUMspot configuration:");
-  sprintf(buff, "TX freq %lu Hz, RX freq %lu Hz", io.TXfreq(), io.RXfreq());
   writeDebug(buff);
   writeDebug("D-Star dev (Hz):", io.devDSTAR());
   writeDebug("DMR +1 sym dev (Hz):", io.devDMR());

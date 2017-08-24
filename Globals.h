@@ -23,7 +23,6 @@
 #if defined(STM32F10X_MD)
 #include <stm32f10x.h>
 #include "string.h"
-#include <stdio.h>
 #else
 #include <Arduino.h>
 #endif
