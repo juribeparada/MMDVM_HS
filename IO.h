@@ -125,6 +125,7 @@ public:
   uint16_t  devYSF_H(void);
   uint16_t  devYSF_L(void);
   uint16_t  devP25(void);
+  void      printConf();
   
 private:
   uint8_t            m_RX_N_divider;

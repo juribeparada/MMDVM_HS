@@ -60,6 +60,7 @@ const uint8_t  MARK_NONE  = 0x00U;
 #include "P25RX.h"
 #include "P25TX.h"
 #include "Debug.h"
+#include "Utils.h"
 
 const uint16_t TX_RINGBUFFER_SIZE = 512U;
 const uint16_t RX_RINGBUFFER_SIZE = 512U;

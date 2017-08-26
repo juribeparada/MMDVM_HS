@@ -41,7 +41,7 @@ uint32_t           ADF7021_RX_REG0;
 uint32_t           ADF7021_TX_REG0;
 uint32_t           ADF7021_REG1;
 uint32_t           div2;
-float              f_div;
+uint32_t           f_div;
 
 static  void Send_AD7021_control_shift()
 {
@@ -213,9 +213,9 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
   }
 
   if(div2 == 1U)
-    f_div = 2.0;
+    f_div = 2U;
   else
-    f_div = 1.0;
+    f_div = 1U;
 
   switch (modemState) {
     case STATE_DSTAR:
@@ -801,39 +801,51 @@ void CIO::setRX(bool doSle)
   }
 }
 
-uint32_t CIO::RXfreq(void)
+uint32_t CIO::RXfreq()
 {
-  return (uint32_t)((ADF7021_PFD / f_div) * ((float)m_RX_N_divider + (((float)m_RX_F_divider) / 32768.0)) + 100000.0);
+  return (uint32_t)((float)(ADF7021_PFD / f_div) * ((float)((32768 * m_RX_N_divider) + m_RX_F_divider) / 32768.0)) + 100000;
 }
 
-uint32_t CIO::TXfreq(void)
+uint32_t CIO::TXfreq()
 {
-  return (uint32_t)((ADF7021_PFD / f_div) * ((float)m_TX_N_divider + (((float)m_TX_F_divider) / 32768.0)));
+  return (uint32_t)((float)(ADF7021_PFD / f_div) * ((float)((32768 * m_TX_N_divider) + m_TX_F_divider) / 32768.0));
 }
 
-uint16_t CIO::devDSTAR(void)
+uint16_t CIO::devDSTAR()
 {
-  return (uint16_t)(ADF7021_PFD * (((float)ADF7021_DEV_DSTAR) / f_div) / 65536.0);
+  return (uint16_t)((ADF7021_PFD * ADF7021_DEV_DSTAR) / (f_div * 65536));
 }
 
-uint16_t CIO::devDMR(void)
+uint16_t CIO::devDMR()
 {
-  return (uint16_t)(ADF7021_PFD * (((float)ADF7021_DEV_DMR) / f_div) / 65536.0);
+  return (uint16_t)((ADF7021_PFD * ADF7021_DEV_DMR) / (f_div * 65536));
 }
 
-uint16_t CIO::devYSF_H(void)
+uint16_t CIO::devYSF_H()
 {
-  return (uint16_t)(ADF7021_PFD * (((float)ADF7021_DEV_YSF_H) / f_div) / 65536.0);
+  return (uint16_t)((ADF7021_PFD * ADF7021_DEV_YSF_H) / (f_div * 65536));
 }
 
-uint16_t CIO::devYSF_L(void)
+uint16_t CIO::devYSF_L()
 {
-  return (uint16_t)(ADF7021_PFD * (((float)ADF7021_DEV_YSF_L) / f_div) / 65536.0);
+  return (uint16_t)((ADF7021_PFD * ADF7021_DEV_YSF_L) / (f_div * 65536));
 }
 
-uint16_t CIO::devP25(void)
+uint16_t CIO::devP25()
 {
-  return (uint16_t)(ADF7021_PFD * (((float)ADF7021_DEV_P25) / f_div) / 65536.0);
+  return (uint16_t)((ADF7021_PFD * ADF7021_DEV_P25) / (f_div * 65536));
+}
+
+void CIO::printConf()
+{
+  DEBUG1("ZUMspot configuration:");
+  DEBUG2I("TX freq (Hz):", TXfreq());
+  DEBUG2I("RX freq (Hz):", RXfreq());
+  DEBUG2("D-Star dev (Hz):", devDSTAR());
+  DEBUG2("DMR +1 sym dev (Hz):", devDMR());
+  DEBUG2("YSF_H +1 sym dev (Hz):", devYSF_H());
+  DEBUG2("YSF_L +1 sym dev (Hz):", devYSF_L());
+  DEBUG2("P25 +1 sym dev (Hz):", devP25());
 }
 
 #endif

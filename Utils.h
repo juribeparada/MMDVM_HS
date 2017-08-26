@@ -32,5 +32,7 @@ uint8_t countBits32(uint32_t bits);
 
 uint8_t countBits64(uint64_t bits);
 
+uint8_t *i2str(uint8_t *dest, size_t n, int32_t x);
+
 #endif
 

@@ -280,7 +280,7 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
     io.ifConf(STATE_P25, true);
   
   io.start();
-  printConf();
+  io.printConf();
   
   return 0U;
 }
@@ -904,6 +904,32 @@ void CSerialPort::writeDebug(const char* text)
   writeInt(1U, reply, count, true);
 }
 
+void CSerialPort::writeDebugI(const char* text, int32_t n1)
+{
+  if (!m_debug)
+    return;
+    
+  uint8_t reply[130U];
+
+  reply[0U] = MMDVM_FRAME_START;
+  reply[1U] = 0U;
+  reply[2U] = MMDVM_DEBUG1;
+
+  uint8_t count = 3U;
+  for (uint8_t i = 0U; text[i] != '\0'; i++, count++)
+    reply[count] = text[i];
+
+  reply[count++] = ' '; 
+
+  i2str(&reply[count], 130U - count, n1);
+
+  count += 9U;
+
+  reply[1U] = count;
+
+  writeInt(1U, reply, count, true);
+}
+
 void CSerialPort::writeDebug(const char* text, int16_t n1)
 {
   if (!m_debug)
@@ -1012,17 +1038,4 @@ void CSerialPort::writeDebug(const char* text, int16_t n1, int16_t n2, int16_t n
   reply[1U] = count;
 
   writeInt(1U, reply, count, true);
-}
-
-void CSerialPort::printConf()
-{
-  char buff[60];
-  
-  writeDebug("ZUMspot configuration:");
-  writeDebug(buff);
-  writeDebug("D-Star dev (Hz):", io.devDSTAR());
-  writeDebug("DMR +1 sym dev (Hz):", io.devDMR());
-  writeDebug("YSF_H +1 sym dev (Hz):", io.devYSF_H());
-  writeDebug("YSF_L +1 sym dev (Hz):", io.devYSF_L());
-  writeDebug("P25 +1 sym dev (Hz):", io.devP25());
 }
