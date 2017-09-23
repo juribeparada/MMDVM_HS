@@ -58,7 +58,7 @@ uint8_t countBits64(uint64_t bits)
 
 // Simple functions to convert from int to string
 // Example from: https://stackoverflow.com/questions/8257714/how-to-convert-an-int-to-string-in-c
-static uint8_t *i2str_helper(uint8_t *dest, size_t n, int32_t x) {
+static uint8_t *i2str_helper(uint8_t *dest, uint32_t n, int32_t x) {
   if (n == 0) {
     return NULL;
   }
@@ -70,7 +70,7 @@ static uint8_t *i2str_helper(uint8_t *dest, size_t n, int32_t x) {
   return dest + 1;
 }
 
-uint8_t *i2str(uint8_t *dest, size_t n, int32_t x) {
+uint8_t *i2str(uint8_t *dest, uint32_t n, int32_t x) {
   uint8_t *p = dest;
   if (n == 0) {
     return NULL;

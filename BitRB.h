@@ -24,7 +24,6 @@ Boston, MA  02110-1301, USA.
 
 #if defined(STM32F10X_MD)
 #include "stm32f10x.h"
-#include <cstddef>
 #else
 #include <Arduino.h>
 #endif
