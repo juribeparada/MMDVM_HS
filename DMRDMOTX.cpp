@@ -24,7 +24,7 @@
 const uint8_t DMR_SYNC = 0x5FU;
 
 CDMRDMOTX::CDMRDMOTX() :
-m_fifo(),
+m_fifo(875U),
 m_poBuffer(),
 m_poLen(0U),
 m_poPtr(0U),

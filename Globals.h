@@ -62,8 +62,8 @@ const uint8_t  MARK_NONE  = 0x00U;
 #include "Debug.h"
 #include "Utils.h"
 
-const uint16_t TX_RINGBUFFER_SIZE = 512U;
-const uint16_t RX_RINGBUFFER_SIZE = 512U;
+const uint16_t TX_RINGBUFFER_SIZE = 1024U;
+const uint16_t RX_RINGBUFFER_SIZE = 1024U;
 
 extern MMDVM_STATE m_modemState;
 extern MMDVM_STATE m_modemState_prev;
