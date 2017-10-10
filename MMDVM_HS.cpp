@@ -21,7 +21,7 @@
 
 #include "Config.h"
 
-#if defined(STM32F10X_MD)
+#if defined(STM32F10X_MD) || defined(STM32F4XX) || defined(STM32F7XX)
 
 #include "Globals.h"
 

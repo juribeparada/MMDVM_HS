@@ -21,6 +21,10 @@
 
 #if defined(STM32F10X_MD)
 #include "stm32f10x.h"
+#elif defined(STM32F4XX)
+#include "stm32f4xx.h"
+#elif defined(STM32F7XX)
+#include "stm32f7xx.h"
 #else
 #include <Arduino.h>
 #endif
