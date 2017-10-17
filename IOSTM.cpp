@@ -146,7 +146,7 @@
 #define PIN_COS_LED          GPIO_Pin_15
 #define PORT_COS_LED         GPIOB
 
-#elif defined(ADF7021_CARRIER_BOARD)
+#elif defined(ADF7021_CARRIER_BOARD) || defined(MMDVM_HS_HAT_REV12)
 
 #define PIN_SCLK             GPIO_Pin_5
 #define PORT_SCLK            GPIOB
@@ -216,7 +216,7 @@
 #define PORT_COS_LED         GPIOB
 
 #else
-#error "Either PI_HAT_7021_REV_02, PI_HAT_7021_REV_03 or ADF7021_CARRIER_BOARD need to be defined"
+#error "Either PI_HAT_7021_REV_02, PI_HAT_7021_REV_03,ADF7021_CARRIER_BOARD or MMDVM_HS_HAT_REV12 need to be defined"
 #endif
 
 extern "C" {
@@ -238,7 +238,7 @@ extern "C" {
   }
 #endif
 
-#elif defined(PI_HAT_7021_REV_03) || defined(ADF7021_CARRIER_BOARD)
+#elif defined(PI_HAT_7021_REV_03) || defined(ADF7021_CARRIER_BOARD) || defined(MMDVM_HS_HAT_REV12)
 
 #if defined(BIDIR_DATA_PIN)
   void EXTI3_IRQHandler(void) {
@@ -275,7 +275,7 @@ void CIO::Init()
   
 #if defined(PI_HAT_7021_REV_02)
   GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable, ENABLE);
-#elif defined(PI_HAT_7021_REV_03) || defined(ADF7021_CARRIER_BOARD)
+#elif defined(PI_HAT_7021_REV_03) || defined(ADF7021_CARRIER_BOARD) || defined(MMDVM_HS_HAT_REV12)
   GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);
 #endif
 
@@ -439,7 +439,7 @@ void CIO::Init()
   EXTI_InitStructure.EXTI_Line = EXTI_Line14;
 #endif
 
-#elif defined(PI_HAT_7021_REV_03) || defined(ADF7021_CARRIER_BOARD)
+#elif defined(PI_HAT_7021_REV_03) || defined(ADF7021_CARRIER_BOARD) || defined(MMDVM_HS_HAT_REV12)
 
 #if defined(BIDIR_DATA_PIN)
   // Connect EXTI3 Line
@@ -487,7 +487,7 @@ void CIO::startInt()
 
   NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn;
 
-#elif defined(PI_HAT_7021_REV_03) || defined(ADF7021_CARRIER_BOARD)
+#elif defined(PI_HAT_7021_REV_03) || defined(ADF7021_CARRIER_BOARD) || defined(MMDVM_HS_HAT_REV12)
 
 #if defined(BIDIR_DATA_PIN)
   // Enable and set EXTI3 Interrupt
