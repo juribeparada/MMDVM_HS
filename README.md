@@ -30,7 +30,7 @@ VHF (144-148 MHz) support for ZUMSpot is added by an external 18 nH inductor bet
 
 Dual ADF7021 for full duplex operation (#define DUPLEX in Config.h) will work only with a big RX/TX frequency separation (5 MHz or more in UHF band for example) and proper antenna filtering. At the moment #define ADF7021_CARRIER_BOARD (Config.h) with STM32F103 platform is supported. Please see [BUILD.md](BUILD.md) for pinout details.
 
-If you can't decode any 4FSK modulation (DMR, YSF and P25) with your ZUMspot, the common solution is to adjust RX frequency offset (RXOffset) in your MMDVM.ini file. Please try with steps of +-100 Hz until you get low BER. If you don't have test equipment, the only procedure is trial and error. In some cases TXOffset adjustment is also required for proper radio decoding.
+If you can't decode any 4FSK modulation (DMR, YSF and P25) with your ZUMspot, the common solution is to adjust RX frequency offset (RXOffset) in your MMDVM.ini file. Please try with steps of +-100 Hz until you get low BER. If you don't have test equipment, the only procedure is trial and error. In some cases TXOffset adjustment is also required for proper radio decoding. If you have test equipment, enable TEST_TX feature (see "Hidden functions" in [BUILD.md](BUILD.md) document).
 
 # Quick start
 
