@@ -24,6 +24,8 @@
 // #define PI_HAT_7021_REV_03
 // 2) ZUMspot Libre Kit or board with modified RF7021SE and Blue Pill STM32F103:
 #define ADF7021_CARRIER_BOARD
+// 3) MMDVM_HS_Hat revisions 1.1 and 1.2 (DB9MAT & DF2ET)
+// #define MMDVM_HS_HAT_REV12
 
 // Enable ADF7021 support:
 #define ENABLE_ADF7021
