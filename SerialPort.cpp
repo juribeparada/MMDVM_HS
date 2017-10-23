@@ -71,9 +71,9 @@ const uint8_t MMDVM_DEBUG4       = 0xF4U;
 const uint8_t MMDVM_DEBUG5       = 0xF5U;
 
 #if defined(ADF7021_N_VER)
-#define DESCRIPTION              "ZUMspot ADF7021N v1.0.1 20170826 (DStar/DMR/YSF/P25)"
+#define DESCRIPTION              "ZUMspot ADF7021N v1.0.2 20171023 (DStar/DMR/YSF/P25)"
 #else
-#define DESCRIPTION              "ZUMspot ADF7021 v1.0.1 20170826 (DStar/DMR/YSF/P25)"
+#define DESCRIPTION              "ZUMspot ADF7021 v1.0.2 20171023 (DStar/DMR/YSF/P25)"
 #endif
 
 #if defined(GITVERSION)
