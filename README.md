@@ -46,7 +46,7 @@ Please check the latest firmware:
 
 Download the ZUMspotFW firmware upgrade utility (ZUMspotFW_setup.exe) from the releases section:
 
-    https://github.com/juribeparada/MMDVM_HS/releases/download/v1.0.0/ZUMSpotFW_setup.exe
+    https://github.com/juribeparada/MMDVM_HS/releases/download/v1.0.2/ZUMSpotFW_setup.exe
 
 This utility includes firmwares binaries and USB drivers for Windows 7/8/10. If you have problems with the installer, you can download ZUMspotFW.zip for a manual installation.
 
