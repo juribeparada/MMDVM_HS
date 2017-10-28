@@ -73,6 +73,12 @@ and wait to complete the upgrading process.
 
 You could check at MMDVM_HS/configs for common Config.h examples, using different ZUMspot boards.
 
+### MMDVM_HS_Hat
+
+Please check here for detailed instructions:
+
+    https://github.com/mathisschmieder/MMDVM_HS_Hat/blob/master/README.md
+
 ### ZUMspot Libre Kit (under Linux Raspbian)
 
 Install the necessary software tools:
