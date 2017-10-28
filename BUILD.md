@@ -7,6 +7,7 @@ This is a detailed guide for building the firmware of MMDVM_HS from the source c
 - ZUMspot RPi
 - ZUMspot Libre Kit
 - ZUMspot USB
+- MMDVM_HS_Hat
 - Makefile options
 - Config.h options
 - Pinout definitions
@@ -426,6 +427,13 @@ Edit MMDVM.ini according your preferences
 Execute MMDVMHost:
 
     ./MMDVMHost MMDVM.ini
+    
+# MMDVM_HS_Hat
+
+Please check here for detailed instructions:
+
+    https://github.com/mathisschmieder/MMDVM_HS_Hat/blob/master/README.md
+
 
 # Makefile options
 
@@ -436,6 +444,8 @@ Execute MMDVMHost:
 - make bl: it builds a firmware with USB bootloader support.
 
 - make zumspot-pi: upload the firmware to a ZUMspot RPi version (using internal RPi serial port) 
+
+- make mmdvm_hs_hat: upload the firmware to MMDVM_HS_Hat board (using internal RPi serial port) 
 
 - make dfu [devser=/dev/ttyXXX]: upload firmware using USB bootloader. "devser" is optional,
 and it corresponds to the USB serial port device name. This option permits to perform a reset
@@ -485,6 +495,8 @@ to enable this option if you have one of these products.
 
 - #define ADF7021_CARRIER_BOARD: enable this option if you have a ZUMspot Libre Kit (Board with
 modified RF7021SE and Blue Pill STM32F103).
+
+- #define MMDVM_HS_HAT_REV12: enable this option if you have a MMDVM_HS_Hat board for RPi. 
 
 - #define ENABLE_ADF7021: add support for ADF7021 (all boards, enabled by default).
 
