@@ -44,4 +44,10 @@ make bl
 mv ~/MMDVM_HS/bin/outp.bin ~/MMDVM_HS/bin/zumspot_duplex_fw.bin
 make clean
 
+# Building MMDVM_HS_Hat
+cp ~/MMDVM_HS/configs/MMDVM_HS_Hat.h ~/MMDVM_HS/Config.h
+make
+mv ~/MMDVM_HS/bin/outp.bin ~/MMDVM_HS/bin/mmdvm_hs_hat_fw.bin
+make clean
+
 cp ~/MMDVM_HS/configs/ZUMspot_Libre.h ~/MMDVM_HS/Config.h

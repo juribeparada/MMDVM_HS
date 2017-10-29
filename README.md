@@ -55,6 +55,7 @@ This utility includes firmwares binaries and USB drivers for Windows 7/8/10. If 
 Download the script (*.sh) that matches with your ZUMspot board:
 
 - install_fw_rpi.sh: only for ZUMspot RPi board
+- install_fw_hshat.sh: only for MMDVM_HS_Hat board
 - install_fw_librekit.sh: only for ZUMspot Libre Kit board or generic ZUMspot board
 - install_fw_usb.sh: only for ZUMspot USB dongle
 - install_fw_duplex.sh: only for ZUMspot with dual ADF7021
