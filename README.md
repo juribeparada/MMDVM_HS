@@ -1,6 +1,6 @@
 # Introduction
 
-This is the source code of ZUMspot, personal hotspot (ADF7021 version of the MMDVM firmware), based on Jonathan G4KLX's MMDVM software. This firmware supports D-Star, DMR, System Fusion and P25 digital modes.
+This is the source code of ZUMspot/MMDVM_HS, personal hotspot (ADF7021 version of the MMDVM firmware), based on Jonathan G4KLX's MMDVM software. This firmware supports D-Star, DMR, System Fusion and P25 digital modes.
 
 This software is intended to be run on STM32F103 microcontroller. You can build this code using Arduino IDE with STM32duino package, or using "make" with ARM GCC tools. Also, Arduino with 3.3 V I/O (Arduino Due and Zero) and Teensy (3.1, 3.2, 3.5 or 3.6) are supported.
 
@@ -16,7 +16,7 @@ This software is licenced under the GPL v2 and is intended for amateur and educa
 - Serial repeater port for Nextion displays
 - Support for native USB port in STM32F103 CPU
 - RSSI support
-- Full duplex support with two ADF7021 (experimental)
+- Full duplex support with two ADF7021
 
 # Important notes
 
@@ -52,13 +52,13 @@ This utility includes firmwares binaries and USB drivers for Windows 7/8/10. If 
 
 ### Linux or macOS
 
-Download the script (*.sh) that matches with your ZUMspot board:
+Download the script (*.sh) that matches with your ZUMspot/MMDVM_HS board:
 
 - install_fw_rpi.sh: only for ZUMspot RPi board
 - install_fw_hshat.sh: only for MMDVM_HS_Hat board
-- install_fw_librekit.sh: only for ZUMspot Libre Kit board or generic ZUMspot board
+- install_fw_librekit.sh: only for ZUMspot Libre Kit board or generic MMDVM_HS board
 - install_fw_usb.sh: only for ZUMspot USB dongle
-- install_fw_duplex.sh: only for ZUMspot with dual ADF7021
+- install_fw_duplex.sh: only for MMDVM_HS with dual ADF7021
 
 make the script executable (for example for ZUMspot RPi):
 
