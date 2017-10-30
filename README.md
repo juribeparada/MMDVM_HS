@@ -60,7 +60,12 @@ Download the script (*.sh) that matches with your ZUMspot/MMDVM_HS board:
 - install_fw_usb.sh: only for ZUMspot USB dongle
 - install_fw_duplex.sh: only for MMDVM_HS with dual ADF7021
 
-make the script executable (for example for ZUMspot RPi):
+For example, download the ZUMspot RPi upgrade script:
+
+    cd ~
+    curl -OL https://raw.github.com/juribeparada/MMDVM_HS/master/scripts/install_fw_rpi.sh
+
+make the script executable:
 
     chmod +x install_fw_rpi.sh
 
