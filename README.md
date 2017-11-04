@@ -87,6 +87,15 @@ Please check here for detailed instructions:
 
 ### ZUMspot Libre Kit (under Linux Raspbian)
 
+If you are using Pi-Star, expand filesystem (if you haven't done before):
+
+    sudo pistar-expand
+    sudo reboot
+
+Enable RW filesystem if you are using Pi-Star:
+
+    rpi-rw
+
 Install the necessary software tools:
 
     sudo apt-get update
@@ -102,6 +111,12 @@ Download the sources:
 Build the firmware with USB bootloader support (the default Config.h is OK for Libre Kit):
 
     make bl
+
+If you are using Pi-Star, stop services:
+
+    sudo pistar-watchdog.service stop
+    sudo systemctl stop mmdvmhost.timer
+    sudo systemctl stop mmdvmhost.service
 
 Upload the firmware to ZUMspot Libre Kit using the USB port (your Libre Kit has the bootloader already installed):
 
@@ -138,6 +153,15 @@ Reboot your RPi:
 
 #### Build de firmware and upload to ZUMspot RPi
 
+If you are using Pi-Star, expand filesystem (if you haven't done before):
+
+    sudo pistar-expand
+    sudo reboot
+
+Enable RW filesystem if you are using Pi-Star:
+
+    rpi-rw
+
 Install the necessary software tools:
 
     sudo apt-get update
@@ -171,6 +195,12 @@ and enable:
 Build the firmware:
 
     make
+
+If you are using Pi-Star, stop services:
+
+    sudo pistar-watchdog.service stop
+    sudo systemctl stop mmdvmhost.timer
+    sudo systemctl stop mmdvmhost.service
 
 Upload the firmware to ZUMspot RPi board:
 

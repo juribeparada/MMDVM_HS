@@ -73,6 +73,15 @@ Reboot your RPi:
 
 ### Build de firmware and upload to ZUMspot RPi
 
+If you are using Pi-Star, expand filesystem (if you haven't done before):
+
+    sudo pistar-expand
+    sudo reboot
+
+Enable RW filesystem if you are using Pi-Star:
+
+    rpi-rw
+
 Install the necessary software tools:
 
     sudo apt-get update
@@ -108,6 +117,12 @@ and enable:
 Build the firmware:
 
     make
+
+If you are using Pi-Star, stop services:
+
+    sudo pistar-watchdog.service stop
+    sudo systemctl stop mmdvmhost.timer
+    sudo systemctl stop mmdvmhost.service
 
 Upload the firmware to ZUMspot RPi board:
 
@@ -257,6 +272,15 @@ Press the reset button of ZUMspot and upload the firmware:
 
 ## Linux Raspbian
 
+If you are using Pi-Star, expand filesystem (if you haven't done before):
+
+    sudo pistar-expand
+    sudo reboot
+
+Enable RW filesystem if you are using Pi-Star:
+
+    rpi-rw
+
 Install the necessary software tools:
 
     sudo apt-get update
@@ -286,6 +310,12 @@ and enable:
 Build the firmware with bootloader support:
 
     make bl
+
+If you are using Pi-Star, stop services:
+
+    sudo pistar-watchdog.service stop
+    sudo systemctl stop mmdvmhost.timer
+    sudo systemctl stop mmdvmhost.service
 
 Upload bootloader and firmware to ZUMspot Libre Kit, using serial port first (you
 are using an USB-serial converter with device name /dev/ttyUSB0). Move BOOT0
@@ -378,6 +408,15 @@ connect the USB cable.
 
 ## Linux Raspbian
 
+If you are using Pi-Star, expand filesystem (if you haven't done before):
+
+    sudo pistar-expand
+    sudo reboot
+
+Enable RW filesystem if you are using Pi-Star:
+
+    rpi-rw
+
 Install the necessary software tools:
 
     sudo apt-get update
@@ -408,6 +447,12 @@ Build the firmware with bootloader support:
 
     make bl
 
+If you are using Pi-Star, stop services:
+
+    sudo pistar-watchdog.service stop
+    sudo systemctl stop mmdvmhost.timer
+    sudo systemctl stop mmdvmhost.service
+
 Upload the firmware to ZUMspot USB:
 
     sudo make dfu devser=/dev/ttyACM0
@@ -433,7 +478,6 @@ Execute MMDVMHost:
 Please check here for detailed instructions:
 
     https://github.com/mathisschmieder/MMDVM_HS_Hat/blob/master/README.md
-
 
 # Makefile options
 
