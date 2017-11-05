@@ -1,6 +1,6 @@
 # Introduction
 
-This is the source code of ZUMspot, personal hotspot (ADF7021 version of the MMDVM firmware), based on Jonathan G4KLX's MMDVM software. This firmware supports D-Star, DMR, System Fusion and P25 digital modes.
+This is the source code of ZUMspot/MMDVM_HS, personal hotspot (ADF7021 version of the MMDVM firmware), based on Jonathan G4KLX's MMDVM software. This firmware supports D-Star, DMR, System Fusion and P25 digital modes.
 
 This software is intended to be run on STM32F103 microcontroller. You can build this code using Arduino IDE with STM32duino package, or using "make" with ARM GCC tools. Also, Arduino with 3.3 V I/O (Arduino Due and Zero) and Teensy (3.1, 3.2, 3.5 or 3.6) are supported.
 
@@ -16,7 +16,7 @@ This software is licenced under the GPL v2 and is intended for amateur and educa
 - Serial repeater port for Nextion displays
 - Support for native USB port in STM32F103 CPU
 - RSSI support
-- Full duplex support with two ADF7021 (experimental)
+- Full duplex support with two ADF7021
 
 # Important notes
 
@@ -46,20 +46,26 @@ Please check the latest firmware:
 
 Download the ZUMspotFW firmware upgrade utility (ZUMspotFW_setup.exe) from the releases section:
 
-    https://github.com/juribeparada/MMDVM_HS/releases/download/v1.0.0/ZUMSpotFW_setup.exe
+    https://github.com/juribeparada/MMDVM_HS/releases/download/v1.0.2/ZUMSpotFW_setup.exe
 
 This utility includes firmwares binaries and USB drivers for Windows 7/8/10. If you have problems with the installer, you can download ZUMspotFW.zip for a manual installation.
 
 ### Linux or macOS
 
-Download the script (*.sh) that matches with your ZUMspot board:
+Download the script (*.sh) that matches with your ZUMspot/MMDVM_HS board:
 
 - install_fw_rpi.sh: only for ZUMspot RPi board
-- install_fw_librekit.sh: only for ZUMspot Libre Kit board or generic ZUMspot board
+- install_fw_hshat.sh: only for MMDVM_HS_Hat board
+- install_fw_librekit.sh: only for ZUMspot Libre Kit board or generic MMDVM_HS board
 - install_fw_usb.sh: only for ZUMspot USB dongle
-- install_fw_duplex.sh: only for ZUMspot with dual ADF7021
+- install_fw_duplex.sh: only for MMDVM_HS with dual ADF7021
 
-make the script executable (for example for ZUMspot RPi):
+For example, download the ZUMspot RPi upgrade script:
+
+    cd ~
+    curl -OL https://raw.github.com/juribeparada/MMDVM_HS/master/scripts/install_fw_rpi.sh
+
+make the script executable:
 
     chmod +x install_fw_rpi.sh
 
@@ -73,7 +79,22 @@ and wait to complete the upgrading process.
 
 You could check at MMDVM_HS/configs for common Config.h examples, using different ZUMspot boards.
 
+### MMDVM_HS_Hat
+
+Please check here for detailed instructions:
+
+    https://github.com/mathisschmieder/MMDVM_HS_Hat/blob/master/README.md
+
 ### ZUMspot Libre Kit (under Linux Raspbian)
+
+If you are using Pi-Star, expand filesystem (if you haven't done before):
+
+    sudo pistar-expand
+    sudo reboot
+
+Enable RW filesystem if you are using Pi-Star:
+
+    rpi-rw
 
 Install the necessary software tools:
 
@@ -90,6 +111,12 @@ Download the sources:
 Build the firmware with USB bootloader support (the default Config.h is OK for Libre Kit):
 
     make bl
+
+If you are using Pi-Star, stop services:
+
+    sudo pistar-watchdog.service stop
+    sudo systemctl stop mmdvmhost.timer
+    sudo systemctl stop mmdvmhost.service
 
 Upload the firmware to ZUMspot Libre Kit using the USB port (your Libre Kit has the bootloader already installed):
 
@@ -126,6 +153,15 @@ Reboot your RPi:
 
 #### Build de firmware and upload to ZUMspot RPi
 
+If you are using Pi-Star, expand filesystem (if you haven't done before):
+
+    sudo pistar-expand
+    sudo reboot
+
+Enable RW filesystem if you are using Pi-Star:
+
+    rpi-rw
+
 Install the necessary software tools:
 
     sudo apt-get update
@@ -159,6 +195,12 @@ and enable:
 Build the firmware:
 
     make
+
+If you are using Pi-Star, stop services:
+
+    sudo pistar-watchdog.service stop
+    sudo systemctl stop mmdvmhost.timer
+    sudo systemctl stop mmdvmhost.service
 
 Upload the firmware to ZUMspot RPi board:
 
