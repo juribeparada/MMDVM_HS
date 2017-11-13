@@ -24,7 +24,7 @@ The ADF7021 (or RF7021SE module) must operate with a 14.7456 MHz TCXO and with a
 
 The jumper wire to CLKOUT in RF7021SE module is not longer required for lastest MMDVM_HS firmware. But CE pin connection of ADF7021 is required for proper operation of ZUMspot.
 
-Be aware that some Blue Pill STM32F103 board are defectives. If you have trouble with USB, please check [this](http://wiki.stm32duino.com/index.php?title=Blue_Pill).
+Be aware that some Blue Pill STM32F103 board are defectives. If you have trouble with USB, please check this [link](http://wiki.stm32duino.com/index.php?title=Blue_Pill).
 
 VHF (144-148 MHz) support for ZUMSpot is added by an external 18 nH inductor between L1 and L2 pins of ADF7021. This will enable dual band (VHF/UHF) operation.
 
@@ -38,15 +38,11 @@ Please see [BUILD.md](BUILD.md) for more details, and also [MMDVM](https://group
 
 ## Binary firmware installation
 
-Please check the latest firmware:
-
-    [https://github.com/juribeparada/MMDVM_HS/releases](https://github.com/juribeparada/MMDVM_HS/releases)
+Please check the latest firmware [here](https://github.com/juribeparada/MMDVM_HS/releases).
 
 ### Windows
 
-Download the ZUMspotFW firmware upgrade utility (ZUMspotFW_setup.exe) from the releases section:
-
-    [https://github.com/juribeparada/MMDVM_HS/releases/download/v1.0.2/ZUMSpotFW_setup.exe](https://github.com/juribeparada/MMDVM_HS/releases/download/v1.0.2/ZUMSpotFW_setup.exe)
+Download the ZUMspotFW firmware upgrade utility (ZUMspotFW_setup.exe) from the [releases section](https://github.com/juribeparada/MMDVM_HS/releases/download/v1.0.2/ZUMSpotFW_setup.exe).
 
 This utility includes firmwares binaries and USB drivers for Windows 7/8/10. If you have problems with the installer, you can download ZUMspotFW.zip for a manual installation.
 
@@ -81,9 +77,7 @@ You could check at MMDVM_HS/configs for common Config.h examples, using differen
 
 ### MMDVM_HS_Hat
 
-Please check here for detailed instructions:
-
-    [https://github.com/mathisschmieder/MMDVM_HS_Hat/blob/master/README.md](https://github.com/mathisschmieder/MMDVM_HS_Hat/blob/master/README.md)
+Please visit Mathis Schmieder GitHub [here](https://github.com/mathisschmieder/MMDVM_HS_Hat/blob/master/README.md) for detailed instructions.
 
 ### ZUMspot Libre Kit (under Linux Raspbian)
 
