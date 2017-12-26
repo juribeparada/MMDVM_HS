@@ -838,7 +838,7 @@ uint16_t CIO::devP25()
 
 void CIO::printConf()
 {
-  DEBUG1("ZUMspot configuration:");
+  DEBUG1("MMDVM_HS FW configuration:");
   DEBUG2I("TX freq (Hz):", TXfreq());
   DEBUG2I("RX freq (Hz):", RXfreq());
   DEBUG2("D-Star dev (Hz):", devDSTAR());
