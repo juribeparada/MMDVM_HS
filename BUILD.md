@@ -108,7 +108,7 @@ Edit Config.h
     
 and enable:
 
-    #define PI_HAT_7021_REV_03
+    #define ZUMSPOT_ADF7021
     #define ENABLE_ADF7021
     #define ADF7021_14_7456
     #define STM32_USART1_HOST
@@ -198,7 +198,7 @@ Under the menu "Tools" select "Board" and then select:
 
 Edit Config.h:
 
-    #define ADF7021_CARRIER_BOARD
+    #define LIBRE_KIT_ADF7021
     #define ENABLE_ADF7021
     #define ADF7021_14_7456
     #define STM32_USB_HOST
@@ -301,7 +301,7 @@ Edit Config.h:
 
 and enable:
 
-    #define ADF7021_CARRIER_BOARD
+    #define LIBRE_KIT_ADF7021
     #define ENABLE_ADF7021
     #define ADF7021_14_7456
     #define STM32_USB_HOST
@@ -395,7 +395,7 @@ Under the menu "Tools" select "Board" and then select:
 
 Edit Config.h:
 
-    #define PI_HAT_7021_REV_03
+    #define ZUMSPOT_ADF7021
     #define ENABLE_ADF7021
     #define ADF7021_14_7456
     #define STM32_USB_HOST
@@ -437,7 +437,7 @@ Edit Config.h
 
 and enable:
 
-    #define PI_HAT_7021_REV_03
+    #define ZUMSPOT_ADF7021
     #define ENABLE_ADF7021
     #define ADF7021_14_7456
     #define STM32_USB_HOST
@@ -534,10 +534,10 @@ ZUMspot RPi (no USB support needed):
 
 # Config.h options
 
-- #define PI_HAT_7021_REV_03: enable pinouts support for ZUMspot RPi or ZUMspot USB. You have
+- #define ZUMSPOT_ADF7021: enable pinouts support for ZUMspot RPi or ZUMspot USB. You have
 to enable this option if you have one of these products.
 
-- #define ADF7021_CARRIER_BOARD: enable this option if you have a ZUMspot Libre Kit (Board with
+- #define LIBRE_KIT_ADF7021: enable this option if you have a ZUMspot Libre Kit (Board with
 modified RF7021SE and Blue Pill STM32F103).
 
 - #define MMDVM_HS_HAT_REV12: enable this option if you have a MMDVM_HS_Hat board for RPi. 

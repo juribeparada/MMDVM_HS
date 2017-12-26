@@ -1,6 +1,6 @@
 # Introduction
 
-This is the source code of ZUMspot/MMDVM_HS, personal hotspot (ADF7021 version of the MMDVM firmware), based on Jonathan G4KLX's MMDVM software. This firmware supports D-Star, DMR, System Fusion and P25 digital modes.
+This is the source code of ZUMspot/MMDVM_HS, personal hotspot (ADF7021 version of the MMDVM firmware), based on Jonathan G4KLX's [MMDVM](https://github.com/g4klx/MMDVM) software. This firmware supports D-Star, DMR, System Fusion and P25 digital modes.
 
 This software is intended to be run on STM32F103 microcontroller. You can build this code using Arduino IDE with STM32duino package, or using "make" with ARM GCC tools. Also, Arduino with 3.3 V I/O (Arduino Due and Zero) and Teensy (3.1, 3.2, 3.5 or 3.6) are supported.
 
@@ -10,7 +10,7 @@ This software is licenced under the GPL v2 and is intended for amateur and educa
 
 - Supported modes: D-Star, DMR, Yaesu Fusion and P25 Phase 1
 - Automatic mode detection (scanning)
-- G4KLX software suite: MMDVMHost, ircDDBGateway, YSFGateway, P25Gateway and DMRGateway
+- G4KLX software suite: [MMDVMHost](https://github.com/g4klx/MMDVMHost), [ircDDBGateway](https://github.com/dl5di/OpenDV), [YSFGateway](https://github.com/g4klx/YSFClients), [P25Gateway](https://github.com/g4klx/P25Clients) and [DMRGateway](https://github.com/g4klx/DMRGateway)
 - Bands: 144, 220, 430 and 900 MHz (VHF requires external inductor)
 - Status LEDs (PTT, COR and digital modes)
 - Serial repeater port for Nextion displays
@@ -24,31 +24,27 @@ The ADF7021 (or RF7021SE module) must operate with a 14.7456 MHz TCXO and with a
 
 The jumper wire to CLKOUT in RF7021SE module is not longer required for lastest MMDVM_HS firmware. But CE pin connection of ADF7021 is required for proper operation of ZUMspot.
 
-Be aware that some Blue Pill STM32F103 board are defectives. If you have trouble with USB, please check this: http://wiki.stm32duino.com/index.php?title=Blue_Pill
+Be aware that some Blue Pill STM32F103 board are defectives. If you have trouble with USB, please check this [link](http://wiki.stm32duino.com/index.php?title=Blue_Pill).
 
 VHF (144-148 MHz) support for ZUMSpot is added by an external 18 nH inductor between L1 and L2 pins of ADF7021. This will enable dual band (VHF/UHF) operation.
 
-Dual ADF7021 for full duplex operation (#define DUPLEX in Config.h) will work only with a big RX/TX frequency separation (5 MHz or more in UHF band for example) and proper antenna filtering. At the moment #define ADF7021_CARRIER_BOARD (Config.h) with STM32F103 platform is supported. Please see [BUILD.md](BUILD.md) for pinout details.
+Dual ADF7021 for full duplex operation (#define DUPLEX in Config.h) will work only with a big RX/TX frequency separation (5 MHz or more in UHF band for example) and proper antenna filtering. At the moment #define LIBRE_KIT_ADF7021 (Config.h) with STM32F103 platform is supported. Please see [BUILD.md](BUILD.md) for pinout details.
 
 If you can't decode any 4FSK modulation (DMR, YSF and P25) with your ZUMspot, the common solution is to adjust RX frequency offset (RXOffset) in your MMDVM.ini file. Please try with steps of +-100 Hz until you get low BER. If you don't have test equipment, the only procedure is trial and error. In some cases TXOffset adjustment is also required for proper radio decoding. If you have test equipment, enable TEST_TX feature (see "Hidden functions" in [BUILD.md](BUILD.md) document).
 
 # Quick start
 
-Please see [BUILD.md](BUILD.md) for more details, and also MMDVM Yahoo Groups. You also can check at MMDVM_HS/scripts folder for some automatic tasks.
+Please see [BUILD.md](BUILD.md) for more details, and also [MMDVM](https://groups.yahoo.com/neo/groups/mmdvm/info) Yahoo Groups. You also can check at MMDVM_HS/scripts folder for some automatic tasks.
 
 ## Binary firmware installation
 
-Please check the latest firmware:
-
-    https://github.com/juribeparada/MMDVM_HS/releases
+Please check the latest firmware [here](https://github.com/juribeparada/MMDVM_HS/releases).
 
 ### Windows
 
-Download the ZUMspotFW firmware upgrade utility (ZUMspotFW_setup.exe) from the releases section:
+Download the ZUMspotFW firmware upgrade utility (ZUMspotFW_setup.exe) from the [releases section](https://github.com/juribeparada/MMDVM_HS/releases/download/v1.0.2/ZUMSpotFW_setup.exe).
 
-    https://github.com/juribeparada/MMDVM_HS/releases/download/v1.0.2/ZUMSpotFW_setup.exe
-
-This utility includes firmwares binaries and USB drivers for Windows 7/8/10. If you have problems with the installer, you can download ZUMspotFW.zip for a manual installation.
+This utility includes firmwares binaries and USB drivers for Windows 7/8/10. If you have problems with the installer, you can download [ZUMspotFW.zip](https://github.com/juribeparada/MMDVM_HS/releases/download/v1.0.2/ZUMspotFW.zip) for a manual installation.
 
 ### Linux or macOS
 
@@ -81,9 +77,7 @@ You could check at MMDVM_HS/configs for common Config.h examples, using differen
 
 ### MMDVM_HS_Hat
 
-Please check here for detailed instructions:
-
-    https://github.com/mathisschmieder/MMDVM_HS_Hat/blob/master/README.md
+Please visit Mathis Schmieder GitHub [here](https://github.com/mathisschmieder/MMDVM_HS_Hat/blob/master/README.md) for detailed instructions.
 
 ### ZUMspot Libre Kit (under Linux Raspbian)
 
@@ -186,7 +180,7 @@ Edit Config.h
     
 and enable:
 
-    #define PI_HAT_7021_REV_03
+    #define ZUMSPOT_ADF7021
     #define ENABLE_ADF7021
     #define ADF7021_14_7456
     #define STM32_USART1_HOST
