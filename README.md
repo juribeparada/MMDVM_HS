@@ -16,6 +16,7 @@ This software is licenced under the GPL v2 and is intended for amateur and educa
 - Serial repeater port for Nextion displays
 - Support for native USB port in STM32F103 CPU
 - RSSI support
+- CW ID support
 - Full duplex support with two ADF7021
 
 # Important notes
