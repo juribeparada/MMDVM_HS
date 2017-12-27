@@ -586,11 +586,11 @@ void CIO::ifConf2(MMDVM_STATE modemState)
 
   // IF fine cal (6)
   AD7021_control_word = ADF7021_REG6;
-  Send_AD7021_control();
+  Send_AD7021_control2();
 
   // IF coarse cal (5)
   AD7021_control_word = ADF7021_REG5;
-  Send_AD7021_control();
+  Send_AD7021_control2();
   
   // Delay for coarse IF filter calibration
   delay_IFcal();
