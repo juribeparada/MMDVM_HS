@@ -1,7 +1,7 @@
 /*
  *   Copyright (C) 2013,2015,2016 by Jonathan Naylor G4KLX
  *   Copyright (C) 2016 by Colin Durbridge G4EML
- *   Copyright (C) 2016, 2017 by Andy Uribe CA6JAU
+ *   Copyright (C) 2016,2017 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -227,6 +227,8 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
   uint8_t dmrDelay = data[7U];
 #endif
 
+  m_cwIdTXLevel = data[5U]>>2;
+
   m_modemState  = modemState;
 
   m_dstarEnable = dstarEnable;
@@ -321,6 +323,7 @@ void CSerialPort::setMode(MMDVM_STATE modemState)
       dstarRX.reset();
       ysfRX.reset();
       p25RX.reset();
+      cwIdTX.reset();
       break;
     case STATE_DSTAR:
       DEBUG1("Mode set to D-Star");
@@ -331,6 +334,7 @@ void CSerialPort::setMode(MMDVM_STATE modemState)
       dmrDMORX.reset();
       ysfRX.reset();
       p25RX.reset();
+      cwIdTX.reset();
       break;
     case STATE_YSF:
       DEBUG1("Mode set to System Fusion");
@@ -341,6 +345,7 @@ void CSerialPort::setMode(MMDVM_STATE modemState)
       dmrDMORX.reset();
       dstarRX.reset();
       p25RX.reset();
+      cwIdTX.reset();
       break;
     case STATE_P25:
       DEBUG1("Mode set to P25");
@@ -351,6 +356,7 @@ void CSerialPort::setMode(MMDVM_STATE modemState)
       dmrDMORX.reset();
       dstarRX.reset();
       ysfRX.reset();
+      cwIdTX.reset();
       break;
     default:
       DEBUG1("Mode set to Idle");
@@ -443,6 +449,16 @@ void CSerialPort::process()
             break;
 
           case MMDVM_SEND_CWID:
+            err = 5U;
+            if (m_modemState == STATE_IDLE) {
+              m_cwid_state = true;
+              io.ifConf(STATE_CWID, true);
+              err = cwIdTX.write(m_buffer + 3U, m_len - 3U);
+            }
+            if (err != 0U) {
+              DEBUG2("Invalid CW Id data", err);
+              sendNAK(err);
+            }
             break;
 
           case MMDVM_DSTAR_HEADER:

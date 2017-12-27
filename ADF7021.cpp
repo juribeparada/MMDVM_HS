@@ -180,7 +180,8 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
   uint32_t ADF7021_REG13 = 0;
   uint32_t AFC_OFFSET = 0;
 
-  m_modemState_prev = modemState;
+  if(modemState != STATE_CWID)
+    m_modemState_prev = modemState;
 
   // Toggle CE pin for ADF7021 reset
   if(reset) {
@@ -222,6 +223,7 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
       AFC_OFFSET = 0;
       break;
     case STATE_DMR:
+    case STATE_CWID:
       AFC_OFFSET = AFC_OFFSET_DMR;
       break;
     case STATE_YSF:
@@ -279,6 +281,30 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
 #endif
 
   switch (modemState) {
+    case STATE_CWID:
+      // CW ID base configuration: DMR
+      // Dev: +1 symb (variable), symb rate = 4800
+    
+      ADF7021_REG3 = ADF7021_REG3_DMR;
+      ADF7021_REG10 = ADF7021_REG10_DMR;
+
+      // K=32
+      ADF7021_REG4  = (uint32_t) 0b0100                    << 0;   // register 4
+      ADF7021_REG4 |= (uint32_t) 0b011                     << 4;   // mode, 4FSK
+      ADF7021_REG4 |= (uint32_t) 0b0                       << 7;
+      ADF7021_REG4 |= (uint32_t) 0b11                      << 8;
+      ADF7021_REG4 |= (uint32_t) ADF7021_DISC_BW_DMR       << 10;  // Disc BW
+      ADF7021_REG4 |= (uint32_t) ADF7021_POST_BW_DMR       << 20;  // Post dem BW
+      ADF7021_REG4 |= (uint32_t) 0b10                      << 30;  // IF filter (25 kHz)
+
+      ADF7021_REG13 = (uint32_t) 0b1101                    << 0;   // register 13
+      ADF7021_REG13 |= (uint32_t) ADF7021_SLICER_TH_DMR    << 4;   // slicer threshold
+
+      ADF7021_REG2 = (uint32_t) 0b10                       << 28;  // invert data (and RC alpha = 0.5)
+      ADF7021_REG2 |= (uint32_t) (m_cwIdTXLevel / div2)  << 19;  // deviation
+      ADF7021_REG2 |= (uint32_t) 0b111                     << 4;   // modulation (RC 4FSK)
+      break;
+
     case STATE_DSTAR:
       // Dev: 1200 Hz, symb rate = 4800
 
@@ -461,7 +487,7 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
   Send_AD7021_control();
   
 #if defined(DUPLEX)
-if(m_duplex)
+if(m_duplex && (modemState != STATE_CWID))
   ifConf2(modemState);
 #endif
 }

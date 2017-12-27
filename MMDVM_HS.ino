@@ -1,7 +1,7 @@
 /*
  *   Copyright (C) 2015,2016 by Jonathan Naylor G4KLX
  *   Copyright (C) 2016 by Colin Durbridge G4EML
- *   Copyright (C) 2016, 2017 by Andy Uribe CA6JAU
+ *   Copyright (C) 2016,2017 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -24,6 +24,9 @@
 // Global variables
 MMDVM_STATE m_modemState = STATE_IDLE;
 MMDVM_STATE m_modemState_prev = STATE_IDLE;
+
+bool m_cwid_state = false;
+uint8_t m_cwIdTXLevel = 30;
 
 uint32_t m_modeTimerCnt;
 
@@ -56,6 +59,8 @@ CYSFTX     ysfTX;
 
 CP25RX     p25RX;
 CP25TX     p25TX;
+
+CCWIdTX    cwIdTX;
 
 CSerialPort serial;
 CIO io;
@@ -91,4 +96,6 @@ void loop()
   if (m_p25Enable && m_modemState == STATE_P25)
     p25TX.process();
 
+  if (m_modemState == STATE_IDLE)
+    cwIdTX.process();
 }
