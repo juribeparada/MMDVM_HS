@@ -1,6 +1,7 @@
 /*
- *   Copyright (C) 2015,2016,2017 by Jonathan Naylor G4KLX
- *   Copyright (C) 2016,2017 by Andy Uribe CA6JAU
+ *   Copyright (C) 2009-2015 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2016 by Colin Durbridge G4EML
+ *   Copyright (C) 2017 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,36 +18,26 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#if !defined(P25RX_H)
-#define  P25RX_H
+#if !defined(CWIDTX_H)
+#define  CWIDTX_H
 
-#include "P25Defines.h"
+#include "Config.h"
 
-enum P25RX_STATE {
-  P25RXS_NONE,
-  P25RXS_DATA
-};
-
-class CP25RX {
+class CCWIdTX {
 public:
-  CP25RX();
+  CCWIdTX();
 
-  void databit(bool bit);
+  void process();
+
+  uint8_t write(const uint8_t* data, uint8_t length);
 
   void reset();
 
 private:
-  bool        m_prev;
-  P25RX_STATE m_state;
-  uint64_t    m_bitBuffer;
-  uint8_t     m_outBuffer[P25_LDU_FRAME_LENGTH_BYTES + 3U];
-  uint8_t*    m_buffer;
-  uint16_t    m_bufferPtr;
-  uint16_t    m_lostCount;
-
-  void processNone(bool bit);
-  void processData(bool bit);
-  void writeRSSILdu(uint8_t* data);
+  uint8_t  m_poBuffer[300U];
+  uint16_t m_poLen;
+  uint16_t m_poPtr;
+  uint8_t  m_n;
 };
 
 #endif

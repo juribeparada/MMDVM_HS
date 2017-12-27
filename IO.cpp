@@ -1,6 +1,6 @@
 /*
- *   Copyright (C) 2015, 2016 by Jonathan Naylor G4KLX
- *   Copyright (C) 2016, 2017 by Andy Uribe CA6JAU
+ *   Copyright (C) 2015,2016 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2016,2017 by Andy Uribe CA6JAU
  *   Copyright (C) 2017 by Danilo DB4PLE 
  
  *   This program is free software; you can redistribute it and/or modify
@@ -127,8 +127,14 @@ void CIO::process()
   }
 
   // Switch off the transmitter if needed
-  if (m_txBuffer.getData() == 0U && m_tx)
+  if (m_txBuffer.getData() == 0U && m_tx) {
+    if(m_cwid_state) { // check for CW ID end of transmission
+      m_cwid_state = false;
+      // Restoring previous mode
+      io.ifConf(m_modemState_prev, true);
+    }
     setRX(false);
+  }
   
   if(m_modemState_prev == STATE_DSTAR)
     scantime = SCAN_TIME;
@@ -143,7 +149,7 @@ void CIO::process()
 
   if(m_modeTimerCnt >= scantime) {
     m_modeTimerCnt = 0;
-    if( (m_modemState == STATE_IDLE) && (m_scanPauseCnt == 0) && m_scanEnable) {
+    if( (m_modemState == STATE_IDLE) && (m_scanPauseCnt == 0) && m_scanEnable && !m_cwid_state) {
       m_scanPos = (m_scanPos + 1) % m_TotalModes;
       #if !defined(QUIET_MODE_LEDS)
       setMode(m_Modes[m_scanPos]);

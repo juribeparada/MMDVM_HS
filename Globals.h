@@ -1,6 +1,6 @@
 /*
  *   Copyright (C) 2015,2016 by Jonathan Naylor G4KLX
- *   Copyright (C) 2016, 2017 by Andy Uribe CA6JAU
+ *   Copyright (C) 2016,2017 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -38,7 +38,10 @@ enum MMDVM_STATE {
   STATE_DSTAR     = 1,
   STATE_DMR       = 2,
   STATE_YSF       = 3,
-  STATE_P25       = 4
+  STATE_P25       = 4,
+
+  // Dummy states start at 90
+  STATE_CWID      = 97
 };
 
 const uint8_t  MARK_SLOT1 = 0x08U;
@@ -65,6 +68,7 @@ const uint8_t  MARK_NONE  = 0x00U;
 #include "YSFTX.h"
 #include "P25RX.h"
 #include "P25TX.h"
+#include "CWIdTX.h"
 #include "Debug.h"
 #include "Utils.h"
 
@@ -73,6 +77,9 @@ const uint16_t RX_RINGBUFFER_SIZE = 1024U;
 
 extern MMDVM_STATE m_modemState;
 extern MMDVM_STATE m_modemState_prev;
+
+extern bool m_cwid_state;
+extern uint8_t m_cwIdTXLevel;
 
 extern uint32_t m_modeTimerCnt;
 
@@ -108,6 +115,8 @@ extern CYSFTX ysfTX;
 
 extern CP25RX p25RX;
 extern CP25TX p25TX;
+
+extern CCWIdTX cwIdTX;
 
 #endif
 
