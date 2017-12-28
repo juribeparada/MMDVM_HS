@@ -146,7 +146,7 @@ Reboot your RPi:
 
     sudo reboot
 
-#### Build de firmware and upload to ZUMspot RPi
+#### Build the firmware and upload to ZUMspot RPi
 
 If you are using Pi-Star, expand filesystem (if you haven't done before):
 
