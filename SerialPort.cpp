@@ -189,7 +189,7 @@ void CSerialPort::getVersion()
 
 uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
 {
-  if (length < 15U)
+  if (length < 13U)
     return 4U;
     
   bool ysfLoDev  = (data[0U] & 0x08U) == 0x08U;
