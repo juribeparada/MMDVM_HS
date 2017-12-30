@@ -266,17 +266,19 @@ bool CIO::hasRXOverflow()
   return m_rxBuffer.hasOverflowed();
 }
 
-uint8_t CIO::setFreq(uint32_t frequency_rx, uint32_t frequency_tx)
+uint8_t CIO::setFreq(uint32_t frequency_rx, uint32_t frequency_tx, uint8_t rf_power)
 {
-  // power level
-  m_power = 0xFF;
+  // Configure power level
+  m_power = rf_power;
 
+  // Check frequency ranges
   if( !( ((frequency_rx >= VHF1_MIN)&&(frequency_rx < VHF1_MAX)) || ((frequency_tx >= VHF1_MIN)&&(frequency_tx < VHF1_MAX)) || \
   ((frequency_rx >= UHF1_MIN)&&(frequency_rx < UHF1_MAX)) || ((frequency_tx >= UHF1_MIN)&&(frequency_tx < UHF1_MAX)) || \
   ((frequency_rx >= VHF2_MIN)&&(frequency_rx < VHF2_MAX)) || ((frequency_tx >= VHF2_MIN)&&(frequency_tx < VHF2_MAX)) || \
   ((frequency_rx >= UHF2_MIN)&&(frequency_rx < UHF2_MAX)) || ((frequency_tx >= UHF2_MIN)&&(frequency_tx < UHF2_MAX)) ) )
     return 4U;
 
+  // Configure frequency
   m_frequency_rx = frequency_rx;
   m_frequency_tx = frequency_tx;
 
