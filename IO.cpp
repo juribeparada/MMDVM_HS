@@ -269,7 +269,7 @@ bool CIO::hasRXOverflow()
 uint8_t CIO::setFreq(uint32_t frequency_rx, uint32_t frequency_tx, uint8_t rf_power)
 {
   // Configure power level
-  m_power = rf_power;
+  setPower(rf_power);
 
   // Check frequency ranges
   if( !( ((frequency_rx >= VHF1_MIN)&&(frequency_rx < VHF1_MAX)) || ((frequency_tx >= VHF1_MIN)&&(frequency_tx < VHF1_MAX)) || \

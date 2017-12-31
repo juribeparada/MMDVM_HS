@@ -92,6 +92,7 @@ public:
   bool      hasTXOverflow(void);
   bool      hasRXOverflow(void);
   uint8_t   setFreq(uint32_t frequency_rx, uint32_t frequency_tx, uint8_t rf_power);
+  void      setPower(uint8_t power);
   void      setMode(MMDVM_STATE modemState);
   void      setDecode(bool dcd);
   void      setLoDevYSF(bool ysfLoDev);
