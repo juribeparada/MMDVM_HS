@@ -43,7 +43,7 @@ uint32_t           ADF7021_REG1;
 uint32_t           div2;
 uint32_t           f_div;
 
-static  void Send_AD7021_control_shift()
+static void Send_AD7021_control_shift()
 {
   int AD7021_counter;
 
@@ -62,7 +62,7 @@ static  void Send_AD7021_control_shift()
   io.SDATA_pin(LOW);
 }
 
-static  void Send_AD7021_control_slePulse()
+static void Send_AD7021_control_slePulse()
 {
   io.SLE_pin(HIGH);
   io.dlybit();
@@ -301,7 +301,7 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
       ADF7021_REG13 |= (uint32_t) ADF7021_SLICER_TH_DMR    << 4;   // slicer threshold
 
       ADF7021_REG2 = (uint32_t) 0b10                       << 28;  // invert data (and RC alpha = 0.5)
-      ADF7021_REG2 |= (uint32_t) (m_cwIdTXLevel / div2)  << 19;  // deviation
+      ADF7021_REG2 |= (uint32_t) (m_cwIdTXLevel / div2)    << 19;  // deviation
       ADF7021_REG2 |= (uint32_t) 0b111                     << 4;   // modulation (RC 4FSK)
       break;
 
@@ -626,9 +626,9 @@ void CIO::ifConf2(MMDVM_STATE modemState)
   Send_AD7021_control2();
 
   // MODULATION (2)
-  ADF7021_REG2 |= (uint32_t) 0b0010;               // register 2
-  ADF7021_REG2 |= (uint32_t) m_power       << 13;  // power level
-  ADF7021_REG2 |= (uint32_t) 0b110001      << 7;   // PA  
+  ADF7021_REG2 |= (uint32_t) 0b0010;                  // register 2
+  ADF7021_REG2 |= (uint32_t) (m_power & 0x3F) << 13;  // power level
+  ADF7021_REG2 |= (uint32_t) 0b110001         << 7;   // PA  
   AD7021_control_word = ADF7021_REG2;
   Send_AD7021_control2();
  
@@ -786,7 +786,6 @@ void CIO::interrupt2()
 }
 #endif
 
-//======================================================================================================================
 void CIO::setTX()
 { 
   // PTT pin on (doing it earlier helps to measure timing impact)
@@ -806,7 +805,6 @@ void CIO::setTX()
   while(CLK_pin());
 }
 
-//======================================================================================================================
 void CIO::setRX(bool doSle)
 { 
   // PTT pin off (doing it earlier helps to measure timing impact)
@@ -825,6 +823,11 @@ void CIO::setRX(bool doSle)
     torx_request = true;
     while(torx_request) { asm volatile ("nop"); }
   }
+}
+
+void CIO::setPower(uint8_t power)
+{
+  m_power = power >> 2;
 }
 
 uint32_t CIO::RXfreq()
@@ -867,6 +870,7 @@ void CIO::printConf()
   DEBUG1("MMDVM_HS FW configuration:");
   DEBUG2I("TX freq (Hz):", TXfreq());
   DEBUG2I("RX freq (Hz):", RXfreq());
+  DEBUG2("Power set:", m_power);
   DEBUG2("D-Star dev (Hz):", devDSTAR());
   DEBUG2("DMR +1 sym dev (Hz):", devDMR());
   DEBUG2("YSF_H +1 sym dev (Hz):", devYSF_H());

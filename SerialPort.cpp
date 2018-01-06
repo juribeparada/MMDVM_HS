@@ -189,7 +189,7 @@ void CSerialPort::getVersion()
 
 uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
 {
-  if (length < 15U)
+  if (length < 13U)
     return 4U;
     
   bool ysfLoDev  = (data[0U] & 0x08U) == 0x08U;
@@ -298,9 +298,18 @@ uint8_t CSerialPort::setMode(const uint8_t* data, uint8_t length)
 uint8_t CSerialPort::setFreq(const uint8_t* data, uint8_t length)
 {
     uint32_t freq_rx, freq_tx;
+    uint8_t rf_power;
 
     if (length < 9U)
       return 4U;
+
+    // Old MMDVMHost, set full power
+    if (length == 9U)
+      rf_power = 255U;
+
+    // New MMDVMHost, set power from MMDVM.ini
+    if (length == 10U)
+      rf_power = data[9];
 
     freq_rx  = data[1] * 1;
     freq_rx += data[2] * 256;
@@ -312,7 +321,7 @@ uint8_t CSerialPort::setFreq(const uint8_t* data, uint8_t length)
     freq_tx += data[7] * 65536;
     freq_tx += data[8] * 16777216;
     
-    return io.setFreq(freq_rx, freq_tx);
+    return io.setFreq(freq_rx, freq_tx, rf_power);
 }
 
 void CSerialPort::setMode(MMDVM_STATE modemState)
