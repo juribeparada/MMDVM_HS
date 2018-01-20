@@ -20,11 +20,12 @@
 #define  VERSION_H
 
 #include "Config.h"
+#include "ADF7021.h"
 
 #define VER_MAJOR       "1"
 #define VER_MINOR       "1"
-#define VER_REV         "0"
-#define VERSION_DATE    "20180106"
+#define VER_REV         "1"
+#define VERSION_DATE    "20180120"
 
 #if defined(ZUMSPOT_ADF7021)
 #define BOARD_INFO      "ZUMspot"
@@ -34,7 +35,9 @@
 #define BOARD_INFO      "MMDVM_HS"
 #endif
 
-#if defined(ENABLE_ADF7021)
+#if defined(ENABLE_ADF7021) && defined(ADF7021_N_VER)
+#define RF_CHIP         "ADF7021N"
+#elif defined(ENABLE_ADF7021)
 #define RF_CHIP         "ADF7021"
 #endif
 
