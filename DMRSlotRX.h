@@ -1,6 +1,6 @@
 /*
  *   Copyright (C) 2015,2016,2017 by Jonathan Naylor G4KLX
- *   Copyright (C) 2017 by Andy Uribe CA6JAU
+ *   Copyright (C) 2017,2018 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -51,23 +51,38 @@ private:
   bool        m_slot;
   uint64_t    m_patternBuffer;
   uint8_t     m_buffer[DMR_BUFFER_LENGTH_BITS];
-  uint8_t     frame[DMR_FRAME_LENGTH_BYTES + 3U];
   uint16_t    m_dataPtr;
-  uint16_t    m_syncPtr;
-  uint16_t    m_startPtr;
-  uint16_t    m_endPtr;
+
+  uint8_t     frame1[DMR_FRAME_LENGTH_BYTES + 3U];
+  uint16_t    m_syncPtr1;
+  uint16_t    m_startPtr1;
+  uint16_t    m_endPtr1;
+  uint8_t     m_control1;
+  uint8_t     m_syncCount1;
+  DMRRX_STATE m_state1;
+  uint8_t     m_n1;
+  uint8_t     m_type1;
+
+  uint8_t     frame2[DMR_FRAME_LENGTH_BYTES + 3U];
+  uint16_t    m_syncPtr2;
+  uint16_t    m_startPtr2;
+  uint16_t    m_endPtr2;
+  uint8_t     m_control2;
+  uint8_t     m_syncCount2;
+  DMRRX_STATE m_state2;
+  uint8_t     m_n2;
+  uint8_t     m_type2;
+
   uint16_t    m_delayPtr;
-  uint8_t     m_control;
-  uint8_t     m_syncCount;
   uint8_t     m_colorCode;
   uint16_t    m_delay;
-  DMRRX_STATE m_state;
-  uint8_t     m_n;
-  uint8_t     m_type;
 
+  void procSlot1();
+  void procSlot2();
   void correlateSync();
   void bitsToBytes(uint16_t start, uint8_t count, uint8_t* buffer);
-  void writeRSSIData(uint8_t* frame);
+  void writeRSSIData1();
+  void writeRSSIData2();
 };
 
 #endif

@@ -1,6 +1,6 @@
 # Building instructions
 
-This is a detailed guide for building the firmware of MMDVM_HS from the source code. For quick instructions, please see [README.md](README.md). This software runs on STM32F103 microcontroller. You can build this code using Arduino IDE with STM32duino package, or using "make" with ARM GCC tools. Also, Arduino with 3.3 V I/O (Arduino Due and Zero) and Teensy (3.1, 3.2, 3.5 or 3.6) are supported.
+This is a detailed guide for building the firmware of MMDVM_HS from the source code. For quick instructions, please see [README.md](README.md). This software runs on STM32F103 microcontroller. Also, Arduino with 3.3 V I/O (Arduino Due and Zero) and Teensy (3.1, 3.2, 3.5 or 3.6) are supported. You can build this code using Arduino IDE with Roger Clark's [STM32duino](https://github.com/rogerclarkmelbourne/Arduino_STM32/tree/ZUMspot) package, or using command line tools with ARM GCC tools. The preferred method under Windows is using STM32duino, and under Linux or macOS (command line) is using [STM32F10X_Lib](https://github.com/juribeparada/STM32F10X_Lib).
 
 # Index
 
@@ -209,6 +209,8 @@ Click the Upload button in the IDE and wait for the transfer.
 Once the transfer is completed, press the RESET button of the board or disconnect and
 connect the USB cable. You will see the LED (PC13) of the blue pill blinking. Once you connect
 with MMDVMHost, the LED will blink fast.
+
+For further help with STM32duino and STM32F103 blue pill boards, please see the STM32duino [forum](http://www.stm32duino.com).
 
 ## Windows with command line
 

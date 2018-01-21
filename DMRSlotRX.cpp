@@ -1,6 +1,6 @@
 /*
  *   Copyright (C) 2009-2017 by Jonathan Naylor G4KLX
- *   Copyright (C) 2017 by Andy Uribe CA6JAU
+ *   Copyright (C) 2017,2018 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -41,17 +41,25 @@ m_slot(false),
 m_patternBuffer(0x00U),
 m_buffer(),
 m_dataPtr(0U),
-m_syncPtr(0U),
-m_startPtr(0U),
-m_endPtr(NOENDPTR),
+m_syncPtr1(0U),
+m_startPtr1(0U),
+m_endPtr1(NOENDPTR),
+m_control1(CONTROL_NONE),
+m_syncCount1(0U),
+m_state1(DMRRXS_NONE),
+m_n1(0U),
+m_type1(0U),
+m_syncPtr2(0U),
+m_startPtr2(0U),
+m_endPtr2(NOENDPTR),
+m_control2(CONTROL_NONE),
+m_syncCount2(0U),
+m_state2(DMRRXS_NONE),
+m_n2(0U),
+m_type2(0U),
 m_delayPtr(0U),
-m_control(CONTROL_NONE),
-m_syncCount(0U),
 m_colorCode(0U),
-m_delay(0U),
-m_state(DMRRXS_NONE),
-m_n(0U),
-m_type(0U)
+m_delay(0U)
 {
 }
 
@@ -63,22 +71,38 @@ void CDMRSlotRX::start(bool slot)
 
 void CDMRSlotRX::reset()
 {
-  m_syncPtr   = 0U;
   m_dataPtr   = 0U;
   m_delayPtr  = 0U;
-  m_control   = CONTROL_NONE;
-  m_syncCount = 0U;
-  m_state     = DMRRXS_NONE;
-  m_startPtr  = 0U;
   m_patternBuffer = 0U;
-  m_endPtr    = NOENDPTR;
+
+  m_syncPtr1   = 0U;
+  m_control1   = CONTROL_NONE;
+  m_syncCount1 = 0U;
+  m_state1     = DMRRXS_NONE;
+  m_startPtr1  = 0U;
+  m_endPtr1    = NOENDPTR;
+  m_type1      = 0U;
+  m_n1         = 0U;
+
+  
+  m_syncPtr2   = 0U;
+  m_control2   = CONTROL_NONE;
+  m_syncCount2 = 0U;
+  m_state2     = DMRRXS_NONE;
+  m_startPtr2  = 0U;
+  m_endPtr2    = NOENDPTR;
+  m_type2      = 0U;
+  m_n2         = 0U;
 }
 
 bool CDMRSlotRX::databit(bool bit)
 {
+  uint16_t    min;
+  uint16_t    max;
+
   m_delayPtr++;
   if (m_delayPtr < m_delay)
-    return m_state != DMRRXS_NONE;
+    return (m_state1 != DMRRXS_NONE) || (m_state2 != DMRRXS_NONE);
 
   m_buffer[m_dataPtr] = bit;
   
@@ -86,12 +110,16 @@ bool CDMRSlotRX::databit(bool bit)
   if (bit)
     m_patternBuffer |= 0x01U;
     
-  if (m_state == DMRRXS_NONE) {
+  if (m_state1 == DMRRXS_NONE || m_state2 == DMRRXS_NONE) {
     correlateSync();
   } else {
-
-    uint16_t min  = m_syncPtr + DMR_BUFFER_LENGTH_BITS - 2;
-    uint16_t max  = m_syncPtr + 2;
+    if(m_slot) {
+      min = m_syncPtr2 + DMR_BUFFER_LENGTH_BITS - 2;
+      max = m_syncPtr2 + 2;
+    } else {
+      min = m_syncPtr1 + DMR_BUFFER_LENGTH_BITS - 2;
+      max = m_syncPtr1 + 2;
+    }
 
     if (min >= DMR_BUFFER_LENGTH_BITS)
       min -= DMR_BUFFER_LENGTH_BITS;
@@ -107,144 +135,285 @@ bool CDMRSlotRX::databit(bool bit)
     }
   }
 
-  if (m_dataPtr == m_endPtr) {
-    frame[0U] = m_control;
-
-    bitsToBytes(m_startPtr, DMR_FRAME_LENGTH_BYTES, frame + 1U);
-
-    if (m_control == CONTROL_DATA) {
-      // Data sync
-      uint8_t colorCode;
-      uint8_t dataType;
-      CDMRSlotType slotType;
-      slotType.decode(frame + 1U, colorCode, dataType);
-
-      if (colorCode == m_colorCode) {
-        m_syncCount = 0U;
-        m_n         = 0U;
-
-        frame[0U] |= dataType;
-
-        switch (dataType) {
-          case DT_DATA_HEADER:
-            DEBUG3("DMRSlotRX: data header found slot/pos", m_slot ? 2U : 1U, m_syncPtr);
-            writeRSSIData(frame);
-            m_state = DMRRXS_DATA;
-            m_type  = 0x00U;
-            break;
-          case DT_RATE_12_DATA:
-          case DT_RATE_34_DATA:
-          case DT_RATE_1_DATA:
-            if (m_state == DMRRXS_DATA) {
-              DEBUG3("DMRSlotRX: data payload found slot/pos", m_slot ? 2U : 1U, m_syncPtr);
-              writeRSSIData(frame);
-              m_type = dataType;
-            }
-            break;
-          case DT_VOICE_LC_HEADER:
-            DEBUG3("DMRSlotRX: voice header found slot/pos", m_slot ? 2U : 1U, m_syncPtr);
-            writeRSSIData(frame);
-            m_state = DMRRXS_VOICE;
-            break;
-          case DT_VOICE_PI_HEADER:
-            if (m_state == DMRRXS_VOICE) {
-              DEBUG3("DMRSlotRX: voice pi header found slot/pos", m_slot ? 2U : 1U, m_syncPtr);
-              writeRSSIData(frame);
-            }
-            m_state = DMRRXS_VOICE;
-            break;
-          case DT_TERMINATOR_WITH_LC:
-            if (m_state == DMRRXS_VOICE) {
-              DEBUG3("DMRSlotRX: voice terminator found slot/pos", m_slot ? 2U : 1U, m_syncPtr);
-              writeRSSIData(frame);
-              m_state  = DMRRXS_NONE;
-              m_endPtr = NOENDPTR;
-            }
-            break;
-          default:    // DT_CSBK
-            DEBUG3("DMRSlotRX: csbk found slot/pos", m_slot ? 2U : 1U, m_syncPtr);
-            writeRSSIData(frame);
-            m_state  = DMRRXS_NONE;
-            m_endPtr = NOENDPTR;
-            break;
-        }
-      }
-    } else if (m_control == CONTROL_VOICE) {
-      // Voice sync
-      DEBUG3("DMRSlotRX: voice sync found slot/pos", m_slot ? 2U : 1U, m_syncPtr);
-      writeRSSIData(frame);
-      m_state     = DMRRXS_VOICE;
-      m_syncCount = 0U;
-      m_n         = 0U;
-    } else {
-      if (m_state != DMRRXS_NONE) {
-        m_syncCount++;
-        if (m_syncCount >= MAX_SYNC_LOST_FRAMES) {
-          serial.writeDMRLost(m_slot);
-          m_state  = DMRRXS_NONE;
-          m_endPtr = NOENDPTR;
-        }
-      }
-
-      if (m_state == DMRRXS_VOICE) {
-        if (m_n >= 5U) {
-          frame[0U] = CONTROL_VOICE;
-          m_n = 0U;
-        } else {
-          frame[0U] = ++m_n;
-        }
-
-        serial.writeDMRData(m_slot, frame, DMR_FRAME_LENGTH_BYTES + 1U);
-      } else if (m_state == DMRRXS_DATA) {
-        if (m_type != 0x00U) {
-          frame[0U] = CONTROL_DATA | m_type;
-          writeRSSIData(frame);
-        }
-      }
-    }
-    
-    // End of this slot, reset some items for the next slot.
-    m_control = CONTROL_NONE;
-  }
+  if(m_slot)
+    procSlot2();
+  else
+    procSlot1();
 
   m_dataPtr++;
 
   if (m_dataPtr >= DMR_BUFFER_LENGTH_BITS)
     m_dataPtr = 0U;
 
-  return m_state != DMRRXS_NONE;
+  return (m_state1 != DMRRXS_NONE) || (m_state2 != DMRRXS_NONE);;
+}
+
+void CDMRSlotRX::procSlot1()
+{
+  if (m_dataPtr == m_endPtr1) {
+    frame1[0U] = m_control1;
+
+    bitsToBytes(m_startPtr1, DMR_FRAME_LENGTH_BYTES, frame1 + 1U);
+
+    if (m_control1 == CONTROL_DATA) {
+      // Data sync
+      uint8_t colorCode;
+      uint8_t dataType;
+      CDMRSlotType slotType;
+      slotType.decode(frame1 + 1U, colorCode, dataType);
+
+      if (colorCode == m_colorCode) {
+        m_syncCount1 = 0U;
+        m_n1         = 0U;
+
+        frame1[0U] |= dataType;
+
+        switch (dataType) {
+          case DT_DATA_HEADER:
+            DEBUG2("DMRSlot1RX: data header found pos", m_syncPtr1);
+            writeRSSIData1();
+            m_state1 = DMRRXS_DATA;
+            m_type1  = 0x00U;
+            break;
+          case DT_RATE_12_DATA:
+          case DT_RATE_34_DATA:
+          case DT_RATE_1_DATA:
+            if (m_state1 == DMRRXS_DATA) {
+              DEBUG2("DMRSlot1RX: data payload found pos", m_syncPtr1);
+              writeRSSIData1();
+              m_type1 = dataType;
+            }
+            break;
+          case DT_VOICE_LC_HEADER:
+            DEBUG2("DMRSlot1RX: voice header found pos", m_syncPtr1);
+            writeRSSIData1();
+            m_state1 = DMRRXS_VOICE;
+            break;
+          case DT_VOICE_PI_HEADER:
+            if (m_state1 == DMRRXS_VOICE) {
+              DEBUG2("DMRSlot1RX: voice pi header found pos", m_syncPtr1);
+              writeRSSIData1();
+            }
+            m_state1 = DMRRXS_VOICE;
+            break;
+          case DT_TERMINATOR_WITH_LC:
+            if (m_state1 == DMRRXS_VOICE) {
+              DEBUG2("DMRSlot1RX: voice terminator found pos", m_syncPtr1);
+              writeRSSIData1();
+              m_state1  = DMRRXS_NONE;
+              m_endPtr1 = NOENDPTR;
+            }
+            break;
+          default:    // DT_CSBK
+            DEBUG2("DMRSlot1RX: csbk found pos", m_syncPtr1);
+            writeRSSIData1();
+            m_state1  = DMRRXS_NONE;
+            m_endPtr1 = NOENDPTR;
+            break;
+        }
+      }
+    } else if (m_control1 == CONTROL_VOICE) {
+      // Voice sync
+      DEBUG2("DMRSlot1RX: voice sync found pos", m_syncPtr1);
+      writeRSSIData1();
+      m_state1     = DMRRXS_VOICE;
+      m_syncCount1 = 0U;
+      m_n1         = 0U;
+    } else {
+      if (m_state1 != DMRRXS_NONE) {
+        m_syncCount1++;
+        if (m_syncCount1 >= MAX_SYNC_LOST_FRAMES) {
+          serial.writeDMRLost(0U);
+          m_state1  = DMRRXS_NONE;
+          m_endPtr1 = NOENDPTR;
+        }
+      }
+
+      if (m_state1 == DMRRXS_VOICE) {
+        if (m_n1 >= 5U) {
+          frame1[0U] = CONTROL_VOICE;
+          m_n1 = 0U;
+        } else {
+          frame1[0U] = ++m_n1;
+        }
+
+        serial.writeDMRData(0U, frame1, DMR_FRAME_LENGTH_BYTES + 1U);
+      } else if (m_state1 == DMRRXS_DATA) {
+        if (m_type1 != 0x00U) {
+          frame1[0U] = CONTROL_DATA | m_type1;
+          writeRSSIData1();
+        }
+      }
+    }
+    
+    // End of this slot, reset some items for the next slot.
+    m_control1 = CONTROL_NONE;
+  }
+}
+
+void CDMRSlotRX::procSlot2()
+{
+  if (m_dataPtr == m_endPtr2) {
+    frame2[0U] = m_control2;
+
+    bitsToBytes(m_startPtr2, DMR_FRAME_LENGTH_BYTES, frame2 + 1U);
+
+    if (m_control2 == CONTROL_DATA) {
+      // Data sync
+      uint8_t colorCode;
+      uint8_t dataType;
+      CDMRSlotType slotType;
+      slotType.decode(frame2 + 1U, colorCode, dataType);
+
+      if (colorCode == m_colorCode) {
+        m_syncCount2 = 0U;
+        m_n2         = 0U;
+
+        frame2[0U] |= dataType;
+
+        switch (dataType) {
+          case DT_DATA_HEADER:
+            DEBUG2("DMRSlot2RX: data header found pos", m_syncPtr2);
+            writeRSSIData2();
+            m_state2 = DMRRXS_DATA;
+            m_type2  = 0x00U;
+            break;
+          case DT_RATE_12_DATA:
+          case DT_RATE_34_DATA:
+          case DT_RATE_1_DATA:
+            if (m_state2 == DMRRXS_DATA) {
+              DEBUG2("DMRSlot2RX: data payload found pos", m_syncPtr2);
+              writeRSSIData2();
+              m_type2 = dataType;
+            }
+            break;
+          case DT_VOICE_LC_HEADER:
+            DEBUG2("DMRSlot2RX: voice header found pos", m_syncPtr2);
+            writeRSSIData2();
+            m_state2 = DMRRXS_VOICE;
+            break;
+          case DT_VOICE_PI_HEADER:
+            if (m_state2 == DMRRXS_VOICE) {
+              DEBUG2("DMRSlot2RX: voice pi header found pos", m_syncPtr2);
+              writeRSSIData2();
+            }
+            m_state2 = DMRRXS_VOICE;
+            break;
+          case DT_TERMINATOR_WITH_LC:
+            if (m_state2 == DMRRXS_VOICE) {
+              DEBUG2("DMRSlot2RX: voice terminator found pos", m_syncPtr2);
+              writeRSSIData2();
+              m_state2  = DMRRXS_NONE;
+              m_endPtr2 = NOENDPTR;
+            }
+            break;
+          default:    // DT_CSBK
+            DEBUG2("DMRSlot2RX: csbk found pos", m_syncPtr2);
+            writeRSSIData2();
+            m_state2  = DMRRXS_NONE;
+            m_endPtr2 = NOENDPTR;
+            break;
+        }
+      }
+    } else if (m_control2 == CONTROL_VOICE) {
+      // Voice sync
+      DEBUG2("DMRSlot2RX: voice sync found pos", m_syncPtr2);
+      writeRSSIData2();
+      m_state2     = DMRRXS_VOICE;
+      m_syncCount2 = 0U;
+      m_n2         = 0U;
+    } else {
+      if (m_state2 != DMRRXS_NONE) {
+        m_syncCount2++;
+        if (m_syncCount2 >= MAX_SYNC_LOST_FRAMES) {
+          serial.writeDMRLost(1U);
+          m_state2  = DMRRXS_NONE;
+          m_endPtr2 = NOENDPTR;
+        }
+      }
+
+      if (m_state2 == DMRRXS_VOICE) {
+        if (m_n2 >= 5U) {
+          frame2[0U] = CONTROL_VOICE;
+          m_n2 = 0U;
+        } else {
+          frame2[0U] = ++m_n2;
+        }
+
+        serial.writeDMRData(1U, frame2, DMR_FRAME_LENGTH_BYTES + 1U);
+      } else if (m_state2 == DMRRXS_DATA) {
+        if (m_type2 != 0x00U) {
+          frame2[0U] = CONTROL_DATA | m_type2;
+          writeRSSIData2();
+        }
+      }
+    }
+    
+    // End of this slot, reset some items for the next slot.
+    m_control2 = CONTROL_NONE;
+  }
 }
 
 void CDMRSlotRX::correlateSync()
-{  
+{
+  uint16_t syncPtr;
+  uint16_t startPtr;
+  uint16_t endPtr;
+  uint8_t  control;
+
   if (countBits64((m_patternBuffer & DMR_SYNC_BITS_MASK) ^ DMR_MS_DATA_SYNC_BITS) <= MAX_SYNC_BYTES_ERRS) {
 
-  m_control = CONTROL_DATA;
-  m_syncPtr = m_dataPtr;
+  control = CONTROL_DATA;
+  syncPtr = m_dataPtr;
 
-  m_startPtr = m_dataPtr + DMR_BUFFER_LENGTH_BITS - DMR_SLOT_TYPE_LENGTH_BITS / 2U - DMR_INFO_LENGTH_BITS / 2U - DMR_SYNC_LENGTH_BITS + 1;
-  if (m_startPtr >= DMR_BUFFER_LENGTH_BITS)
-    m_startPtr -= DMR_BUFFER_LENGTH_BITS;
+  startPtr = m_dataPtr + DMR_BUFFER_LENGTH_BITS - DMR_SLOT_TYPE_LENGTH_BITS / 2U - DMR_INFO_LENGTH_BITS / 2U - DMR_SYNC_LENGTH_BITS + 1;
+  if (startPtr >= DMR_BUFFER_LENGTH_BITS)
+    startPtr -= DMR_BUFFER_LENGTH_BITS;
 
-  m_endPtr   = m_dataPtr + DMR_SLOT_TYPE_LENGTH_BITS / 2U + DMR_INFO_LENGTH_BITS / 2U;
-  if (m_endPtr >= DMR_BUFFER_LENGTH_BITS)
-    m_endPtr -= DMR_BUFFER_LENGTH_BITS;
-    
-  //DEBUG4("SYNC corr MS Data found pos/start/end:", m_dataPtr, m_startPtr, m_endPtr);
+  endPtr   = m_dataPtr + DMR_SLOT_TYPE_LENGTH_BITS / 2U + DMR_INFO_LENGTH_BITS / 2U;
+  if (endPtr >= DMR_BUFFER_LENGTH_BITS)
+    endPtr -= DMR_BUFFER_LENGTH_BITS;
+
+  if(m_slot) {
+    m_syncPtr2 = syncPtr;
+    m_startPtr2 = startPtr;
+    m_endPtr2 = endPtr;
+    m_control2 = control;
+  } else {
+    m_syncPtr1 = syncPtr;
+    m_startPtr1 = startPtr;
+    m_endPtr1 = endPtr;
+    m_control1 = control;
+  }
+
+  //DEBUG5("SYNC corr MS Data found slot/pos/start/end:", m_slot ? 2U : 1U, m_dataPtr, startPtr, endPtr);
   
   } else if (countBits64((m_patternBuffer & DMR_SYNC_BITS_MASK) ^ DMR_MS_VOICE_SYNC_BITS) <= MAX_SYNC_BYTES_ERRS) {
 
-  m_control  = CONTROL_VOICE;
-  m_syncPtr  = m_dataPtr;
-  m_startPtr = m_dataPtr + DMR_BUFFER_LENGTH_BITS - DMR_SLOT_TYPE_LENGTH_BITS / 2U - DMR_INFO_LENGTH_BITS / 2U - DMR_SYNC_LENGTH_BITS + 1;
-  if (m_startPtr >= DMR_BUFFER_LENGTH_BITS)
-    m_startPtr -= DMR_BUFFER_LENGTH_BITS;
+  control  = CONTROL_VOICE;
+  syncPtr  = m_dataPtr;
+
+  startPtr = m_dataPtr + DMR_BUFFER_LENGTH_BITS - DMR_SLOT_TYPE_LENGTH_BITS / 2U - DMR_INFO_LENGTH_BITS / 2U - DMR_SYNC_LENGTH_BITS + 1;
+  if (startPtr >= DMR_BUFFER_LENGTH_BITS)
+    startPtr -= DMR_BUFFER_LENGTH_BITS;
     
-  m_endPtr   = m_dataPtr + DMR_SLOT_TYPE_LENGTH_BITS / 2U + DMR_INFO_LENGTH_BITS / 2U;
-  if (m_endPtr >= DMR_BUFFER_LENGTH_BITS)
-    m_endPtr -= DMR_BUFFER_LENGTH_BITS;
-    
-  //DEBUG4("SYNC corr MS Voice found pos/start/end: ", m_dataPtr, m_startPtr, m_endPtr);
+  endPtr   = m_dataPtr + DMR_SLOT_TYPE_LENGTH_BITS / 2U + DMR_INFO_LENGTH_BITS / 2U;
+  if (endPtr >= DMR_BUFFER_LENGTH_BITS)
+    endPtr -= DMR_BUFFER_LENGTH_BITS;
+
+  if(m_slot) {
+    m_syncPtr2 = syncPtr;
+    m_startPtr2 = startPtr;
+    m_endPtr2 = endPtr;
+    m_control2 = control;
+  } else {
+    m_syncPtr1 = syncPtr;
+    m_startPtr1 = startPtr;
+    m_endPtr1 = endPtr;
+    m_control1 = control;
+  }
+
+  //DEBUG5("SYNC corr MS Voice found slot/pos/start/end: ", m_slot ? 2U : 1U, m_dataPtr, startPtr, endPtr);
   }
 }
 
@@ -289,17 +458,31 @@ void CDMRSlotRX::setDelay(uint8_t delay)
   m_delay = delay / 5;
 }
 
-void CDMRSlotRX::writeRSSIData(uint8_t* frame)
+void CDMRSlotRX::writeRSSIData1()
 {
 #if defined(SEND_RSSI_DATA)
   uint16_t rssi = io.readRSSI();
   
-  frame[34U] = (rssi >> 8) & 0xFFU;
-  frame[35U] = (rssi >> 0) & 0xFFU;
+  frame1[34U] = (rssi >> 8) & 0xFFU;
+  frame1[35U] = (rssi >> 0) & 0xFFU;
   
-  serial.writeDMRData(m_slot, frame, DMR_FRAME_LENGTH_BYTES + 3U);
+  serial.writeDMRData(0U, frame1, DMR_FRAME_LENGTH_BYTES + 3U);
 #else
-  serial.writeDMRData(m_slot, frame, DMR_FRAME_LENGTH_BYTES + 1U);
+  serial.writeDMRData(0U, frame1, DMR_FRAME_LENGTH_BYTES + 1U);
+#endif
+}
+
+void CDMRSlotRX::writeRSSIData2()
+{
+#if defined(SEND_RSSI_DATA)
+  uint16_t rssi = io.readRSSI();
+  
+  frame2[34U] = (rssi >> 8) & 0xFFU;
+  frame2[35U] = (rssi >> 0) & 0xFFU;
+  
+  serial.writeDMRData(1U, frame2, DMR_FRAME_LENGTH_BYTES + 3U);
+#else
+  serial.writeDMRData(1U, frame2, DMR_FRAME_LENGTH_BYTES + 1U);
 #endif
 }
 
