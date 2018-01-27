@@ -542,7 +542,9 @@ to enable this option if you have one of these products.
 - #define LIBRE_KIT_ADF7021: enable this option if you have a ZUMspot Libre Kit (Board with
 modified RF7021SE and Blue Pill STM32F103).
 
-- #define MMDVM_HS_HAT_REV12: enable this option if you have a MMDVM_HS_Hat board for RPi. 
+- #define MMDVM_HS_HAT_REV12: enable this option if you have a MMDVM_HS_Hat board for RPi.
+
+- #define NANO_HOTSPOT: enable this option if you have a Nano hotSPOT (BI7JTA).
 
 - #define ENABLE_ADF7021: add support for ADF7021 (all boards, enabled by default).
 
