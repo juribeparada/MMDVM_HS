@@ -1,6 +1,6 @@
 /*
  *   Copyright (C) 2016 by Jim McLaughlin KI6ZUM
- *   Copyright (C) 2016,2017 by Andy Uribe CA6JAU
+ *   Copyright (C) 2016,2017,2018 by Andy Uribe CA6JAU
  *   Copyright (C) 2017 by Danilo DB4PLE 
   
  *   This program is free software; you can redistribute it and/or modify
@@ -146,7 +146,7 @@
 #define PIN_COS_LED          GPIO_Pin_15
 #define PORT_COS_LED         GPIOB
 
-#elif defined(LIBRE_KIT_ADF7021) || defined(MMDVM_HS_HAT_REV12)
+#elif defined(LIBRE_KIT_ADF7021) || defined(MMDVM_HS_HAT_REV12) || defined(NANO_HOTSPOT)
 
 #define PIN_SCLK             GPIO_Pin_5
 #define PORT_SCLK            GPIOB
@@ -216,7 +216,7 @@
 #define PORT_COS_LED         GPIOB
 
 #else
-#error "Either PI_HAT_7021_REV_02, ZUMSPOT_ADF7021, LIBRE_KIT_ADF7021 or MMDVM_HS_HAT_REV12 need to be defined"
+#error "Either PI_HAT_7021_REV_02, ZUMSPOT_ADF7021, LIBRE_KIT_ADF7021, MMDVM_HS_HAT_REV12 or NANO_HOTSPOT need to be defined"
 #endif
 
 extern "C" {
@@ -238,7 +238,7 @@ extern "C" {
   }
 #endif
 
-#elif defined(ZUMSPOT_ADF7021) || defined(LIBRE_KIT_ADF7021) || defined(MMDVM_HS_HAT_REV12)
+#elif defined(ZUMSPOT_ADF7021) || defined(LIBRE_KIT_ADF7021) || defined(MMDVM_HS_HAT_REV12) || defined(NANO_HOTSPOT)
 
 #if defined(BIDIR_DATA_PIN)
   void EXTI3_IRQHandler(void) {
@@ -275,7 +275,7 @@ void CIO::Init()
   
 #if defined(PI_HAT_7021_REV_02)
   GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable, ENABLE);
-#elif defined(ZUMSPOT_ADF7021) || defined(LIBRE_KIT_ADF7021) || defined(MMDVM_HS_HAT_REV12)
+#elif defined(ZUMSPOT_ADF7021) || defined(LIBRE_KIT_ADF7021) || defined(MMDVM_HS_HAT_REV12) || defined(NANO_HOTSPOT)
   GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);
 #endif
 
@@ -439,7 +439,7 @@ void CIO::Init()
   EXTI_InitStructure.EXTI_Line = EXTI_Line14;
 #endif
 
-#elif defined(ZUMSPOT_ADF7021) || defined(LIBRE_KIT_ADF7021) || defined(MMDVM_HS_HAT_REV12)
+#elif defined(ZUMSPOT_ADF7021) || defined(LIBRE_KIT_ADF7021) || defined(MMDVM_HS_HAT_REV12) || defined(NANO_HOTSPOT)
 
 #if defined(BIDIR_DATA_PIN)
   // Connect EXTI3 Line
@@ -487,7 +487,7 @@ void CIO::startInt()
 
   NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn;
 
-#elif defined(ZUMSPOT_ADF7021) || defined(LIBRE_KIT_ADF7021) || defined(MMDVM_HS_HAT_REV12)
+#elif defined(ZUMSPOT_ADF7021) || defined(LIBRE_KIT_ADF7021) || defined(MMDVM_HS_HAT_REV12) || defined(NANO_HOTSPOT)
 
 #if defined(BIDIR_DATA_PIN)
   // Enable and set EXTI3 Interrupt

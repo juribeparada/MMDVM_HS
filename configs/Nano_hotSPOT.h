@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2017,2018 by Andy Uribe CA6JAU
+ *   Copyright (C) 2018 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -21,13 +21,13 @@
 
 // Select one board (STM32F103 based boards)
 // 1) ZUMspot RPi or ZUMspot USB:
-#define ZUMSPOT_ADF7021
+// #define ZUMSPOT_ADF7021
 // 2) Libre Kit board or any homebrew hotspot with modified RF7021SE and Blue Pill STM32F103:
 // #define LIBRE_KIT_ADF7021
 // 3) MMDVM_HS_Hat revisions 1.1 and 1.2 (DB9MAT & DF2ET)
 // #define MMDVM_HS_HAT_REV12
 // 4) Nano hotSPOT (BI7JTA)
-// #define NANO_HOTSPOT
+#define NANO_HOTSPOT
 
 // Enable ADF7021 support:
 #define ENABLE_ADF7021
@@ -42,17 +42,17 @@
 // #define ADF7021_12_2880
 
 // Host communication selection:
-// #define STM32_USART1_HOST
-#define STM32_USB_HOST
+#define STM32_USART1_HOST
+// #define STM32_USB_HOST
 
 // Enable mode detection:
 #define ENABLE_SCAN_MODE
 
 // Send RSSI value:
-#define SEND_RSSI_DATA
+// #define SEND_RSSI_DATA
 
 // Enable Nextion LCD serial port repeater on USART2 (ZUMspot Libre Kit and ZUMspot RPi):
-// #define SERIAL_REPEATER
+#define SERIAL_REPEATER
 
 // Enable Nextion LCD serial port repeater on USART1 (Do not use with STM32_USART1_HOST enabled):
 // #define SERIAL_REPEATER_USART1

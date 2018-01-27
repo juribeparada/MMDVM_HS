@@ -1,6 +1,6 @@
 /*
  *   Copyright (C) 2015,2016 by Jonathan Naylor G4KLX
- *   Copyright (C) 2016,2017 by Andy Uribe CA6JAU
+ *   Copyright (C) 2016,2017,2018 by Andy Uribe CA6JAU
  *   Copyright (C) 2017 by Danilo DB4PLE 
  
  *   This program is free software; you can redistribute it and/or modify
@@ -50,7 +50,7 @@
 #define PIN_PTT_LED    PB14
 #define PIN_COS_LED    PB15
 
-#elif defined(LIBRE_KIT_ADF7021) || defined(MMDVM_HS_HAT_REV12)
+#elif defined(LIBRE_KIT_ADF7021) || defined(MMDVM_HS_HAT_REV12) || defined(NANO_HOTSPOT)
 
 #define PIN_SCLK       PB5
 #define PIN_SREAD      PB7
@@ -73,7 +73,7 @@
 #define PIN_COS_LED    PB15
 
 #else
-#error "Either ZUMSPOT_ADF7021 or LIBRE_KIT_ADF7021 or MMDVM_HS_HAT_REV12 need to be defined"
+#error "Either ZUMSPOT_ADF7021, LIBRE_KIT_ADF7021, MMDVM_HS_HAT_REV12 or NANO_HOTSPOT need to be defined"
 #endif
 
 #elif defined(__MK20DX256__) || defined(__MK64FX512__) || defined(__MK66FX1M0__)
@@ -144,7 +144,7 @@ void CIO::Init()
 {
 #if defined (__STM32F1__)
 
-#if defined(ZUMSPOT_ADF7021) || defined(LIBRE_KIT_ADF7021) || defined(MMDVM_HS_HAT_REV12)
+#if defined(ZUMSPOT_ADF7021) || defined(LIBRE_KIT_ADF7021) || defined(MMDVM_HS_HAT_REV12) || defined(NANO_HOTSPOT)
   afio_cfg_debug_ports(AFIO_DEBUG_SW_ONLY);
 #endif
 

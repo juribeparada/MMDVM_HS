@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2017 by Andy Uribe CA6JAU
+ *   Copyright (C) 2017,2018 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -26,6 +26,8 @@
 // #define LIBRE_KIT_ADF7021
 // 3) MMDVM_HS_Hat revisions 1.1 and 1.2 (DB9MAT & DF2ET)
 #define MMDVM_HS_HAT_REV12
+// 4) Nano hotSPOT (BI7JTA)
+// #define NANO_HOTSPOT
 
 // Enable ADF7021 support:
 #define ENABLE_ADF7021
