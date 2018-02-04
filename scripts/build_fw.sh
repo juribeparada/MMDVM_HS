@@ -50,4 +50,10 @@ make
 mv ~/MMDVM_HS/bin/outp.bin ~/MMDVM_HS/bin/mmdvm_hs_hat_fw.bin
 make clean
 
+# Building Nano hotSPOT
+cp ~/MMDVM_HS/configs/Nano_hotSPOT.h ~/MMDVM_HS/Config.h
+make
+mv ~/MMDVM_HS/bin/outp.bin ~/MMDVM_HS/bin/nano_hotspot_fw.bin
+make clean
+
 cp ~/MMDVM_HS/configs/ZUMspot_Libre.h ~/MMDVM_HS/Config.h
