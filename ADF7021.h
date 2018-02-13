@@ -66,6 +66,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 // DEMOD_CLK = 2.4576 MHz (DSTAR)
 // DEMOD_CLK = 4.9152 MHz (DMR, YSF_L, P25)
 // DEMOD_CLK = 7.3728 MHz (YSF_H)
+// DEMOD CLK = 3.6864 MHz (NXDN)
 #define ADF7021_PFD              3686400.0
 
 // PLL (REG 01)
@@ -84,7 +85,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #else
 #define ADF7021_DEV_P25          22U
 #endif
-#define ADF7021_DEV_NXDN         22U
+#define ADF7021_DEV_NXDN         13U
 
 // TX/RX CLOCK register (REG 03)
 #define ADF7021_REG3_DSTAR       0x2A4C4193
@@ -99,7 +100,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_REG3_YSF_L       0x2A4C80D3
 #define ADF7021_REG3_YSF_H       0x2A4CC093
 #define ADF7021_REG3_P25         0x2A4C80D3
-#define ADF7021_REG3_NXDN        0x2A4C80D3
+#define ADF7021_REG3_NXDN        0x2A4CC113
 #endif
 
 // Discriminator bandwith, demodulator (REG 04)
@@ -109,14 +110,14 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_DISC_BW_YSF_L    393U // K=32
 #define ADF7021_DISC_BW_YSF_H    516U // K=28
 #define ADF7021_DISC_BW_P25      394U // K=32
-#define ADF7021_DISC_BW_NXDN     394U // K=32
+#define ADF7021_DISC_BW_NXDN     295U // K=32
 
 // Post demodulator bandwith (REG 04)
 #define ADF7021_POST_BW_DSTAR    10U
 #define ADF7021_POST_BW_DMR      150U
 #define ADF7021_POST_BW_YSF      20U
 #define ADF7021_POST_BW_P25      6U
-#define ADF7021_POST_BW_NXDN     6U
+#define ADF7021_POST_BW_NXDN     7U
 
 // IF filter (REG 05)
 #define ADF7021_REG5             0x000024F5
@@ -258,7 +259,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_SLICER_TH_YSF_L  35U
 #define ADF7021_SLICER_TH_YSF_H  69U
 #define ADF7021_SLICER_TH_P25    43U
-#define ADF7021_SLICER_TH_NXDN   43U
+#define ADF7021_SLICER_TH_NXDN   26U
 
 #else
 
@@ -267,7 +268,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_SLICER_TH_YSF_L  38U
 #define ADF7021_SLICER_TH_YSF_H  75U
 #define ADF7021_SLICER_TH_P25    47U
-#define ADF7021_SLICER_TH_NXDN   47U
+#define ADF7021_SLICER_TH_NXDN   26U
 
 #endif
 
