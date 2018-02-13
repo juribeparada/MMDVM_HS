@@ -1,6 +1,6 @@
 /*
  *   Copyright (C) 2015,2016 by Jonathan Naylor G4KLX
- *   Copyright (C) 2016,2017 by Andy Uribe CA6JAU
+ *   Copyright (C) 2016,2017,2018 by Andy Uribe CA6JAU
  *   Copyright (C) 2017 by Danilo DB4PLE 
  
  *   This program is free software; you can redistribute it and/or modify
@@ -127,6 +127,7 @@ public:
   uint16_t  devYSF_H(void);
   uint16_t  devYSF_L(void);
   uint16_t  devP25(void);
+  uint16_t  devNXDN(void);
   void      printConf();
   
 private:
@@ -144,7 +145,7 @@ private:
   uint32_t           m_scanPauseCnt;
   uint8_t            m_scanPos;
   uint8_t            m_TotalModes;
-  MMDVM_STATE        m_Modes[4];
+  MMDVM_STATE        m_Modes[5];
   bool               m_ledValue;
   volatile uint32_t  m_watchdog;
 

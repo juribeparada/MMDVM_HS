@@ -865,6 +865,11 @@ uint16_t CIO::devP25()
   return (uint16_t)((ADF7021_PFD * ADF7021_DEV_P25) / (f_div * 65536));
 }
 
+uint16_t CIO::devNXDN()
+{
+  return (uint16_t)((ADF7021_PFD * ADF7021_DEV_NXDN) / (f_div * 65536));
+}
+
 void CIO::printConf()
 {
   DEBUG1("MMDVM_HS FW configuration:");
@@ -876,6 +881,7 @@ void CIO::printConf()
   DEBUG2("YSF_H +1 sym dev (Hz):", devYSF_H());
   DEBUG2("YSF_L +1 sym dev (Hz):", devYSF_L());
   DEBUG2("P25 +1 sym dev (Hz):", devP25());
+  DEBUG2("NXDN +1 sym dev (Hz):", devNXDN());
 }
 
 #endif
