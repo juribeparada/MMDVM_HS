@@ -1,5 +1,6 @@
 /*
- *   Copyright (C) 2015,2016 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2015,2016,2018 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2018 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -43,6 +44,9 @@ public:
   void writeP25Hdr(const uint8_t* data, uint8_t length);
   void writeP25Ldu(const uint8_t* data, uint8_t length);
   void writeP25Lost();
+
+  void writeNXDNData(const uint8_t* data, uint8_t length);
+  void writeNXDNLost();
 
   void writeDebug(const char* text);
   void writeDebug(const char* text, int16_t n1);

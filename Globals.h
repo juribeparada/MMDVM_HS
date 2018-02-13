@@ -33,6 +33,7 @@ enum MMDVM_STATE {
   STATE_DMR       = 2,
   STATE_YSF       = 3,
   STATE_P25       = 4,
+  STATE_NXDN      = 5,
 
   // Dummy states start at 90
   STATE_CWID      = 97
@@ -62,6 +63,8 @@ const uint8_t  MARK_NONE  = 0x00U;
 #include "YSFTX.h"
 #include "P25RX.h"
 #include "P25TX.h"
+#include "NXDNRX.h"
+#include "NXDNTX.h"
 #include "CWIdTX.h"
 #include "Debug.h"
 #include "Utils.h"
@@ -81,6 +84,7 @@ extern bool m_dstarEnable;
 extern bool m_dmrEnable;
 extern bool m_ysfEnable;
 extern bool m_p25Enable;
+extern bool m_nxdnEnable;
 
 extern bool m_duplex;
 
@@ -109,6 +113,9 @@ extern CYSFTX ysfTX;
 
 extern CP25RX p25RX;
 extern CP25TX p25TX;
+
+extern CNXDNRX nxdnRX;
+extern CNXDNTX nxdnTX;
 
 extern CCWIdTX cwIdTX;
 
