@@ -61,18 +61,18 @@ m_watchdog(0U)
 
   selfTest();
 
-  m_modeTimerCnt = 0;
+  m_modeTimerCnt = 0U;
 }
 
 void CIO::selfTest()
 {
   bool ledValue = false;
-  uint32_t ledCount = 0;
-  uint32_t blinks = 0;
+  uint32_t ledCount = 0U;
+  uint32_t blinks = 0U;
 
   while(true) {
     ledCount++;
-    delay_us(1000);
+    delay_us(1000U);
 
     if(ledCount >= 125U) {
       ledCount = 0U;
@@ -89,7 +89,7 @@ void CIO::selfTest()
 
       blinks++;
 
-      if(blinks > 5)
+      if(blinks > 5U)
         break;
     }
   }
@@ -141,7 +141,7 @@ void CIO::process()
   if(m_modemState_prev == STATE_DSTAR)
     scantime = SCAN_TIME;
   else if(m_modemState_prev == STATE_DMR)
-    scantime = SCAN_TIME*2;
+    scantime = SCAN_TIME * 2U;
   else if(m_modemState_prev == STATE_YSF)
     scantime = SCAN_TIME;
   else if(m_modemState_prev == STATE_P25)
@@ -152,9 +152,9 @@ void CIO::process()
     scantime = SCAN_TIME;
 
   if(m_modeTimerCnt >= scantime) {
-    m_modeTimerCnt = 0;
-    if( (m_modemState == STATE_IDLE) && (m_scanPauseCnt == 0) && m_scanEnable && !m_cwid_state) {
-      m_scanPos = (m_scanPos + 1) % m_TotalModes;
+    m_modeTimerCnt = 0U;
+    if( (m_modemState == STATE_IDLE) && (m_scanPauseCnt == 0U) && m_scanEnable && !m_cwid_state) {
+      m_scanPos = (m_scanPos + 1U) % m_TotalModes;
       #if !defined(QUIET_MODE_LEDS)
       setMode(m_Modes[m_scanPos]);
       #endif
@@ -200,7 +200,7 @@ void CIO::process()
 
 void CIO::start()
 { 
-  m_TotalModes = 0;
+  m_TotalModes = 0U;
   
   if(m_dstarEnable) {
     m_Modes[m_TotalModes] = STATE_DSTAR;
@@ -224,7 +224,7 @@ void CIO::start()
   }
   
 #if defined(ENABLE_SCAN_MODE)
-  if(m_TotalModes > 1)
+  if(m_TotalModes > 1U)
     m_scanEnable = true;
   else {
     m_scanEnable = false;
@@ -308,7 +308,7 @@ void CIO::setMode(MMDVM_STATE modemState)
 void CIO::setDecode(bool dcd)
 {
   if (dcd != m_dcd) {
-    m_scanPauseCnt = 1;
+    m_scanPauseCnt = 1U;
     COS_pin(dcd ? true : false);
   }
 

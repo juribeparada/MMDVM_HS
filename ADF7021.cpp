@@ -33,7 +33,7 @@
 volatile bool totx_request = false;
 volatile bool torx_request = false;
 volatile bool even = true;
-static uint32_t last_clk = 2;
+static uint32_t last_clk = 2U;
 
 volatile uint32_t  AD7021_control_word;
 
@@ -100,7 +100,7 @@ void Send_AD7021_control2(bool doSle)
 uint16_t CIO::readRSSI()
 {
   uint32_t AD7021_RB;
-  uint16_t RB_word = 0;
+  uint16_t RB_word = 0U;
   int AD7021_counter;
   uint8_t RB_code, gain_code, gain_corr;
 
@@ -145,22 +145,22 @@ uint16_t CIO::readRSSI()
   
   switch(gain_code) {
     case 0b1010:
-      gain_corr = 0;
+      gain_corr = 0U;
       break;
     case 0b0110:
-      gain_corr = 24;
+      gain_corr = 24U;
       break;
     case 0b0101:
-      gain_corr = 38;
+      gain_corr = 38U;
       break;
     case 0b0100:
-      gain_corr = 58;
+      gain_corr = 58U;
       break;
     case 0b0000:
-      gain_corr = 86;
+      gain_corr = 86U;
       break;
     default:
-      gain_corr = 0;
+      gain_corr = 0U;
       break;
   }
 
@@ -173,12 +173,12 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
 {
   float    divider;
 
-  uint32_t ADF7021_REG2  = 0;
-  uint32_t ADF7021_REG3  = 0;
-  uint32_t ADF7021_REG4  = 0;
-  uint32_t ADF7021_REG10 = 0;
-  uint32_t ADF7021_REG13 = 0;
-  uint32_t AFC_OFFSET = 0;
+  uint32_t ADF7021_REG2  = 0U;
+  uint32_t ADF7021_REG3  = 0U;
+  uint32_t ADF7021_REG4  = 0U;
+  uint32_t ADF7021_REG10 = 0U;
+  uint32_t ADF7021_REG13 = 0U;
+  int32_t AFC_OFFSET = 0;
 
   if(modemState != STATE_CWID)
     m_modemState_prev = modemState;
@@ -525,11 +525,11 @@ if(m_duplex && (modemState != STATE_CWID))
 #if defined(DUPLEX)
 void CIO::ifConf2(MMDVM_STATE modemState)
 {
-  uint32_t ADF7021_REG2  = 0;
-  uint32_t ADF7021_REG3  = 0;
-  uint32_t ADF7021_REG4  = 0;
-  uint32_t ADF7021_REG10 = 0;
-  uint32_t ADF7021_REG13 = 0;
+  uint32_t ADF7021_REG2  = 0U;
+  uint32_t ADF7021_REG3  = 0U;
+  uint32_t ADF7021_REG4  = 0U;
+  uint32_t ADF7021_REG10 = 0U;
+  uint32_t ADF7021_REG13 = 0U;
 
   switch (modemState) {
     case STATE_DSTAR:
@@ -717,7 +717,7 @@ void CIO::ifConf2(MMDVM_STATE modemState)
 
 void CIO::interrupt()
 {
-  uint8_t bit = 0;
+  uint8_t bit = 0U;
   
   if (!m_started)
     return;
@@ -740,7 +740,7 @@ void CIO::interrupt()
   }
 
   // we set the TX bit at TXD low, sampling of ADF7021 happens at rising clock
-  if (m_tx && clk == 0) {
+  if (m_tx && clk == 0U) {
 
     m_txBuffer.get(bit, m_control);
     even = !even;
@@ -782,19 +782,19 @@ void CIO::interrupt()
   }
   
   // we sample the RX bit at rising TXD clock edge, so TXD must be 1 and we are not in tx mode
-  if (!m_tx && clk == 1 && !m_duplex) {
+  if (!m_tx && clk == 1U && !m_duplex) {
     if(RXD_pin())
-      bit = 1;
+      bit = 1U;
     else
-      bit = 0;
+      bit = 0U;
 
     m_rxBuffer.put(bit, m_control);
   }
   
-  if (torx_request == true && even == ADF7021_EVEN_BIT && m_tx && clk == 0) { 
+  if (torx_request == true && even == ADF7021_EVEN_BIT && m_tx && clk == 0U) { 
       // that is absolutely crucial in 4FSK, see datasheet:
       // enable sle after 1/4 tBit == 26uS when sending MSB (even == false) and clock is low 
-      delay_us(26);
+      delay_us(26U);
 
       // SLE Pulse, should be moved out of here into class method 
       SLE_pin(HIGH);
@@ -817,22 +817,22 @@ void CIO::interrupt()
   m_modeTimerCnt++;
 
   if(m_scanPauseCnt >= SCAN_PAUSE)
-    m_scanPauseCnt = 0;
+    m_scanPauseCnt = 0U;
   
-  if(m_scanPauseCnt != 0)
+  if(m_scanPauseCnt != 0U)
     m_scanPauseCnt++;
 }
 
 #if defined(DUPLEX)
 void CIO::interrupt2()
 {
-  uint8_t bit = 0;
+  uint8_t bit = 0U;
   
   if(m_duplex) {
     if(RXD2_pin())
-      bit = 1;
+      bit = 1U;
     else
-      bit = 0;
+      bit = 0U;
 
     m_rxBuffer.put(bit, m_control);
   }

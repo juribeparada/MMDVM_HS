@@ -317,17 +317,17 @@ uint8_t CSerialPort::setFreq(const uint8_t* data, uint8_t length)
 
     // New MMDVMHost, set power from MMDVM.ini
     if (length == 10U)
-      rf_power = data[9];
+      rf_power = data[9U];
 
-    freq_rx  = data[1] * 1;
-    freq_rx += data[2] * 256;
-    freq_rx += data[3] * 65536;
-    freq_rx += data[4] * 16777216;
+    freq_rx  = data[1U] * 1U;
+    freq_rx += data[2U] * 256U;
+    freq_rx += data[3U] * 65536U;
+    freq_rx += data[4U] * 16777216U;
     
-    freq_tx  = data[5] * 1;
-    freq_tx += data[6] * 256;
-    freq_tx += data[7] * 65536;
-    freq_tx += data[8] * 16777216;
+    freq_tx  = data[5U] * 1U;
+    freq_tx += data[6U] * 256U;
+    freq_tx += data[7U] * 65536U;
+    freq_tx += data[8U] * 16777216U;
     
     return io.setFreq(freq_rx, freq_tx, rf_power);
 }
