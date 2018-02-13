@@ -161,6 +161,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 // R = 2
 // DEMOD_CLK = 2.4576 MHz (DSTAR)
 // DEMOD_CLK = 6.1440 MHz (DMR, YSF_H, YSF_L, P25)
+// DEMOD_CLK = 3.0720 MHz (NXDN)
 #define ADF7021_PFD              6144000.0
 
 // PLL (REG 01)
@@ -179,7 +180,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #else
 #define ADF7021_DEV_P25          13U
 #endif
-#define ADF7021_DEV_NXDN         13U
+#define ADF7021_DEV_NXDN         8U
 
 // TX/RX CLOCK register (REG 03)
 #define ADF7021_REG3_DSTAR       0x29EC4153
@@ -194,7 +195,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_REG3_YSF_L       0x29ECA093
 #define ADF7021_REG3_YSF_H       0x29ECA093
 #define ADF7021_REG3_P25         0x29ECA093
-#define ADF7021_REG3_NXDN        0x29ECA093
+#define ADF7021_REG3_NXDN        0x29ECA113
 #endif
 
 // Discriminator bandwith, demodulator (REG 04)
@@ -204,14 +205,14 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_DISC_BW_YSF_L    491U // K=32
 #define ADF7021_DISC_BW_YSF_H    430U // K=28
 #define ADF7021_DISC_BW_P25      493U // K=32
-#define ADF7021_DISC_BW_NXDN     493U // K=32
+#define ADF7021_DISC_BW_NXDN     246U // K=32
 
 // Post demodulator bandwith (REG 04)
 #define ADF7021_POST_BW_DSTAR    10U
 #define ADF7021_POST_BW_DMR      150U
 #define ADF7021_POST_BW_YSF      20U
 #define ADF7021_POST_BW_P25      6U
-#define ADF7021_POST_BW_NXDN     6U
+#define ADF7021_POST_BW_NXDN     8U
 
 // IF filter (REG 05)
 #define ADF7021_REG5             0x00001ED5
