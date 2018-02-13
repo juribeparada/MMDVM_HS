@@ -80,6 +80,9 @@
 #define PIN_P25_LED          GPIO_Pin_12
 #define PORT_P25_LED         GPIOA
 
+#define PIN_NXDN_LED         GPIO_Pin_8
+#define PORT_NXDN_LED        GPIOA
+
 #define PIN_PTT_LED          GPIO_Pin_12
 #define PORT_PTT_LED         GPIOB
 
@@ -139,6 +142,9 @@
 
 #define PIN_P25_LED          GPIO_Pin_0
 #define PORT_P25_LED         GPIOB
+
+#define PIN_NXDN_LED         GPIO_Pin_8
+#define PORT_NXDN_LED        GPIOA
 
 #define PIN_PTT_LED          GPIO_Pin_14
 #define PORT_PTT_LED         GPIOB
@@ -208,6 +214,9 @@
 
 #define PIN_P25_LED          GPIO_Pin_0
 #define PORT_P25_LED         GPIOB
+
+#define PIN_NXDN_LED         GPIO_Pin_8
+#define PORT_NXDN_LED        GPIOA
 
 #define PIN_PTT_LED          GPIO_Pin_14
 #define PORT_PTT_LED         GPIOB
@@ -412,6 +421,12 @@ void CIO::Init()
   GPIO_InitStruct.GPIO_Pin   = PIN_P25_LED;
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
   GPIO_Init(PORT_P25_LED, &GPIO_InitStruct);
+
+  // NXDN LED 
+  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStruct.GPIO_Pin   = PIN_NXDN_LED;
+  GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
+  GPIO_Init(PORT_NXDN_LED, &GPIO_InitStruct);
 
   // PTT LED
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
@@ -625,6 +640,11 @@ void CIO::YSF_pin(bool on)
 void CIO::P25_pin(bool on)
 {
   GPIO_WriteBit(PORT_P25_LED, PIN_P25_LED, on ? Bit_SET : Bit_RESET);
+}
+
+void CIO::NXDN_pin(bool on)
+{
+  GPIO_WriteBit(PORT_NXDN_LED, PIN_NXDN_LED, on ? Bit_SET : Bit_RESET);
 }
 
 void CIO::PTT_pin(bool on)

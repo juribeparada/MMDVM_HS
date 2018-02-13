@@ -75,6 +75,7 @@ public:
   void      DMR_pin(bool on);
   void      YSF_pin(bool on);
   void      P25_pin(bool on);
+  void      NXDN_pin(bool on);
   void      COS_pin(bool on);
   void      interrupt(void);
 #if defined(DUPLEX)
