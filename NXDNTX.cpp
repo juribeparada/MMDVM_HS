@@ -32,7 +32,9 @@ m_poBuffer(),
 m_poLen(0U),
 m_poPtr(0U),
 m_txDelay(240U),      // 200ms
-m_count(0U)
+m_count(0U),
+m_delay(false),
+m_preamble(false)
 {
 }
 
@@ -44,10 +46,12 @@ void CNXDNTX::process()
   if (m_poLen == 0U) {
     if (!m_tx) {
       m_delay = true;
+      m_preamble = false;
       m_count = 0U;
       m_poLen = m_txDelay;
     } else {
       m_delay = false;
+      m_preamble = false;
       for (uint8_t i = 0U; i < NXDN_FRAME_LENGTH_BYTES; i++)
         m_poBuffer[m_poLen++] = m_buffer.get();
     }
@@ -60,8 +64,10 @@ void CNXDNTX::process()
     
     while (space > 8U) {
       if (m_delay) {
-        m_poPtr++;
         writeByte(NXDN_SYNC);
+        m_poPtr++;
+      } else if (m_preamble) {
+        writeByte(NXDN_PREAMBLE[m_poPtr++]);
       }
       else
         writeByte(m_poBuffer[m_poPtr++]); 
@@ -69,10 +75,18 @@ void CNXDNTX::process()
       space -= 8U;
       
       if (m_poPtr >= m_poLen) {
-        m_poPtr = 0U;
-        m_poLen = 0U;
-        m_delay = false;
-        return;
+        if (m_delay) {
+          m_preamble = true;
+          m_delay = false;
+          m_poPtr = 0U;
+          m_poLen = 3U;
+        } else {
+          m_poPtr = 0U;
+          m_poLen = 0U;
+          m_preamble = false;
+          m_delay = false;
+          return;
+        }
       }
     }
   }

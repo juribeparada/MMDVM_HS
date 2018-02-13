@@ -42,7 +42,8 @@ private:
   uint16_t             m_txDelay;
   uint32_t             m_count;
   bool                 m_delay;
-  
+  bool                 m_preamble;
+
   void writeByte(uint8_t c);
 };
 
