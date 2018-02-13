@@ -1,6 +1,6 @@
 /*
  *   Copyright (C) 2016 by Jim McLaughlin KI6ZUM
- *   Copyright (C) 2016,2017 by Andy Uribe CA6JAU
+ *   Copyright (C) 2016,2017,2018 by Andy Uribe CA6JAU
  *   Copyright (C) 2017 by Danilo DB4PLE 
  * 
  *   Some of the code is based on work of Guus Van Dooren PE1PLM:
@@ -232,6 +232,9 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
     case STATE_P25:
       AFC_OFFSET = AFC_OFFSET_P25;
       break;
+    case STATE_NXDN:
+      AFC_OFFSET = AFC_OFFSET_NXDN;
+      break;
     default:
       break;
   }
@@ -403,6 +406,33 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
       ADF7021_REG2 = (uint32_t) 0b10                       << 28;  // invert data (and RC alpha = 0.5)
       ADF7021_REG2 |= (uint32_t) (ADF7021_DEV_P25 / div2)  << 19;  // deviation
 #if defined(ENABLE_P25_WIDE) || defined(ADF7021_DISABLE_RC_4FSK)
+      ADF7021_REG2 |= (uint32_t) 0b011                     << 4;   // modulation (4FSK)
+#else
+      ADF7021_REG2 |= (uint32_t) 0b111                     << 4;   // modulation (RC 4FSK)
+#endif
+      break;
+      
+    case STATE_NXDN:
+      // Dev: +1 symb 600 Hz, symb rate = 4800
+
+      ADF7021_REG3 = ADF7021_REG3_NXDN;
+      ADF7021_REG10 = ADF7021_REG10_NXDN;
+
+      // K=32
+      ADF7021_REG4  = (uint32_t) 0b0100                    << 0;   // register 4
+      ADF7021_REG4 |= (uint32_t) 0b011                     << 4;   // mode, 4FSK
+      ADF7021_REG4 |= (uint32_t) 0b0                       << 7;
+      ADF7021_REG4 |= (uint32_t) 0b11                      << 8;
+      ADF7021_REG4 |= (uint32_t) ADF7021_DISC_BW_NXDN      << 10;  // Disc BW
+      ADF7021_REG4 |= (uint32_t) ADF7021_POST_BW_NXDN      << 20;  // Post dem BW
+      ADF7021_REG4 |= (uint32_t) 0b00                      << 30;  // IF filter (12.5 kHz)
+
+      ADF7021_REG13 = (uint32_t) 0b1101                    << 0;   // register 13
+      ADF7021_REG13 |= (uint32_t) ADF7021_SLICER_TH_NXDN   << 4;   // slicer threshold
+
+      ADF7021_REG2 = (uint32_t) 0b10                       << 28;  // invert data (and RC alpha = 0.5)
+      ADF7021_REG2 |= (uint32_t) (ADF7021_DEV_NXDN / div2) << 19;  // deviation
+#if defined(ADF7021_DISABLE_RC_4FSK)
       ADF7021_REG2 |= (uint32_t) 0b011                     << 4;   // modulation (4FSK)
 #else
       ADF7021_REG2 |= (uint32_t) 0b111                     << 4;   // modulation (RC 4FSK)
@@ -593,7 +623,30 @@ void CIO::ifConf2(MMDVM_STATE modemState)
       ADF7021_REG2 |= (uint32_t) (ADF7021_DEV_P25 / div2)  << 19;  // deviation
       ADF7021_REG2 |= (uint32_t) 0b111                     << 4;   // modulation (RC 4FSK)
       break;
-      
+
+    case STATE_NXDN:
+      // Dev: +1 symb 600 Hz, symb rate = 4800
+
+      ADF7021_REG3 = ADF7021_REG3_NXDN;
+      ADF7021_REG10 = ADF7021_REG10_NXDN;
+
+      // K=32
+      ADF7021_REG4  = (uint32_t) 0b0100                    << 0;   // register 4
+      ADF7021_REG4 |= (uint32_t) 0b011                     << 4;   // mode, 4FSK
+      ADF7021_REG4 |= (uint32_t) 0b0                       << 7;
+      ADF7021_REG4 |= (uint32_t) 0b11                      << 8;
+      ADF7021_REG4 |= (uint32_t) ADF7021_DISC_BW_NXDN      << 10;  // Disc BW
+      ADF7021_REG4 |= (uint32_t) ADF7021_POST_BW_NXDN      << 20;  // Post dem BW
+      ADF7021_REG4 |= (uint32_t) 0b00                      << 30;  // IF filter (12.5 kHz)
+
+      ADF7021_REG13 = (uint32_t) 0b1101                    << 0;   // register 13
+      ADF7021_REG13 |= (uint32_t) ADF7021_SLICER_TH_NXDN   << 4;   // slicer threshold
+
+      ADF7021_REG2 = (uint32_t) 0b10                       << 28;  // invert data (and RC alpha = 0.5)
+      ADF7021_REG2 |= (uint32_t) (ADF7021_DEV_NXDN / div2) << 19;  // deviation
+      ADF7021_REG2 |= (uint32_t) 0b111                     << 4;   // modulation (RC 4FSK)
+      break;
+
     default:
       break;
   }
