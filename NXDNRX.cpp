@@ -23,7 +23,7 @@
 #include "Utils.h"
 
 const uint8_t MAX_FSW_BIT_START_ERRS = 0U;
-const uint8_t MAX_FSW_BIT_RUN_ERRS   = 2U;
+const uint8_t MAX_FSW_BIT_RUN_ERRS   = 3U;
 
 const unsigned int MAX_FSW_FRAMES = 5U + 1U;
 
