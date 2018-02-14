@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#   Copyright (C) 2017 by Andy Uribe CA6JAU
+#   Copyright (C) 2017,2018 by Andy Uribe CA6JAU
 
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 #   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 # Configure latest version
-FW_VERSION="v1.1.0"
+FW_VERSION="v1.2.1"
 
 # Change USB-serial port name ONLY in macOS
 MAC_DEV_USB_SER="/dev/cu.usbmodem1441"
