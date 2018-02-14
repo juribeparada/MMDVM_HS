@@ -37,6 +37,9 @@ OBJDIR_F7=obj_f7
 BINELF_F1=mmdvm_f1.elf
 BINHEX_F1=mmdvm_f1.hex
 BINBIN_F1=mmdvm_f1.bin
+BINELF_F1BL=mmdvm_f1bl.elf
+BINHEX_F1BL=mmdvm_f1bl.hex
+BINBIN_F1BL=mmdvm_f1bl.bin
 BINELF_F4=mmdvm_f4.elf
 BINHEX_F4=mmdvm_f4.hex
 BINBIN_F4=mmdvm_f4.bin
@@ -157,7 +160,8 @@ STARTUP_F4=$(wildcard $(STARTUP_DIR_F4)/*.c)
 CSRC_STD_F7=$(wildcard $(STD_LIB_F7)/*.c)
 SYS_F7=$(wildcard $(SYS_DIR_F7)/*.c)
 STARTUP_F7=$(wildcard $(STARTUP_DIR_F7)/*.c)
-OBJ_F1=$(CXXSRC:$(MMDVM_HS_PATH)/%.cpp=$(OBJDIR_F1)/%.o) $(CSRC_STD_F1:$(STD_LIB_F1)/%.c=$(OBJDIR_F1)/%.o) $(SYS_F1:$(SYS_DIR_F1)/%.c=$(OBJDIR_F1)/%.o) $(STARTUP_F1:$(STARTUP_DIR_F1)/%.c=$(OBJDIR_F1)/%.o) $(CXX_USB_F1:$(USB_F1)/%.cpp=$(OBJDIR_F1)/%.o) $(C_USB_F1:$(USB_F1)/%.c=$(OBJDIR_F1)/%.o)
+OBJ_F1=$(CXXSRC:$(MMDVM_HS_PATH)/%.cpp=$(OBJDIR_F1)/%.o) $(CSRC_STD_F1:$(STD_LIB_F1)/%.c=$(OBJDIR_F1)/%.o) $(SYS_F1:$(SYS_DIR_F1)/%.c=$(OBJDIR_F1)/%.o) $(STARTUP_F1:$(STARTUP_DIR_F1)/%.c=$(OBJDIR_F1)/%.o) 
+OBJ_F1BL=$(CXXSRC:$(MMDVM_HS_PATH)/%.cpp=$(OBJDIR_F1)/%.o) $(CSRC_STD_F1:$(STD_LIB_F1)/%.c=$(OBJDIR_F1)/%.o) $(SYS_F1:$(SYS_DIR_F1)/%.c=$(OBJDIR_F1)/%.o) $(STARTUP_F1:$(STARTUP_DIR_F1)/%.c=$(OBJDIR_F1)/%.o) $(CXX_USB_F1:$(USB_F1)/%.cpp=$(OBJDIR_F1)/%.o) $(C_USB_F1:$(USB_F1)/%.c=$(OBJDIR_F1)/%.o)
 OBJ_F4=$(CXXSRC:$(MMDVM_HS_PATH)/%.cpp=$(OBJDIR_F4)/%.o) $(CSRC_STD_F4:$(STD_LIB_F4)/%.c=$(OBJDIR_F4)/%.o) $(SYS_F4:$(SYS_DIR_F4)/%.c=$(OBJDIR_F4)/%.o) $(STARTUP_F4:$(STARTUP_DIR_F4)/%.c=$(OBJDIR_F4)/%.o)
 OBJ_F7=$(CXXSRC:$(MMDVM_HS_PATH)/%.cpp=$(OBJDIR_F7)/%.o) $(CSRC_STD_F7:$(STD_LIB_F7)/%.c=$(OBJDIR_F7)/%.o) $(SYS_F7:$(SYS_DIR_F7)/%.c=$(OBJDIR_F7)/%.o) $(STARTUP_F7:$(STARTUP_DIR_F7)/%.c=$(OBJDIR_F7)/%.o)
 
@@ -223,13 +227,19 @@ hs: release_f1
 bl: CFLAGS+=$(CFLAGS_F1) $(DEFS_F1_HS_BL)
 bl: CXXFLAGS+=$(CXXFLAGS_F1) $(DEFS_F1_HS_BL)
 bl: LDFLAGS+=$(LDFLAGS_F1_BL)
-bl: release_f1
+bl: release_f1bl
 
 release_f1: GitVersion.h
 release_f1: $(BINDIR)
 release_f1: $(OBJDIR_F1)
 release_f1: $(BINDIR)/$(BINHEX_F1)
 release_f1: $(BINDIR)/$(BINBIN_F1)
+
+release_f1bl: GitVersion.h
+release_f1bl: $(BINDIR)
+release_f1bl: $(OBJDIR_F1)
+release_f1bl: $(BINDIR)/$(BINHEX_F1BL)
+release_f1bl: $(BINDIR)/$(BINBIN_F1BL)
 
 release_f4: GitVersion.h
 release_f4: $(BINDIR)
@@ -254,6 +264,19 @@ $(OBJDIR_F4):
 
 $(OBJDIR_F7):
 	$(MDDIRS)
+
+$(BINDIR)/$(BINHEX_F1BL): $(BINDIR)/$(BINELF_F1BL)
+	$(CP) -O ihex $< $@
+	@echo "Objcopy from ELF to IHEX complete!\n"
+
+$(BINDIR)/$(BINBIN_F1BL): $(BINDIR)/$(BINELF_F1BL)
+	$(CP) -O binary $< $@
+	@echo "Objcopy from ELF to BINARY complete!\n"
+
+$(BINDIR)/$(BINELF_F1BL): $(OBJ_F1BL)
+	$(CXX) $(OBJ_F1BL) $(LDFLAGS) -o $@
+	@echo "Linking complete!\n"
+	$(SIZE) $(BINDIR)/$(BINELF_F1BL)
 
 $(BINDIR)/$(BINHEX_F1): $(BINDIR)/$(BINELF_F1)
 	$(CP) -O ihex $< $@
@@ -359,14 +382,14 @@ stlink:
 
 stlink-bl:
 	$(ST_FLASH) write $(F1_LIB_PATH)/utils/bootloader/generic_boot20_pc13.bin 0x8000000
-	$(ST_FLASH) write bin/$(BINBIN_F1) 0x8002000
+	$(ST_FLASH) write bin/$(BINBIN_F1BL) 0x8002000
 	
 serial:
 	$(STM32FLASH) -v -w bin/$(BINBIN_F1) -g 0x0 $(devser)
 
 serial-bl:
 	$(STM32FLASH) -v -w $(F1_LIB_PATH)/utils/bootloader/generic_boot20_pc13.bin -g 0x0 $(devser)
-	$(STM32FLASH) -v -w bin/$(BINBIN_F1) -g 0x0 -S 0x08002000 $(devser)
+	$(STM32FLASH) -v -w bin/$(BINBIN_F1BL) -g 0x0 -S 0x08002000 $(devser)
 
 nano-hotspot:
 ifneq ($(wildcard /usr/local/bin/stm32flash),)
@@ -392,7 +415,7 @@ dfu:
 ifdef devser
 	$(DFU_RST) $(devser) 750
 endif
-	$(DFU_UTIL) -D bin/$(BINBIN_F1) -d 1eaf:0003 -a 2 -R -R
+	$(DFU_UTIL) -D bin/$(BINBIN_F1BL) -d 1eaf:0003 -a 2 -R -R
 	
 ocd:
 ifneq ($(wildcard /usr/bin/openocd),)
@@ -410,17 +433,17 @@ endif
 ocd-bl:
 ifneq ($(wildcard /usr/bin/openocd),)
 	/usr/bin/openocd -f /usr/share/openocd/scripts/interface/stlink-v2-1.cfg -f /usr/share/openocd/scripts/target/stm32f1x.cfg -c "program $(F1_LIB_PATH)/utils/bootloader/generic_boot20_pc13.bin verify reset exit 0x08000000"
-	/usr/bin/openocd -f /usr/share/openocd/scripts/interface/stlink-v2-1.cfg -f /usr/share/openocd/scripts/target/stm32f1x.cfg -c "program bin/$(BINBIN_F1) verify reset exit 0x08002000"
+	/usr/bin/openocd -f /usr/share/openocd/scripts/interface/stlink-v2-1.cfg -f /usr/share/openocd/scripts/target/stm32f1x.cfg -c "program bin/$(BINBIN_F1BL) verify reset exit 0x08002000"
 endif
 
 ifneq ($(wildcard /usr/local/bin/openocd),)
 	/usr/local/bin/openocd -f /usr/local/share/openocd/scripts/interface/stlink-v2-1.cfg -f /usr/local/share/openocd/scripts/target/stm32f1x.cfg -c "program $(F1_LIB_PATH)/utils/bootloader/generic_boot20_pc13.bin verify reset exit 0x08000000"
-	/usr/local/bin/openocd -f /usr/local/share/openocd/scripts/interface/stlink-v2-1.cfg -f /usr/local/share/openocd/scripts/target/stm32f1x.cfg -c "program bin/$(BINBIN_F1) verify reset exit 0x08002000"
+	/usr/local/bin/openocd -f /usr/local/share/openocd/scripts/interface/stlink-v2-1.cfg -f /usr/local/share/openocd/scripts/target/stm32f1x.cfg -c "program bin/$(BINBIN_F1BL) verify reset exit 0x08002000"
 endif
 
 ifneq ($(wildcard /opt/openocd/bin/openocd),)
 	/opt/openocd/bin/openocd -f /opt/openocd/scripts/interface/stlink-v2-1.cfg -f /opt/openocd/share/openocd/scripts/target/stm32f1x.cfg -c "program $(F1_LIB_PATH)/utils/bootloader/generic_boot20_pc13.bin verify reset exit 0x08000000"
-	/opt/openocd/bin/openocd -f /opt/openocd/scripts/interface/stlink-v2-1.cfg -f /opt/openocd/share/openocd/scripts/target/stm32f1x.cfg -c "program bin/$(BINBIN_F1) verify reset exit 0x08002000"
+	/opt/openocd/bin/openocd -f /opt/openocd/scripts/interface/stlink-v2-1.cfg -f /opt/openocd/share/openocd/scripts/target/stm32f1x.cfg -c "program bin/$(BINBIN_F1BL) verify reset exit 0x08002000"
 endif
 
 # Export the current git version if the index file exists, else 000...
