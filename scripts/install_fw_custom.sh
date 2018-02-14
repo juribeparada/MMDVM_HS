@@ -21,7 +21,7 @@ MAC_DEV_USB_SER="/dev/cu.usbmodem1441"
 
 # Check if arguement is supplied for bin path. If not, use default.
 if [ -z "$1" ]; then
-  	BIN_PATH="../bin/outp.bin"
+  	BIN_PATH="../bin/mmdvm_f1bl.bin"
     echo "No path to bin file supplied, trying the default location."
 else
 	BIN_PATH="$1"

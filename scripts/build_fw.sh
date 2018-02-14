@@ -23,37 +23,37 @@ git pull
 # Building ZUMspot Libre Kit
 cp ~/MMDVM_HS/configs/ZUMspot_Libre.h ~/MMDVM_HS/Config.h
 make bl
-mv ~/MMDVM_HS/bin/outp.bin ~/MMDVM_HS/bin/zumspot_libre_fw.bin
+mv ~/MMDVM_HS/bin/mmdvm_f1bl.bin ~/MMDVM_HS/bin/zumspot_libre_fw.bin
 make clean
 
 # Building ZUMspot RPi
 cp ~/MMDVM_HS/configs/ZUMspot_RPi.h ~/MMDVM_HS/Config.h
 make
-mv ~/MMDVM_HS/bin/outp.bin ~/MMDVM_HS/bin/zumspot_rpi_fw.bin
+mv ~/MMDVM_HS/bin/mmdvm_f1.bin ~/MMDVM_HS/bin/zumspot_rpi_fw.bin
 make clean
 
 # Building ZUMspot USB
 cp ~/MMDVM_HS/configs/ZUMspot_USB.h ~/MMDVM_HS/Config.h
 make bl
-mv ~/MMDVM_HS/bin/outp.bin ~/MMDVM_HS/bin/zumspot_usb_fw.bin
+mv ~/MMDVM_HS/bin/mmdvm_f1bl.bin ~/MMDVM_HS/bin/zumspot_usb_fw.bin
 make clean
 
 # Building ZUMspot Duplex
 cp ~/MMDVM_HS/configs/ZUMspot_duplex.h ~/MMDVM_HS/Config.h
 make bl
-mv ~/MMDVM_HS/bin/outp.bin ~/MMDVM_HS/bin/zumspot_duplex_fw.bin
+mv ~/MMDVM_HS/bin/mmdvm_f1bl.bin ~/MMDVM_HS/bin/zumspot_duplex_fw.bin
 make clean
 
 # Building MMDVM_HS_Hat
 cp ~/MMDVM_HS/configs/MMDVM_HS_Hat.h ~/MMDVM_HS/Config.h
 make
-mv ~/MMDVM_HS/bin/outp.bin ~/MMDVM_HS/bin/mmdvm_hs_hat_fw.bin
+mv ~/MMDVM_HS/bin/mmdvm_f1.bin ~/MMDVM_HS/bin/mmdvm_hs_hat_fw.bin
 make clean
 
 # Building Nano hotSPOT
 cp ~/MMDVM_HS/configs/Nano_hotSPOT.h ~/MMDVM_HS/Config.h
 make
-mv ~/MMDVM_HS/bin/outp.bin ~/MMDVM_HS/bin/nano_hotspot_fw.bin
+mv ~/MMDVM_HS/bin/mmdvm_f1.bin ~/MMDVM_HS/bin/nano_hotspot_fw.bin
 make clean
 
 cp ~/MMDVM_HS/configs/ZUMspot_Libre.h ~/MMDVM_HS/Config.h
