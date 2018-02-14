@@ -47,6 +47,7 @@
 #define PIN_DMR_LED    PB13
 #define PIN_YSF_LED    PB1
 #define PIN_P25_LED    PB0
+#define PIN_NXDN_LED   PA8
 #define PIN_PTT_LED    PB14
 #define PIN_COS_LED    PB15
 
@@ -69,6 +70,7 @@
 #define PIN_DMR_LED    PB13
 #define PIN_YSF_LED    PB1
 #define PIN_P25_LED    PB0
+#define PIN_NXDN_LED   PA8
 #define PIN_PTT_LED    PB14
 #define PIN_COS_LED    PB15
 
@@ -93,6 +95,7 @@
 #define PIN_DMR_LED   17
 #define PIN_YSF_LED   18
 #define PIN_P25_LED   19
+#define PIN_NXDN_LED  20
 #define PIN_PTT_LED   14
 #define PIN_COS_LED   15
 
@@ -113,6 +116,7 @@
 #define PIN_DMR_LED   15
 #define PIN_YSF_LED   16
 #define PIN_P25_LED   17
+#define PIN_NXDN_LED  18
 #define PIN_PTT_LED    9
 #define PIN_COS_LED   10
 
@@ -163,6 +167,7 @@ void CIO::Init()
   pinMode(PIN_DMR_LED, OUTPUT);
   pinMode(PIN_YSF_LED, OUTPUT);
   pinMode(PIN_P25_LED, OUTPUT);
+  pinMode(PIN_NXDN_LED, OUTPUT);
   pinMode(PIN_PTT_LED, OUTPUT);
   pinMode(PIN_COS_LED, OUTPUT);
   
@@ -304,6 +309,11 @@ void CIO::YSF_pin(bool on)
 void CIO::P25_pin(bool on) 
 {
   digitalWrite(PIN_P25_LED, on ? HIGH : LOW);
+}
+
+void CIO::NXDN_pin(bool on) 
+{
+  digitalWrite(PIN_NXDN_LED, on ? HIGH : LOW);
 }
 
 void CIO::PTT_pin(bool on) 

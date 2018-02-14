@@ -1,7 +1,7 @@
 /*
- *   Copyright (C) 2013,2015,2016 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2013,2015,2016,2018 by Jonathan Naylor G4KLX
  *   Copyright (C) 2016 by Colin Durbridge G4EML
- *   Copyright (C) 2016,2017 by Andy Uribe CA6JAU
+ *   Copyright (C) 2016,2017,2018 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -54,6 +54,9 @@ const uint8_t MMDVM_YSF_LOST     = 0x21U;
 const uint8_t MMDVM_P25_HDR      = 0x30U;
 const uint8_t MMDVM_P25_LDU      = 0x31U;
 const uint8_t MMDVM_P25_LOST     = 0x32U;
+
+const uint8_t MMDVM_NXDN_DATA    = 0x40U;
+const uint8_t MMDVM_NXDN_LOST    = 0x41U;
 
 const uint8_t MMDVM_ACK          = 0x70U;
 const uint8_t MMDVM_NAK          = 0x7FU;
@@ -121,6 +124,8 @@ void CSerialPort::getStatus()
     reply[3U] |= 0x04U;
   if (m_p25Enable)
     reply[3U] |= 0x08U;
+  if (m_nxdnEnable)
+    reply[3U] |= 0x10U;
 
   reply[4U]  = uint8_t(m_modemState);
 
@@ -165,6 +170,11 @@ void CSerialPort::getStatus()
   else
     reply[10U] = 0U;
 
+  if (m_nxdnEnable)
+    reply[11U] = nxdnTX.getSpace();
+  else
+    reply[11U] = 0U;
+
   writeInt(1U, reply, 11);
 }
 
@@ -201,6 +211,7 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
   bool dmrEnable   = (data[1U] & 0x02U) == 0x02U;
   bool ysfEnable   = (data[1U] & 0x04U) == 0x04U;
   bool p25Enable   = (data[1U] & 0x08U) == 0x08U;
+  bool nxdnEnable  = (data[1U] & 0x10U) == 0x10U;
 
   uint8_t txDelay = data[2U];
   if (txDelay > 50U)
@@ -208,7 +219,7 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
 
   MMDVM_STATE modemState = MMDVM_STATE(data[3U]);
 
-  if (modemState != STATE_IDLE && modemState != STATE_DSTAR && modemState != STATE_DMR && modemState != STATE_YSF && modemState != STATE_P25)
+  if (modemState != STATE_IDLE && modemState != STATE_DSTAR && modemState != STATE_DMR && modemState != STATE_YSF && modemState != STATE_P25 && modemState != STATE_NXDN)
     return 4U;
   if (modemState == STATE_DSTAR && !dstarEnable)
     return 4U;
@@ -217,6 +228,8 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
   if (modemState == STATE_YSF && !ysfEnable)
     return 4U;
   if (modemState == STATE_P25 && !p25Enable)
+    return 4U;
+  if (modemState == STATE_NXDN && !nxdnEnable)
     return 4U;
 
   uint8_t colorCode = data[6U];
@@ -235,12 +248,14 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
   m_dmrEnable   = dmrEnable;
   m_ysfEnable   = ysfEnable;
   m_p25Enable   = p25Enable;
+  m_nxdnEnable   = nxdnEnable;
   
   m_duplex      = !simplex;
 
   dstarTX.setTXDelay(txDelay);
   ysfTX.setTXDelay(txDelay);
   p25TX.setTXDelay(txDelay);
+  nxdnTX.setTXDelay(txDelay);
   dmrDMOTX.setTXDelay(txDelay);
   
 #if defined(DUPLEX)
@@ -262,6 +277,8 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
     io.ifConf(STATE_YSF, true);
   else if(m_p25Enable)
     io.ifConf(STATE_P25, true);
+  else if(m_nxdnEnable)
+    io.ifConf(STATE_NXDN, true);
   
   io.start();
   io.printConf();
@@ -279,7 +296,7 @@ uint8_t CSerialPort::setMode(const uint8_t* data, uint8_t length)
   if (modemState == m_modemState)
     return 0U;
 
-  if (modemState != STATE_IDLE && modemState != STATE_DSTAR && modemState != STATE_DMR && modemState != STATE_YSF && modemState != STATE_P25)
+  if (modemState != STATE_IDLE && modemState != STATE_DSTAR && modemState != STATE_DMR && modemState != STATE_YSF && modemState != STATE_P25 && modemState != STATE_NXDN)
     return 4U;
   if (modemState == STATE_DSTAR && !m_dstarEnable)
     return 4U;
@@ -289,7 +306,9 @@ uint8_t CSerialPort::setMode(const uint8_t* data, uint8_t length)
     return 4U;
   if (modemState == STATE_P25 && !m_p25Enable)
     return 4U;
-    
+  if (modemState == STATE_NXDN && !m_nxdnEnable)
+    return 4U;
+
   setMode(modemState);
 
   return 0U;
@@ -309,17 +328,17 @@ uint8_t CSerialPort::setFreq(const uint8_t* data, uint8_t length)
 
     // New MMDVMHost, set power from MMDVM.ini
     if (length == 10U)
-      rf_power = data[9];
+      rf_power = data[9U];
 
-    freq_rx  = data[1] * 1;
-    freq_rx += data[2] * 256;
-    freq_rx += data[3] * 65536;
-    freq_rx += data[4] * 16777216;
+    freq_rx  = data[1U] * 1U;
+    freq_rx += data[2U] * 256U;
+    freq_rx += data[3U] * 65536U;
+    freq_rx += data[4U] * 16777216U;
     
-    freq_tx  = data[5] * 1;
-    freq_tx += data[6] * 256;
-    freq_tx += data[7] * 65536;
-    freq_tx += data[8] * 16777216;
+    freq_tx  = data[5U] * 1U;
+    freq_tx += data[6U] * 256U;
+    freq_tx += data[7U] * 65536U;
+    freq_tx += data[8U] * 16777216U;
     
     return io.setFreq(freq_rx, freq_tx, rf_power);
 }
@@ -332,6 +351,7 @@ void CSerialPort::setMode(MMDVM_STATE modemState)
       dstarRX.reset();
       ysfRX.reset();
       p25RX.reset();
+      nxdnRX.reset();
       cwIdTX.reset();
       break;
     case STATE_DSTAR:
@@ -343,6 +363,7 @@ void CSerialPort::setMode(MMDVM_STATE modemState)
       dmrDMORX.reset();
       ysfRX.reset();
       p25RX.reset();
+      nxdnRX.reset();
       cwIdTX.reset();
       break;
     case STATE_YSF:
@@ -354,6 +375,7 @@ void CSerialPort::setMode(MMDVM_STATE modemState)
       dmrDMORX.reset();
       dstarRX.reset();
       p25RX.reset();
+      nxdnRX.reset();
       cwIdTX.reset();
       break;
     case STATE_P25:
@@ -365,6 +387,19 @@ void CSerialPort::setMode(MMDVM_STATE modemState)
       dmrDMORX.reset();
       dstarRX.reset();
       ysfRX.reset();
+      nxdnRX.reset();
+      cwIdTX.reset();
+      break;
+    case STATE_NXDN:
+      DEBUG1("Mode set to NXDN");
+#if defined(DUPLEX)
+      dmrIdleRX.reset();
+      dmrRX.reset();
+#endif
+      dmrDMORX.reset();
+      dstarRX.reset();
+      ysfRX.reset();
+      p25RX.reset();
       cwIdTX.reset();
       break;
     default:
@@ -639,6 +674,20 @@ void CSerialPort::process()
             }
             break;
 
+          case MMDVM_NXDN_DATA:
+            if (m_nxdnEnable) {
+              if (m_modemState == STATE_IDLE || m_modemState == STATE_NXDN)
+                err = nxdnTX.writeData(m_buffer + 3U, m_len - 3U);
+            }
+            if (err == 0U) {
+              if (m_modemState == STATE_IDLE)
+                setMode(STATE_NXDN);
+            } else {
+              DEBUG2("Received invalid NXDN data", err);
+              sendNAK(err);
+            }
+            break;
+
 #if defined(SERIAL_REPEATER) || defined(SERIAL_REPEATER_USART1)
           case MMDVM_SERIAL:
             writeInt(3U, m_buffer + 3U, m_len - 3U);
@@ -887,6 +936,46 @@ void CSerialPort::writeP25Lost()
   reply[0U] = MMDVM_FRAME_START;
   reply[1U] = 3U;
   reply[2U] = MMDVM_P25_LOST;
+
+  writeInt(1U, reply, 3);
+}
+
+void CSerialPort::writeNXDNData(const uint8_t* data, uint8_t length)
+{
+  if (m_modemState != STATE_NXDN && m_modemState != STATE_IDLE)
+    return;
+
+  if (!m_nxdnEnable)
+    return;
+
+  uint8_t reply[130U];
+
+  reply[0U] = MMDVM_FRAME_START;
+  reply[1U] = 0U;
+  reply[2U] = MMDVM_NXDN_DATA;
+
+  uint8_t count = 3U;
+  for (uint8_t i = 0U; i < length; i++, count++)
+    reply[count] = data[i];
+
+  reply[1U] = count;
+
+  writeInt(1U, reply, count);
+}
+
+void CSerialPort::writeNXDNLost()
+{
+  if (m_modemState != STATE_NXDN && m_modemState != STATE_IDLE)
+    return;
+
+  if (!m_nxdnEnable)
+    return;
+
+  uint8_t reply[3U];
+
+  reply[0U] = MMDVM_FRAME_START;
+  reply[1U] = 3U;
+  reply[2U] = MMDVM_NXDN_LOST;
 
   writeInt(1U, reply, 3);
 }

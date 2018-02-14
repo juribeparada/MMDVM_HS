@@ -1,6 +1,6 @@
 /*
  *   Copyright (C) 2016 by Jim McLaughlin KI6ZUM
- *   Copyright (C) 2016,2017 by Andy Uribe CA6JAU
+ *   Copyright (C) 2016,2017,2018 by Andy Uribe CA6JAU
  *   Copyright (C) 2017 by Danilo DB4PLE 
  * 
  *   Some of the code is based on work of Guus Van Dooren PE1PLM:
@@ -33,7 +33,7 @@
 volatile bool totx_request = false;
 volatile bool torx_request = false;
 volatile bool even = true;
-static uint32_t last_clk = 2;
+static uint32_t last_clk = 2U;
 
 volatile uint32_t  AD7021_control_word;
 
@@ -100,7 +100,7 @@ void Send_AD7021_control2(bool doSle)
 uint16_t CIO::readRSSI()
 {
   uint32_t AD7021_RB;
-  uint16_t RB_word = 0;
+  uint16_t RB_word = 0U;
   int AD7021_counter;
   uint8_t RB_code, gain_code, gain_corr;
 
@@ -145,22 +145,22 @@ uint16_t CIO::readRSSI()
   
   switch(gain_code) {
     case 0b1010:
-      gain_corr = 0;
+      gain_corr = 0U;
       break;
     case 0b0110:
-      gain_corr = 24;
+      gain_corr = 24U;
       break;
     case 0b0101:
-      gain_corr = 38;
+      gain_corr = 38U;
       break;
     case 0b0100:
-      gain_corr = 58;
+      gain_corr = 58U;
       break;
     case 0b0000:
-      gain_corr = 86;
+      gain_corr = 86U;
       break;
     default:
-      gain_corr = 0;
+      gain_corr = 0U;
       break;
   }
 
@@ -173,12 +173,12 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
 {
   float    divider;
 
-  uint32_t ADF7021_REG2  = 0;
-  uint32_t ADF7021_REG3  = 0;
-  uint32_t ADF7021_REG4  = 0;
-  uint32_t ADF7021_REG10 = 0;
-  uint32_t ADF7021_REG13 = 0;
-  uint32_t AFC_OFFSET = 0;
+  uint32_t ADF7021_REG2  = 0U;
+  uint32_t ADF7021_REG3  = 0U;
+  uint32_t ADF7021_REG4  = 0U;
+  uint32_t ADF7021_REG10 = 0U;
+  uint32_t ADF7021_REG13 = 0U;
+  int32_t AFC_OFFSET = 0;
 
   if(modemState != STATE_CWID)
     m_modemState_prev = modemState;
@@ -231,6 +231,9 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
       break;
     case STATE_P25:
       AFC_OFFSET = AFC_OFFSET_P25;
+      break;
+    case STATE_NXDN:
+      AFC_OFFSET = AFC_OFFSET_NXDN;
       break;
     default:
       break;
@@ -409,6 +412,33 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
 #endif
       break;
       
+    case STATE_NXDN:
+      // Dev: +1 symb 350 Hz, symb rate = 2400
+
+      ADF7021_REG3 = ADF7021_REG3_NXDN;
+      ADF7021_REG10 = ADF7021_REG10_NXDN;
+
+      // K=32
+      ADF7021_REG4  = (uint32_t) 0b0100                    << 0;   // register 4
+      ADF7021_REG4 |= (uint32_t) 0b011                     << 4;   // mode, 4FSK
+      ADF7021_REG4 |= (uint32_t) 0b0                       << 7;
+      ADF7021_REG4 |= (uint32_t) 0b11                      << 8;
+      ADF7021_REG4 |= (uint32_t) ADF7021_DISC_BW_NXDN      << 10;  // Disc BW
+      ADF7021_REG4 |= (uint32_t) ADF7021_POST_BW_NXDN      << 20;  // Post dem BW
+      ADF7021_REG4 |= (uint32_t) 0b00                      << 30;  // IF filter (12.5 kHz)
+
+      ADF7021_REG13 = (uint32_t) 0b1101                    << 0;   // register 13
+      ADF7021_REG13 |= (uint32_t) ADF7021_SLICER_TH_NXDN   << 4;   // slicer threshold
+
+      ADF7021_REG2 = (uint32_t) 0b10                       << 28;  // invert data (and RC alpha = 0.5)
+      ADF7021_REG2 |= (uint32_t) (ADF7021_DEV_NXDN / div2) << 19;  // deviation
+#if defined(ADF7021_DISABLE_RC_4FSK)
+      ADF7021_REG2 |= (uint32_t) 0b011                     << 4;   // modulation (4FSK)
+#else
+      ADF7021_REG2 |= (uint32_t) 0b111                     << 4;   // modulation (RC 4FSK)
+#endif
+      break;
+      
     default:
       break;
   }
@@ -495,11 +525,11 @@ if(m_duplex && (modemState != STATE_CWID))
 #if defined(DUPLEX)
 void CIO::ifConf2(MMDVM_STATE modemState)
 {
-  uint32_t ADF7021_REG2  = 0;
-  uint32_t ADF7021_REG3  = 0;
-  uint32_t ADF7021_REG4  = 0;
-  uint32_t ADF7021_REG10 = 0;
-  uint32_t ADF7021_REG13 = 0;
+  uint32_t ADF7021_REG2  = 0U;
+  uint32_t ADF7021_REG3  = 0U;
+  uint32_t ADF7021_REG4  = 0U;
+  uint32_t ADF7021_REG10 = 0U;
+  uint32_t ADF7021_REG13 = 0U;
 
   switch (modemState) {
     case STATE_DSTAR:
@@ -593,7 +623,30 @@ void CIO::ifConf2(MMDVM_STATE modemState)
       ADF7021_REG2 |= (uint32_t) (ADF7021_DEV_P25 / div2)  << 19;  // deviation
       ADF7021_REG2 |= (uint32_t) 0b111                     << 4;   // modulation (RC 4FSK)
       break;
-      
+
+    case STATE_NXDN:
+      // Dev: +1 symb 350 Hz, symb rate = 2400
+
+      ADF7021_REG3 = ADF7021_REG3_NXDN;
+      ADF7021_REG10 = ADF7021_REG10_NXDN;
+
+      // K=32
+      ADF7021_REG4  = (uint32_t) 0b0100                    << 0;   // register 4
+      ADF7021_REG4 |= (uint32_t) 0b011                     << 4;   // mode, 4FSK
+      ADF7021_REG4 |= (uint32_t) 0b0                       << 7;
+      ADF7021_REG4 |= (uint32_t) 0b11                      << 8;
+      ADF7021_REG4 |= (uint32_t) ADF7021_DISC_BW_NXDN      << 10;  // Disc BW
+      ADF7021_REG4 |= (uint32_t) ADF7021_POST_BW_NXDN      << 20;  // Post dem BW
+      ADF7021_REG4 |= (uint32_t) 0b00                      << 30;  // IF filter (12.5 kHz)
+
+      ADF7021_REG13 = (uint32_t) 0b1101                    << 0;   // register 13
+      ADF7021_REG13 |= (uint32_t) ADF7021_SLICER_TH_NXDN   << 4;   // slicer threshold
+
+      ADF7021_REG2 = (uint32_t) 0b10                       << 28;  // invert data (and RC alpha = 0.5)
+      ADF7021_REG2 |= (uint32_t) (ADF7021_DEV_NXDN / div2) << 19;  // deviation
+      ADF7021_REG2 |= (uint32_t) 0b111                     << 4;   // modulation (RC 4FSK)
+      break;
+
     default:
       break;
   }
@@ -664,7 +717,7 @@ void CIO::ifConf2(MMDVM_STATE modemState)
 
 void CIO::interrupt()
 {
-  uint8_t bit = 0;
+  uint8_t bit = 0U;
   
   if (!m_started)
     return;
@@ -687,7 +740,7 @@ void CIO::interrupt()
   }
 
   // we set the TX bit at TXD low, sampling of ADF7021 happens at rising clock
-  if (m_tx && clk == 0) {
+  if (m_tx && clk == 0U) {
 
     m_txBuffer.get(bit, m_control);
     even = !even;
@@ -729,19 +782,19 @@ void CIO::interrupt()
   }
   
   // we sample the RX bit at rising TXD clock edge, so TXD must be 1 and we are not in tx mode
-  if (!m_tx && clk == 1 && !m_duplex) {
+  if (!m_tx && clk == 1U && !m_duplex) {
     if(RXD_pin())
-      bit = 1;
+      bit = 1U;
     else
-      bit = 0;
+      bit = 0U;
 
     m_rxBuffer.put(bit, m_control);
   }
   
-  if (torx_request == true && even == ADF7021_EVEN_BIT && m_tx && clk == 0) { 
+  if (torx_request == true && even == ADF7021_EVEN_BIT && m_tx && clk == 0U) { 
       // that is absolutely crucial in 4FSK, see datasheet:
       // enable sle after 1/4 tBit == 26uS when sending MSB (even == false) and clock is low 
-      delay_us(26);
+      delay_us(26U);
 
       // SLE Pulse, should be moved out of here into class method 
       SLE_pin(HIGH);
@@ -764,22 +817,22 @@ void CIO::interrupt()
   m_modeTimerCnt++;
 
   if(m_scanPauseCnt >= SCAN_PAUSE)
-    m_scanPauseCnt = 0;
+    m_scanPauseCnt = 0U;
   
-  if(m_scanPauseCnt != 0)
+  if(m_scanPauseCnt != 0U)
     m_scanPauseCnt++;
 }
 
 #if defined(DUPLEX)
 void CIO::interrupt2()
 {
-  uint8_t bit = 0;
+  uint8_t bit = 0U;
   
   if(m_duplex) {
     if(RXD2_pin())
-      bit = 1;
+      bit = 1U;
     else
-      bit = 0;
+      bit = 0U;
 
     m_rxBuffer.put(bit, m_control);
   }
@@ -865,6 +918,11 @@ uint16_t CIO::devP25()
   return (uint16_t)((ADF7021_PFD * ADF7021_DEV_P25) / (f_div * 65536));
 }
 
+uint16_t CIO::devNXDN()
+{
+  return (uint16_t)((ADF7021_PFD * ADF7021_DEV_NXDN) / (f_div * 65536));
+}
+
 void CIO::printConf()
 {
   DEBUG1("MMDVM_HS FW configuration:");
@@ -876,6 +934,7 @@ void CIO::printConf()
   DEBUG2("YSF_H +1 sym dev (Hz):", devYSF_H());
   DEBUG2("YSF_L +1 sym dev (Hz):", devYSF_L());
   DEBUG2("P25 +1 sym dev (Hz):", devP25());
+  DEBUG2("NXDN +1 sym dev (Hz):", devNXDN());
 }
 
 #endif

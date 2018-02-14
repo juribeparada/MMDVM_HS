@@ -1,6 +1,6 @@
 /*
- *   Copyright (C) 2015,2016 by Jonathan Naylor G4KLX
- *   Copyright (C) 2017 by Andy Uribe CA6JAU
+ *   Copyright (C) 2015,2016,2017,2018 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2016,2017,2018 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,26 +17,35 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#if !defined(UTILS_H)
-#define  UTILS_H
+#if !defined(NXDNTX_H)
+#define  NXDNTX_H
 
-#if defined(STM32F10X_MD)
-#include "stm32f10x.h"
-#elif defined(STM32F4XX)
-#include "stm32f4xx.h"
-#elif defined(STM32F7XX)
-#include "stm32f7xx.h"
-#else
-#include <Arduino.h>
-#endif
+#include "SerialRB.h"
 
-uint8_t countBits8(uint8_t bits);
+class CNXDNTX {
+public:
+  CNXDNTX();
 
-uint8_t countBits32(uint32_t bits);
+  uint8_t writeData(const uint8_t* data, uint8_t length);
 
-uint8_t countBits64(uint64_t bits);
+  void process();
 
-uint8_t *i2str(uint8_t *dest, uint32_t n, int32_t x);
+  void setTXDelay(uint8_t delay);
+
+  uint16_t getSpace() const;
+
+private:
+  CSerialRB            m_buffer;
+  uint8_t              m_poBuffer[60U];
+  uint16_t             m_poLen;
+  uint16_t             m_poPtr;
+  uint16_t             m_txDelay;
+  uint32_t             m_count;
+  bool                 m_delay;
+  bool                 m_preamble;
+
+  void writeByte(uint8_t c);
+};
 
 #endif
 

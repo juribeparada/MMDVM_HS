@@ -1,6 +1,6 @@
 /*
  *   Copyright (C) 2015,2016 by Jonathan Naylor G4KLX
- *   Copyright (C) 2016,2017 by Andy Uribe CA6JAU
+ *   Copyright (C) 2016,2017,2018 by Andy Uribe CA6JAU
  *   Copyright (C) 2017 by Danilo DB4PLE 
  
  *   This program is free software; you can redistribute it and/or modify
@@ -47,6 +47,7 @@ m_watchdog(0U)
   DMR_pin(LOW);
   YSF_pin(LOW);
   P25_pin(LOW);
+  NXDN_pin(LOW);
   COS_pin(LOW);
   DEB_pin(LOW);
 
@@ -60,18 +61,18 @@ m_watchdog(0U)
 
   selfTest();
 
-  m_modeTimerCnt = 0;
+  m_modeTimerCnt = 0U;
 }
 
 void CIO::selfTest()
 {
   bool ledValue = false;
-  uint32_t ledCount = 0;
-  uint32_t blinks = 0;
+  uint32_t ledCount = 0U;
+  uint32_t blinks = 0U;
 
   while(true) {
     ledCount++;
-    delay_us(1000);
+    delay_us(1000U);
 
     if(ledCount >= 125U) {
       ledCount = 0U;
@@ -83,11 +84,12 @@ void CIO::selfTest()
       DMR_pin(ledValue);
       YSF_pin(ledValue);
       P25_pin(ledValue);
+      NXDN_pin(ledValue);
       COS_pin(ledValue);
 
       blinks++;
 
-      if(blinks > 5)
+      if(blinks > 5U)
         break;
     }
   }
@@ -104,7 +106,7 @@ void CIO::process()
   if (m_started) {
     // Two seconds timeout
     if (m_watchdog >= 19200U) {
-      if (m_modemState == STATE_DSTAR || m_modemState == STATE_DMR || m_modemState == STATE_YSF ||  m_modemState == STATE_P25) {
+      if (m_modemState == STATE_DSTAR || m_modemState == STATE_DMR || m_modemState == STATE_YSF ||  m_modemState == STATE_P25 ||  m_modemState == STATE_NXDN) {
         m_modemState = STATE_IDLE;
         setMode(m_modemState);
       }
@@ -139,18 +141,20 @@ void CIO::process()
   if(m_modemState_prev == STATE_DSTAR)
     scantime = SCAN_TIME;
   else if(m_modemState_prev == STATE_DMR)
-    scantime = SCAN_TIME*2;
+    scantime = SCAN_TIME * 2U;
   else if(m_modemState_prev == STATE_YSF)
     scantime = SCAN_TIME;
   else if(m_modemState_prev == STATE_P25)
+    scantime = SCAN_TIME;
+  else if(m_modemState_prev == STATE_NXDN)
     scantime = SCAN_TIME;
   else
     scantime = SCAN_TIME;
 
   if(m_modeTimerCnt >= scantime) {
-    m_modeTimerCnt = 0;
-    if( (m_modemState == STATE_IDLE) && (m_scanPauseCnt == 0) && m_scanEnable && !m_cwid_state) {
-      m_scanPos = (m_scanPos + 1) % m_TotalModes;
+    m_modeTimerCnt = 0U;
+    if( (m_modemState == STATE_IDLE) && (m_scanPauseCnt == 0U) && m_scanEnable && !m_cwid_state) {
+      m_scanPos = (m_scanPos + 1U) % m_TotalModes;
       #if !defined(QUIET_MODE_LEDS)
       setMode(m_Modes[m_scanPos]);
       #endif
@@ -184,6 +188,9 @@ void CIO::process()
       case STATE_P25:
         p25RX.databit(bit);
         break;
+      case STATE_NXDN:
+        nxdnRX.databit(bit);
+        break;
       default:
         break;
     }
@@ -193,7 +200,7 @@ void CIO::process()
 
 void CIO::start()
 { 
-  m_TotalModes = 0;
+  m_TotalModes = 0U;
   
   if(m_dstarEnable) {
     m_Modes[m_TotalModes] = STATE_DSTAR;
@@ -211,9 +218,13 @@ void CIO::start()
     m_Modes[m_TotalModes] = STATE_P25;
     m_TotalModes++;
   }
+  if(m_nxdnEnable) {
+    m_Modes[m_TotalModes] = STATE_NXDN;
+    m_TotalModes++;
+  }
   
 #if defined(ENABLE_SCAN_MODE)
-  if(m_TotalModes > 1)
+  if(m_TotalModes > 1U)
     m_scanEnable = true;
   else {
     m_scanEnable = false;
@@ -291,12 +302,13 @@ void CIO::setMode(MMDVM_STATE modemState)
   DMR_pin(modemState   == STATE_DMR);
   YSF_pin(modemState   == STATE_YSF);
   P25_pin(modemState   == STATE_P25);
+  NXDN_pin(modemState   == STATE_NXDN);
 }
 
 void CIO::setDecode(bool dcd)
 {
   if (dcd != m_dcd) {
-    m_scanPauseCnt = 1;
+    m_scanPauseCnt = 1U;
     COS_pin(dcd ? true : false);
   }
 

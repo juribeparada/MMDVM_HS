@@ -38,6 +38,7 @@ bool m_dstarEnable = true;
 bool m_dmrEnable   = true;
 bool m_ysfEnable   = true;
 bool m_p25Enable   = true;
+bool m_nxdnEnable  = true;
 
 bool m_duplex = false;
 
@@ -63,6 +64,9 @@ CYSFTX     ysfTX;
 
 CP25RX     p25RX;
 CP25TX     p25TX;
+
+CNXDNRX    nxdnRX;
+CNXDNTX    nxdnTX;
 
 CCWIdTX    cwIdTX;
 
@@ -100,6 +104,9 @@ void loop()
 
   if (m_p25Enable && m_modemState == STATE_P25)
     p25TX.process();
+
+  if (m_nxdnEnable && m_modemState == STATE_NXDN)
+    nxdnTX.process();
 
   if (m_modemState == STATE_IDLE)
     cwIdTX.process();
