@@ -124,6 +124,8 @@ void CSerialPort::getStatus()
     reply[3U] |= 0x04U;
   if (m_p25Enable)
     reply[3U] |= 0x08U;
+  if (m_nxdnEnable)
+    reply[3U] |= 0x10U;
 
   reply[4U]  = uint8_t(m_modemState);
 
@@ -167,6 +169,11 @@ void CSerialPort::getStatus()
     reply[10U] = p25TX.getSpace();
   else
     reply[10U] = 0U;
+
+  if (m_nxdnEnable)
+    reply[11U] = nxdnTX.getSpace();
+  else
+    reply[11U] = 0U;
 
   writeInt(1U, reply, 11);
 }
@@ -241,12 +248,14 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
   m_dmrEnable   = dmrEnable;
   m_ysfEnable   = ysfEnable;
   m_p25Enable   = p25Enable;
+  m_nxdnEnable   = nxdnEnable;
   
   m_duplex      = !simplex;
 
   dstarTX.setTXDelay(txDelay);
   ysfTX.setTXDelay(txDelay);
   p25TX.setTXDelay(txDelay);
+  nxdnTX.setTXDelay(txDelay);
   dmrDMOTX.setTXDelay(txDelay);
   
 #if defined(DUPLEX)
@@ -268,6 +277,8 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
     io.ifConf(STATE_YSF, true);
   else if(m_p25Enable)
     io.ifConf(STATE_P25, true);
+  else if(m_nxdnEnable)
+    io.ifConf(STATE_NXDN, true);
   
   io.start();
   io.printConf();
@@ -340,6 +351,7 @@ void CSerialPort::setMode(MMDVM_STATE modemState)
       dstarRX.reset();
       ysfRX.reset();
       p25RX.reset();
+      nxdnRX.reset();
       cwIdTX.reset();
       break;
     case STATE_DSTAR:
@@ -351,6 +363,7 @@ void CSerialPort::setMode(MMDVM_STATE modemState)
       dmrDMORX.reset();
       ysfRX.reset();
       p25RX.reset();
+      nxdnRX.reset();
       cwIdTX.reset();
       break;
     case STATE_YSF:
@@ -362,6 +375,7 @@ void CSerialPort::setMode(MMDVM_STATE modemState)
       dmrDMORX.reset();
       dstarRX.reset();
       p25RX.reset();
+      nxdnRX.reset();
       cwIdTX.reset();
       break;
     case STATE_P25:
@@ -373,6 +387,7 @@ void CSerialPort::setMode(MMDVM_STATE modemState)
       dmrDMORX.reset();
       dstarRX.reset();
       ysfRX.reset();
+      nxdnRX.reset();
       cwIdTX.reset();
       break;
     case STATE_NXDN:
