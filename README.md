@@ -1,6 +1,6 @@
 # Introduction
 
-This is the source code of ZUMspot/MMDVM_HS, personal hotspot (ADF7021 version of the MMDVM firmware), based on Jonathan G4KLX's [MMDVM](https://github.com/g4klx/MMDVM) software. This firmware supports D-Star, DMR, System Fusion and P25 digital modes.
+This is the source code of ZUMspot/MMDVM_HS, personal hotspot (ADF7021 version of the MMDVM firmware), based on Jonathan G4KLX's [MMDVM](https://github.com/g4klx/MMDVM) software. This firmware supports D-Star, DMR, System Fusion, P25 and NXDN digital modes.
 
 This software is intended to be run on STM32F103 microcontroller. Also, Arduino with 3.3 V I/O (Arduino Due and Zero) and Teensy (3.1, 3.2, 3.5 or 3.6) are supported. You can build this code using Arduino IDE with Roger Clark's [STM32duino](https://github.com/rogerclarkmelbourne/Arduino_STM32/tree/ZUMspot) package, or using command line tools with ARM GCC tools. The preferred method under Windows is using STM32duino, and under Linux or macOS (command line) is using [STM32F10X_Lib](https://github.com/juribeparada/STM32F10X_Lib). 
 
@@ -8,7 +8,7 @@ This software is licenced under the GPL v2 and is intended for amateur and educa
 
 # Features
 
-- Supported modes: D-Star, DMR, Yaesu Fusion and P25 Phase 1
+- Supported modes: D-Star, DMR, Yaesu Fusion, P25 Phase 1 and NXDN
 - Automatic mode detection (scanning)
 - G4KLX software suite: [MMDVMHost](https://github.com/g4klx/MMDVMHost), [ircDDBGateway](https://github.com/dl5di/OpenDV), [YSFGateway](https://github.com/g4klx/YSFClients), [P25Gateway](https://github.com/g4klx/P25Clients) and [DMRGateway](https://github.com/g4klx/DMRGateway)
 - Bands: 144, 220, 430 and 900 MHz (VHF requires external inductor)
@@ -31,7 +31,7 @@ VHF (144-148 MHz) support for ZUMSpot is added by an external 18 nH inductor bet
 
 Dual ADF7021 for full duplex operation (#define DUPLEX in Config.h) will work only with a big RX/TX frequency separation (5 MHz or more in UHF band for example) and proper antenna filtering. At the moment #define LIBRE_KIT_ADF7021 (Config.h) with STM32F103 platform is supported. Please see [BUILD.md](BUILD.md) for pinout details.
 
-If you can't decode any 4FSK modulation (DMR, YSF and P25) with your ZUMspot, the common solution is to adjust RX frequency offset (RXOffset) in your MMDVM.ini file. Please try with steps of +-100 Hz until you get low BER. If you don't have test equipment, the only procedure is trial and error. In some cases TXOffset adjustment is also required for proper radio decoding. If you have test equipment, enable TEST_TX feature (see "Hidden functions" in [BUILD.md](BUILD.md) document).
+If you can't decode any 4FSK modulation (DMR, YSF, P25 or NXDN) with your ZUMspot, the common solution is to adjust RX frequency offset (RXOffset) in your MMDVM.ini file. Please try with steps of +-100 Hz until you get low BER. If you don't have test equipment, the only procedure is trial and error. In some cases TXOffset adjustment is also required for proper radio decoding. If you have test equipment, enable TEST_TX feature (see "Hidden functions" in [BUILD.md](BUILD.md) document).
 
 # Quick start
 

@@ -618,6 +618,7 @@ Status LEDs:
 
     COS_LED        PB15
     PTT_LED        PB14
+    NXDN_LED       PA8
     P25_LED        PB0
     YSF_LED        PB1
     DMR_LED        PB13
@@ -657,6 +658,7 @@ Status LEDs:
 
     COS_LED       10
     PTT_LED        9
+    NXDN_LED      18
     P25_LED       17
     YSF_LED       16
     DMR_LED       15
@@ -698,6 +700,7 @@ Status LEDs:
 
     COS_LED       15
     PTT_LED       14
+    NXDN_LED      20
     P25_LED       19
     YSF_LED       18
     DMR_LED       17
