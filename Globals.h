@@ -42,7 +42,10 @@ enum MMDVM_STATE {
   STATE_NXDN      = 5,
 
   // Dummy states start at 90
-  STATE_CWID      = 97
+  STATE_DMRDMO1K  = 92,
+  STATE_CWID      = 97,
+  STATE_DMRCAL    = 98,
+  STATE_DSTARCAL  = 99
 };
 
 const uint8_t  MARK_SLOT1 = 0x08U;
@@ -72,6 +75,7 @@ const uint8_t  MARK_NONE  = 0x00U;
 #include "NXDNRX.h"
 #include "NXDNTX.h"
 #include "CWIdTX.h"
+#include "CalDMR.h"
 #include "Debug.h"
 #include "Utils.h"
 
@@ -79,6 +83,7 @@ const uint16_t TX_RINGBUFFER_SIZE = 1024U;
 const uint16_t RX_RINGBUFFER_SIZE = 1024U;
 
 extern MMDVM_STATE m_modemState;
+extern MMDVM_STATE m_calState;
 extern MMDVM_STATE m_modemState_prev;
 
 extern bool m_cwid_state;
@@ -122,6 +127,8 @@ extern CP25TX p25TX;
 
 extern CNXDNRX nxdnRX;
 extern CNXDNTX nxdnTX;
+
+extern CCalDMR calDMR;
 
 extern CCWIdTX cwIdTX;
 

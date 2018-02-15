@@ -75,7 +75,8 @@ CSerialPort::CSerialPort() :
 m_buffer(),
 m_ptr(0U),
 m_len(0U),
-m_debug(false)
+m_debug(false),
+m_firstCal(false)
 {
 }
 
@@ -219,7 +220,7 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
 
   MMDVM_STATE modemState = MMDVM_STATE(data[3U]);
 
-  if (modemState != STATE_IDLE && modemState != STATE_DSTAR && modemState != STATE_DMR && modemState != STATE_YSF && modemState != STATE_P25 && modemState != STATE_NXDN)
+  if (modemState != STATE_IDLE && modemState != STATE_DSTAR && modemState != STATE_DMR && modemState != STATE_YSF && modemState != STATE_P25 && modemState != STATE_NXDN && modemState != STATE_DSTARCAL && modemState != STATE_DMRCAL && modemState != STATE_DMRDMO1K)
     return 4U;
   if (modemState == STATE_DSTAR && !dstarEnable)
     return 4U;
@@ -242,14 +243,35 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
 
   m_cwIdTXLevel = data[5U]>>2;
 
-  m_modemState  = modemState;
+  uint8_t dstarTXLevel = data[9U];
+  uint8_t dmrTXLevel   = data[10U];
+  uint8_t ysfTXLevel   = data[11U];
+  uint8_t p25TXLevel   = data[12U];
+  uint8_t nxdnTXLevel  = 128U;
+
+  if (length >= 16U)
+    nxdnTXLevel = data[15U];
+
+  io.setDeviations(dstarTXLevel, dmrTXLevel, ysfTXLevel, p25TXLevel, nxdnTXLevel, ysfLoDev);
 
   m_dstarEnable = dstarEnable;
   m_dmrEnable   = dmrEnable;
   m_ysfEnable   = ysfEnable;
   m_p25Enable   = p25Enable;
   m_nxdnEnable   = nxdnEnable;
-  
+
+  if (modemState == STATE_DMRCAL || modemState == STATE_DMRDMO1K) {
+    m_dmrEnable = true;
+    m_modemState = STATE_DMR;
+    m_calState = modemState;
+    if (m_firstCal)
+      io.updateCal();
+  }
+  else {
+    m_modemState  = modemState;
+    m_calState = STATE_IDLE;
+  }
+
   m_duplex      = !simplex;
 
   dstarTX.setTXDelay(txDelay);
@@ -268,21 +290,26 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
   dmrDMORX.setColorCode(colorCode);
 
   io.setLoDevYSF(ysfLoDev);
-  
-  if(m_dstarEnable)
-    io.ifConf(STATE_DSTAR, true);
-  else if(m_dmrEnable)
-    io.ifConf(STATE_DMR, true);
-  else if(m_ysfEnable)
-    io.ifConf(STATE_YSF, true);
-  else if(m_p25Enable)
-    io.ifConf(STATE_P25, true);
-  else if(m_nxdnEnable)
-    io.ifConf(STATE_NXDN, true);
-  
+
+  if (!m_firstCal || (modemState != STATE_DMRCAL && modemState != STATE_DMRDMO1K)) {
+    if(m_dstarEnable)
+      io.ifConf(STATE_DSTAR, true);
+    else if(m_dmrEnable)
+      io.ifConf(STATE_DMR, true);
+    else if(m_ysfEnable)
+      io.ifConf(STATE_YSF, true);
+    else if(m_p25Enable)
+      io.ifConf(STATE_P25, true);
+    else if(m_nxdnEnable)
+      io.ifConf(STATE_NXDN, true);
+  }
+
   io.start();
   io.printConf();
-  
+
+  if (modemState == STATE_DMRCAL || modemState == STATE_DMRDMO1K)
+    m_firstCal = true;
+
   return 0U;
 }
 
@@ -292,11 +319,12 @@ uint8_t CSerialPort::setMode(const uint8_t* data, uint8_t length)
     return 4U;
 
   MMDVM_STATE modemState = MMDVM_STATE(data[0U]);
+  MMDVM_STATE tmpState;
 
   if (modemState == m_modemState)
     return 0U;
 
-  if (modemState != STATE_IDLE && modemState != STATE_DSTAR && modemState != STATE_DMR && modemState != STATE_YSF && modemState != STATE_P25 && modemState != STATE_NXDN)
+  if (modemState != STATE_IDLE && modemState != STATE_DSTAR && modemState != STATE_DMR && modemState != STATE_YSF && modemState != STATE_P25 && modemState != STATE_NXDN && modemState != STATE_DSTARCAL && modemState != STATE_DMRCAL && modemState != STATE_DMRDMO1K)
     return 4U;
   if (modemState == STATE_DSTAR && !m_dstarEnable)
     return 4U;
@@ -309,7 +337,19 @@ uint8_t CSerialPort::setMode(const uint8_t* data, uint8_t length)
   if (modemState == STATE_NXDN && !m_nxdnEnable)
     return 4U;
 
-  setMode(modemState);
+  if (modemState == STATE_DMRCAL || modemState == STATE_DMRDMO1K) {
+    m_dmrEnable = true;
+    tmpState = STATE_DMR;
+    m_calState = modemState;
+    if (m_firstCal)
+      io.updateCal();
+  }
+  else {
+    tmpState  = modemState;
+    m_calState = STATE_IDLE;
+  }
+
+  setMode(tmpState);
 
   return 0U;
 }
@@ -490,6 +530,14 @@ void CSerialPort::process()
             break;
 
           case MMDVM_CAL_DATA:
+            if (m_calState == STATE_DMRCAL || m_calState == STATE_DMRDMO1K)
+              err = calDMR.write(m_buffer + 3U, m_len - 3U);
+            if (err == 0U) {
+              sendACK();
+            } else {
+              DEBUG2("Received invalid calibration data", err);
+              sendNAK(err);
+            }
             break;
 
           case MMDVM_SEND_CWID:
@@ -710,7 +758,7 @@ void CSerialPort::process()
     m_ptr = 0U;
     m_len = 0U;
   }
-  
+
 #if defined(SERIAL_REPEATER) || defined(SERIAL_REPEATER_USART1)
   // Drain any incoming serial data
   while (availableInt(3U))

@@ -110,7 +110,9 @@ public:
 #endif
   void      start(void);
   void      startInt(void);
-  
+  void      setDeviations(uint8_t dstarTXLevel, uint8_t dmrTXLevel, uint8_t ysfTXLevel, uint8_t p25TXLevel, uint8_t nxdnTXLevel, bool ysfLoDev);
+  void      updateCal(void);
+
 #if defined(SEND_RSSI_DATA)
   uint16_t  readRSSI(void);
 #endif
@@ -124,8 +126,7 @@ public:
   uint32_t  TXfreq(void);
   uint16_t  devDSTAR(void);
   uint16_t  devDMR(void);
-  uint16_t  devYSF_H(void);
-  uint16_t  devYSF_L(void);
+  uint16_t  devYSF(void);
   uint16_t  devP25(void);
   uint16_t  devNXDN(void);
   void      printConf();

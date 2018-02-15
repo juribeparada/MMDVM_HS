@@ -1,7 +1,7 @@
 /*
  *   Copyright (C) 2009-2016 by Jonathan Naylor G4KLX
  *   Copyright (C) 2016 by Colin Durbridge G4EML
- *   Copyright (C) 2016,2017 by Andy Uribe CA6JAU
+ *   Copyright (C) 2016,2017,2018 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -29,27 +29,36 @@ m_poBuffer(),
 m_poLen(0U),
 m_poPtr(0U),
 m_txDelay(240U),      // 200ms
-m_count(0U)
+m_count(0U),
+m_delay(false),
+m_cal(false)
 {
 }
 
 void CDMRDMOTX::process()
 {
-  if (m_poLen == 0U && m_fifo.getData() > 0U) {
-    if (!m_tx) {
-      m_delay = true;
-      m_poLen = m_txDelay;
-    } else {
+  if (m_cal) {
+    if (m_poLen == 0U) {
       m_delay = false;
-
-      for (unsigned int i = 0U; i < 72U; i++)
-        m_poBuffer[m_poLen++] = DMR_SYNC;
-
-      for (unsigned int i = 0U; i < DMR_FRAME_LENGTH_BYTES; i++)
-        m_poBuffer[i] = m_fifo.get();
+      createCal();
     }
+  }
+  else {
+    if (m_poLen == 0U && m_fifo.getData() > 0U) {
+      if (!m_tx) {
+        m_delay = true;
+        m_poLen = m_txDelay;
+      } else {
+        m_delay = false;
 
-    m_poPtr = 0U;
+        for (unsigned int i = 0U; i < 72U; i++)
+          m_poBuffer[m_poLen++] = DMR_SYNC;
+
+        for (unsigned int i = 0U; i < DMR_FRAME_LENGTH_BYTES; i++)
+          m_poBuffer[i] = m_fifo.get();
+      }
+      m_poPtr = 0U;
+    }
   }
 
   if (m_poLen > 0U) {
@@ -72,7 +81,6 @@ void CDMRDMOTX::process()
       }
     }
   }
-  
 }
 
 uint8_t CDMRDMOTX::writeData(const uint8_t* data, uint8_t length)
@@ -103,6 +111,25 @@ void CDMRDMOTX::writeByte(uint8_t c)
 
     io.write(&bit, 1);
   }
+}
+
+void CDMRDMOTX::setCal(bool start)
+{
+  m_cal = start ? true : false;
+}
+
+void CDMRDMOTX::createCal()
+{
+  // 1.2 kHz sine wave generation
+  if (m_calState == STATE_DMRCAL) {
+    for (unsigned int i = 0U; i < DMR_FRAME_LENGTH_BYTES; i++) {
+      m_poBuffer[i]   = 0x5FU;              // +3, +3, -3, -3 pattern for deviation cal.
+    }
+
+    m_poLen = DMR_FRAME_LENGTH_BYTES;
+  }
+
+  m_poPtr = 0U;
 }
 
 uint16_t CDMRDMOTX::getSpace() const

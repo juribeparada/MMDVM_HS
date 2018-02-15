@@ -23,6 +23,7 @@
 
 // Global variables
 MMDVM_STATE m_modemState = STATE_IDLE;
+MMDVM_STATE m_calState = STATE_IDLE;
 MMDVM_STATE m_modemState_prev = STATE_IDLE;
 
 bool m_cwid_state = false;
@@ -64,6 +65,8 @@ CP25TX     p25TX;
 CNXDNRX    nxdnRX;
 CNXDNTX    nxdnTX;
 
+CCalDMR    calDMR;
+
 CCWIdTX    cwIdTX;
 
 CSerialPort serial;
@@ -83,7 +86,7 @@ void loop()
   if (m_dstarEnable && m_modemState == STATE_DSTAR)
     dstarTX.process();
 
-  if (m_dmrEnable && m_modemState == STATE_DMR) {
+  if (m_dmrEnable && m_modemState == STATE_DMR && m_calState == STATE_IDLE) {
 #if defined(DUPLEX)
     if (m_duplex)
       dmrTX.process();
@@ -102,6 +105,9 @@ void loop()
 
   if (m_nxdnEnable && m_modemState == STATE_NXDN)
     nxdnTX.process();
+
+  if (m_calState == STATE_DMRCAL || m_calState == STATE_DMRDMO1K)
+    calDMR.process();
 
   if (m_modemState == STATE_IDLE)
     cwIdTX.process();

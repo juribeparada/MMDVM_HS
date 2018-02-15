@@ -43,6 +43,12 @@ uint32_t           ADF7021_REG1;
 uint32_t           div2;
 uint32_t           f_div;
 
+uint16_t           m_dstarDev;
+uint16_t           m_dmrDev;
+uint16_t           m_ysfDev;
+uint16_t           m_p25Dev;
+uint16_t           m_nxdnDev;
+
 static void Send_AD7021_control_shift()
 {
   int AD7021_counter;
@@ -323,11 +329,11 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
       ADF7021_REG4 |= (uint32_t) ADF7021_POST_BW_DSTAR     << 20;  // Post dem BW
       ADF7021_REG4 |= (uint32_t) 0b00                      << 30;  // IF filter (12.5 kHz)
 
-      ADF7021_REG13 = (uint32_t) 0b1101      << 0;   // register 13
+      ADF7021_REG13 = (uint32_t) 0b1101                    << 0;   // register 13
       ADF7021_REG13 |= (uint32_t) ADF7021_SLICER_TH_DSTAR  << 4;   // slicer threshold
 
       ADF7021_REG2 = (uint32_t) 0b00                       << 28;  // clock normal
-      ADF7021_REG2 |= (uint32_t) (ADF7021_DEV_DSTAR / div2)<< 19;  // deviation
+      ADF7021_REG2 |= (uint32_t) (m_dstarDev / div2)       << 19;  // deviation
       ADF7021_REG2 |= (uint32_t) 0b001                     << 4;   // modulation (GMSK)
       break;
       
@@ -350,7 +356,7 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
       ADF7021_REG13 |= (uint32_t) ADF7021_SLICER_TH_DMR    << 4;   // slicer threshold
 
       ADF7021_REG2 = (uint32_t) 0b10                       << 28;  // invert data (and RC alpha = 0.5)
-      ADF7021_REG2 |= (uint32_t) (ADF7021_DEV_DMR / div2)  << 19;  // deviation
+      ADF7021_REG2 |= (uint32_t) (m_dmrDev / div2)         << 19;  // deviation
 #if defined(ADF7021_DISABLE_RC_4FSK)
       ADF7021_REG2 |= (uint32_t) 0b011                     << 4;   // modulation (4FSK)
 #else
@@ -377,7 +383,7 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
       ADF7021_REG13 |= (uint32_t) (m_LoDevYSF ? ADF7021_SLICER_TH_YSF_L : ADF7021_SLICER_TH_YSF_H) << 4;   // slicer threshold
 
       ADF7021_REG2 = (uint32_t) 0b10                       << 28;  // invert data (and RC alpha = 0.5)
-      ADF7021_REG2 |= (uint32_t) ((m_LoDevYSF ? ADF7021_DEV_YSF_L : ADF7021_DEV_YSF_H) / div2)  << 19;  // deviation
+      ADF7021_REG2 |= (uint32_t) (m_ysfDev / div2)         << 19;  // deviation
 #if defined(ADF7021_DISABLE_RC_4FSK)
       ADF7021_REG2 |= (uint32_t) 0b011                     << 4;   // modulation (4FSK)
 #else
@@ -404,7 +410,7 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
       ADF7021_REG13 |= (uint32_t) ADF7021_SLICER_TH_P25    << 4;   // slicer threshold
 
       ADF7021_REG2 = (uint32_t) 0b10                       << 28;  // invert data (and RC alpha = 0.5)
-      ADF7021_REG2 |= (uint32_t) (ADF7021_DEV_P25 / div2)  << 19;  // deviation
+      ADF7021_REG2 |= (uint32_t) (m_p25Dev / div2)         << 19;  // deviation
 #if defined(ENABLE_P25_WIDE) || defined(ADF7021_DISABLE_RC_4FSK)
       ADF7021_REG2 |= (uint32_t) 0b011                     << 4;   // modulation (4FSK)
 #else
@@ -431,7 +437,7 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
       ADF7021_REG13 |= (uint32_t) ADF7021_SLICER_TH_NXDN   << 4;   // slicer threshold
 
       ADF7021_REG2 = (uint32_t) 0b10                       << 28;  // invert data (and RC alpha = 0.5)
-      ADF7021_REG2 |= (uint32_t) (ADF7021_DEV_NXDN / div2) << 19;  // deviation
+      ADF7021_REG2 |= (uint32_t) (m_nxdnDev / div2)        << 19;  // deviation
 #if defined(ADF7021_DISABLE_RC_4FSK)
       ADF7021_REG2 |= (uint32_t) 0b011                     << 4;   // modulation (4FSK)
 #else
@@ -506,7 +512,7 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
   
 #if defined(TEST_TX)
   PTT_pin(HIGH); 
-  AD7021_control_word = ADF7021_TX_REG0;         
+  AD7021_control_word = ADF7021_TX_REG0;
   Send_AD7021_control();
   // TEST MODE (TX carrier only) (15)
   AD7021_control_word = 0x000E010F;
@@ -547,11 +553,11 @@ void CIO::ifConf2(MMDVM_STATE modemState)
       ADF7021_REG4 |= (uint32_t) ADF7021_POST_BW_DSTAR     << 20;  // Post dem BW
       ADF7021_REG4 |= (uint32_t) 0b00                      << 30;  // IF filter (12.5 kHz)
 
-      ADF7021_REG13 = (uint32_t) 0b1101      << 0;   // register 13
+      ADF7021_REG13 = (uint32_t) 0b1101                    << 0;   // register 13
       ADF7021_REG13 |= (uint32_t) ADF7021_SLICER_TH_DSTAR  << 4;   // slicer threshold
 
       ADF7021_REG2 = (uint32_t) 0b00                       << 28;  // clock normal
-      ADF7021_REG2 |= (uint32_t) (ADF7021_DEV_DSTAR / div2)<< 19;  // deviation
+      ADF7021_REG2 |= (uint32_t) (m_dstarDev / div2)<< 19;  // deviation
       ADF7021_REG2 |= (uint32_t) 0b001                     << 4;   // modulation (GMSK)
       break;
       
@@ -574,7 +580,7 @@ void CIO::ifConf2(MMDVM_STATE modemState)
       ADF7021_REG13 |= (uint32_t) ADF7021_SLICER_TH_DMR    << 4;   // slicer threshold
 
       ADF7021_REG2 = (uint32_t) 0b10                       << 28;  // invert data (and RC alpha = 0.5)
-      ADF7021_REG2 |= (uint32_t) (ADF7021_DEV_DMR / div2)  << 19;  // deviation
+      ADF7021_REG2 |= (uint32_t) (m_dmrDev / div2)  << 19;  // deviation
       ADF7021_REG2 |= (uint32_t) 0b111                     << 4;   // modulation (RC 4FSK)
       break;
       
@@ -597,7 +603,7 @@ void CIO::ifConf2(MMDVM_STATE modemState)
       ADF7021_REG13 |= (uint32_t) (m_LoDevYSF ? ADF7021_SLICER_TH_YSF_L : ADF7021_SLICER_TH_YSF_H) << 4;   // slicer threshold
 
       ADF7021_REG2 = (uint32_t) 0b10                       << 28;  // invert data (and RC alpha = 0.5)
-      ADF7021_REG2 |= (uint32_t) ((m_LoDevYSF ? ADF7021_DEV_YSF_L : ADF7021_DEV_YSF_H) / div2)  << 19;  // deviation
+      ADF7021_REG2 |= (uint32_t) (m_ysfDev / div2)  << 19;  // deviation
       ADF7021_REG2 |= (uint32_t) 0b111                     << 4;   // modulation (RC 4FSK)
       break;
       
@@ -620,7 +626,7 @@ void CIO::ifConf2(MMDVM_STATE modemState)
       ADF7021_REG13 |= (uint32_t) ADF7021_SLICER_TH_P25    << 4;   // slicer threshold
 
       ADF7021_REG2 = (uint32_t) 0b10                       << 28;  // invert data (and RC alpha = 0.5)
-      ADF7021_REG2 |= (uint32_t) (ADF7021_DEV_P25 / div2)  << 19;  // deviation
+      ADF7021_REG2 |= (uint32_t) (m_p25Dev / div2)  << 19;  // deviation
       ADF7021_REG2 |= (uint32_t) 0b111                     << 4;   // modulation (RC 4FSK)
       break;
 
@@ -643,7 +649,7 @@ void CIO::ifConf2(MMDVM_STATE modemState)
       ADF7021_REG13 |= (uint32_t) ADF7021_SLICER_TH_NXDN   << 4;   // slicer threshold
 
       ADF7021_REG2 = (uint32_t) 0b10                       << 28;  // invert data (and RC alpha = 0.5)
-      ADF7021_REG2 |= (uint32_t) (ADF7021_DEV_NXDN / div2) << 19;  // deviation
+      ADF7021_REG2 |= (uint32_t) (m_nxdnDev / div2) << 19;  // deviation
       ADF7021_REG2 |= (uint32_t) 0b111                     << 4;   // modulation (RC 4FSK)
       break;
 
@@ -883,6 +889,35 @@ void CIO::setPower(uint8_t power)
   m_power = power >> 2;
 }
 
+void CIO::setDeviations(uint8_t dstarTXLevel, uint8_t dmrTXLevel, uint8_t ysfTXLevel, uint8_t p25TXLevel, uint8_t nxdnTXLevel, bool ysfLoDev)
+{
+  m_dstarDev = uint16_t((ADF7021_DEV_DSTAR * uint16_t(dstarTXLevel)) / 128U);
+  m_dmrDev = uint16_t((ADF7021_DEV_DMR * uint16_t(dmrTXLevel)) / 128U);
+
+  if (ysfLoDev)
+    m_ysfDev = uint16_t((ADF7021_DEV_YSF_L * uint16_t(ysfTXLevel)) / 128U);
+  else
+    m_ysfDev = uint16_t((ADF7021_DEV_YSF_H * uint16_t(ysfTXLevel)) / 128U);
+
+  m_p25Dev = uint16_t((ADF7021_DEV_P25 * uint16_t(p25TXLevel)) / 128U);
+  m_nxdnDev = uint16_t((ADF7021_DEV_NXDN * uint16_t(nxdnTXLevel)) / 128U);
+}
+
+void CIO::updateCal()
+{
+  uint32_t ADF7021_REG2;
+
+  ADF7021_REG2  = (uint32_t) 0b10              << 28;  // invert data (and RC alpha = 0.5)
+  ADF7021_REG2 |= (uint32_t) (m_dmrDev / div2) << 19;  // deviation
+  ADF7021_REG2 |= (uint32_t) 0b111             << 4;   // modulation (RC 4FSK)
+  ADF7021_REG2 |= (uint32_t) 0b0010;                   // register 2
+  ADF7021_REG2 |= (uint32_t) m_power           << 13;  // power level
+  ADF7021_REG2 |= (uint32_t) 0b110001          << 7;   // PA
+
+  AD7021_control_word = ADF7021_REG2;
+  Send_AD7021_control();
+}
+
 uint32_t CIO::RXfreq()
 {
   return (uint32_t)((float)(ADF7021_PFD / f_div) * ((float)((32768 * m_RX_N_divider) + m_RX_F_divider) / 32768.0)) + 100000;
@@ -895,32 +930,27 @@ uint32_t CIO::TXfreq()
 
 uint16_t CIO::devDSTAR()
 {
-  return (uint16_t)((ADF7021_PFD * ADF7021_DEV_DSTAR) / (f_div * 65536));
+  return (uint16_t)((ADF7021_PFD * m_dstarDev) / (f_div * 65536));
 }
 
 uint16_t CIO::devDMR()
 {
-  return (uint16_t)((ADF7021_PFD * ADF7021_DEV_DMR) / (f_div * 65536));
+  return (uint16_t)((ADF7021_PFD * m_dmrDev) / (f_div * 65536));
 }
 
-uint16_t CIO::devYSF_H()
+uint16_t CIO::devYSF()
 {
-  return (uint16_t)((ADF7021_PFD * ADF7021_DEV_YSF_H) / (f_div * 65536));
-}
-
-uint16_t CIO::devYSF_L()
-{
-  return (uint16_t)((ADF7021_PFD * ADF7021_DEV_YSF_L) / (f_div * 65536));
+  return (uint16_t)((ADF7021_PFD * m_ysfDev) / (f_div * 65536));
 }
 
 uint16_t CIO::devP25()
 {
-  return (uint16_t)((ADF7021_PFD * ADF7021_DEV_P25) / (f_div * 65536));
+  return (uint16_t)((ADF7021_PFD * m_p25Dev) / (f_div * 65536));
 }
 
 uint16_t CIO::devNXDN()
 {
-  return (uint16_t)((ADF7021_PFD * ADF7021_DEV_NXDN) / (f_div * 65536));
+  return (uint16_t)((ADF7021_PFD * m_nxdnDev) / (f_div * 65536));
 }
 
 void CIO::printConf()
@@ -931,8 +961,7 @@ void CIO::printConf()
   DEBUG2("Power set:", m_power);
   DEBUG2("D-Star dev (Hz):", devDSTAR());
   DEBUG2("DMR +1 sym dev (Hz):", devDMR());
-  DEBUG2("YSF_H +1 sym dev (Hz):", devYSF_H());
-  DEBUG2("YSF_L +1 sym dev (Hz):", devYSF_L());
+  DEBUG2("YSF +1 sym dev (Hz):", devYSF());
   DEBUG2("P25 +1 sym dev (Hz):", devP25());
   DEBUG2("NXDN +1 sym dev (Hz):", devNXDN());
 }
