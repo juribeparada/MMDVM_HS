@@ -132,6 +132,9 @@ uint8_t CCalDMR::write(const uint8_t* data, uint8_t length)
   if (m_transmit && m_state == DMRCAL1K_IDLE && m_calState == STATE_DMRDMO1K)
     m_state = DMRCAL1K_VH;
 
+  if (!m_transmit)
+    io.ifConf(STATE_DMR, true);
+
   return 0U;
 }
 

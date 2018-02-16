@@ -907,6 +907,37 @@ void CIO::updateCal()
   uint32_t ADF7021_REG2;
   float    divider;
 
+  // Check frequency band
+  if( (m_frequency_tx >= VHF1_MIN) && (m_frequency_tx < VHF1_MAX) ) {
+    ADF7021_REG1 = ADF7021_REG1_VHF1;         // VHF1, external VCO
+    div2 = 1U;
+  }
+  else if( (m_frequency_tx >= VHF2_MIN) && (m_frequency_tx < VHF2_MAX) ) {
+    ADF7021_REG1 = ADF7021_REG1_VHF2;         // VHF1, external VCO
+    div2 = 1U;
+  }
+  else if( (m_frequency_tx >= UHF1_MIN)&&(m_frequency_tx < UHF1_MAX) ) {
+    ADF7021_REG1 = ADF7021_REG1_UHF1;         // UHF1, internal VCO
+    div2 = 1U;
+  }
+  else if( (m_frequency_tx >= UHF2_MIN)&&(m_frequency_tx < UHF2_MAX) ) {
+    ADF7021_REG1 = ADF7021_REG1_UHF2;         // UHF2, internal VCO
+    div2 = 2U;
+  }
+  else {
+    ADF7021_REG1 = ADF7021_REG1_UHF1;         // UHF1, internal VCO
+    div2 = 1U;
+  }
+
+  if(div2 == 1U)
+    f_div = 2U;
+  else
+    f_div = 1U;
+
+  // VCO/OSCILLATOR (REG1)
+  AD7021_control_word = ADF7021_REG1;
+  Send_AD7021_control();
+
   ADF7021_REG2  = (uint32_t) 0b10              << 28;  // invert data (and RC alpha = 0.5)
   ADF7021_REG2 |= (uint32_t) (m_dmrDev / div2) << 19;  // deviation
   ADF7021_REG2 |= (uint32_t) 0b111             << 4;   // modulation (RC 4FSK)
@@ -937,7 +968,10 @@ void CIO::updateCal()
   ADF7021_TX_REG0 |= (uint32_t) m_TX_N_divider << 19;   // frequency;
   ADF7021_TX_REG0 |= (uint32_t) m_TX_F_divider << 4;    // frequency;
 
-  setTX();
+  if (m_tx)
+    setTX();
+  else
+    setRX();
 }
 
 uint32_t CIO::RXfreq()
