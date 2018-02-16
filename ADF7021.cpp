@@ -852,10 +852,9 @@ void CIO::setTX()
 
   // Send register 0 for TX operation, but do not activate yet. 
   // This is done in the interrupt at the correct time
-  AD7021_control_word = ADF7021_TX_REG0;         
+  AD7021_control_word = ADF7021_TX_REG0;
   Send_AD7021_control(false);
 
-  
 #if defined(BIDIR_DATA_PIN)
   Data_dir_out(true);  // Data pin output mode
 #endif
@@ -906,6 +905,7 @@ void CIO::setDeviations(uint8_t dstarTXLevel, uint8_t dmrTXLevel, uint8_t ysfTXL
 void CIO::updateCal()
 {
   uint32_t ADF7021_REG2;
+  float    divider;
 
   ADF7021_REG2  = (uint32_t) 0b10              << 28;  // invert data (and RC alpha = 0.5)
   ADF7021_REG2 |= (uint32_t) (m_dmrDev / div2) << 19;  // deviation
@@ -916,6 +916,28 @@ void CIO::updateCal()
 
   AD7021_control_word = ADF7021_REG2;
   Send_AD7021_control();
+
+  if( div2 == 1U )
+    divider = m_frequency_tx / (ADF7021_PFD / 2U);
+  else
+    divider = m_frequency_tx / ADF7021_PFD;
+
+  m_TX_N_divider = floor(divider);
+  divider = (divider - m_TX_N_divider) * 32768;
+  m_TX_F_divider = floor(divider + 0.5);
+
+  ADF7021_TX_REG0  = (uint32_t) 0b0000;            // register 0
+
+#if defined(BIDIR_DATA_PIN)
+  ADF7021_TX_REG0 |= (uint32_t) 0b01000   << 27;   // mux regulator/transmit
+#else
+  ADF7021_TX_REG0 |= (uint32_t) 0b01010   << 27;   // mux regulator/uart-spi enabled/transmit
+#endif
+
+  ADF7021_TX_REG0 |= (uint32_t) m_TX_N_divider << 19;   // frequency;
+  ADF7021_TX_REG0 |= (uint32_t) m_TX_F_divider << 4;    // frequency;
+
+  setTX();
 }
 
 uint32_t CIO::RXfreq()
