@@ -10,7 +10,7 @@ This software is licenced under the GPL v2 and is intended for amateur and educa
 
 - Supported modes: D-Star, DMR, Yaesu Fusion, P25 Phase 1 and NXDN
 - Automatic mode detection (scanning)
-- G4KLX software suite: [MMDVMHost](https://github.com/g4klx/MMDVMHost), [ircDDBGateway](https://github.com/dl5di/OpenDV), [YSFGateway](https://github.com/g4klx/YSFClients), [P25Gateway](https://github.com/g4klx/P25Clients) and [DMRGateway](https://github.com/g4klx/DMRGateway)
+- G4KLX software suite: [MMDVMHost](https://github.com/g4klx/MMDVMHost), [ircDDBGateway](https://github.com/dl5di/OpenDV), [YSFGateway](https://github.com/g4klx/YSFClients), [P25Gateway](https://github.com/g4klx/P25Clients), [DMRGateway](https://github.com/g4klx/DMRGateway) and [MMDVMCal](https://github.com/g4klx/MMDVMCal), 
 - Bands: 144, 220, 430 and 900 MHz (VHF requires external inductor)
 - Status LEDs (PTT, COR and digital modes)
 - Serial repeater port for Nextion displays
@@ -22,6 +22,8 @@ This software is licenced under the GPL v2 and is intended for amateur and educa
 # Important notes
 
 The ADF7021 (or RF7021SE module) must operate with a 14.7456 MHz TCXO and with at least 2 ppm of frequency stability. You could use also 12.2880 MHz TCXO, but this frequency configuration has less testing. Any other TCXO frequency is not supported.
+
+Please set TXLevel=50 in MMDVM.ini to configure default deviation levels for all modes. You could change this value and other TXLevel paramenters to change deviation levels. Use [MMDVMCal](https://github.com/g4klx/MMDVMCal) to check DMR deviation level and TX frequency offset with calibrated test equipment.
 
 The jumper wire to CLKOUT in RF7021SE module is not longer required for lastest MMDVM_HS firmware. But CE pin connection of ADF7021 is required for proper operation of ZUMspot.
 
