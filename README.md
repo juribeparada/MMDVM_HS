@@ -10,7 +10,7 @@ This software is licenced under the GPL v2 and is intended for amateur and educa
 
 - Supported modes: D-Star, DMR, Yaesu Fusion, P25 Phase 1 and NXDN
 - Automatic mode detection (scanning)
-- G4KLX software suite: [MMDVMHost](https://github.com/g4klx/MMDVMHost), [ircDDBGateway](https://github.com/dl5di/OpenDV), [YSFGateway](https://github.com/g4klx/YSFClients), [P25Gateway](https://github.com/g4klx/P25Clients), [DMRGateway](https://github.com/g4klx/DMRGateway) and [MMDVMCal](https://github.com/g4klx/MMDVMCal), 
+- G4KLX software suite: [MMDVMHost](https://github.com/g4klx/MMDVMHost), [ircDDBGateway](https://github.com/dl5di/OpenDV), [YSFGateway](https://github.com/g4klx/YSFClients), [P25Gateway](https://github.com/g4klx/P25Clients), [DMRGateway](https://github.com/g4klx/DMRGateway) and [MMDVMCal](https://github.com/g4klx/MMDVMCal)
 - Bands: 144, 220, 430 and 900 MHz (VHF requires external inductor)
 - Status LEDs (PTT, COR and digital modes)
 - Serial repeater port for Nextion displays
