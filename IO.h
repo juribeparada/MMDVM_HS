@@ -122,6 +122,8 @@ public:
   void      delay_IFcal(void);
   void      delay_reset(void);
   void      delay_us(uint32_t us);
+
+#if defined(ENABLE_DEBUG)
   uint32_t  RXfreq(void);
   uint32_t  TXfreq(void);
   uint16_t  devDSTAR(void);
@@ -130,7 +132,8 @@ public:
   uint16_t  devP25(void);
   uint16_t  devNXDN(void);
   void      printConf();
-  
+#endif
+
 private:
   uint8_t            m_RX_N_divider;
   uint16_t           m_RX_F_divider;

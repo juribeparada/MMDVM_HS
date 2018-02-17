@@ -305,7 +305,9 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
   }
 
   io.start();
+#if defined(ENABLE_DEBUG)
   io.printConf();
+#endif
 
   if (modemState == STATE_DMRCAL || modemState == STATE_DMRDMO1K)
     m_firstCal = true;
@@ -1028,6 +1030,8 @@ void CSerialPort::writeNXDNLost()
   writeInt(1U, reply, 3);
 }
 
+#if defined(ENABLE_DEBUG)
+
 void CSerialPort::writeDebug(const char* text)
 {
   if (!m_debug)
@@ -1183,3 +1187,6 @@ void CSerialPort::writeDebug(const char* text, int16_t n1, int16_t n2, int16_t n
 
   writeInt(1U, reply, count, true);
 }
+
+#endif
+

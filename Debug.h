@@ -19,7 +19,10 @@
 #if !defined(DEBUG_H)
 #define  DEBUG_H
 
+#include "Config.h"
 #include "Globals.h"
+
+#if defined(ENABLE_DEBUG)
 
 #define  DEBUG1(a)          serial.writeDebug((a))
 #define  DEBUG2(a,b)        serial.writeDebug((a),(b))
@@ -27,6 +30,17 @@
 #define  DEBUG3(a,b,c)      serial.writeDebug((a),(b),(c))
 #define  DEBUG4(a,b,c,d)    serial.writeDebug((a),(b),(c),(d))
 #define  DEBUG5(a,b,c,d,e)  serial.writeDebug((a),(b),(c),(d),(e))
+
+#else
+
+#define  DEBUG1(a)
+#define  DEBUG2(a,b)
+#define  DEBUG2I(a,b)
+#define  DEBUG3(a,b,c)
+#define  DEBUG4(a,b,c,d)
+#define  DEBUG5(a,b,c,d,e)
+
+#endif
 
 #endif
 

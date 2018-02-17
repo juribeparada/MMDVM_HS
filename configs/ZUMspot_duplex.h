@@ -63,4 +63,7 @@
 // Disable mode LEDs blink during scan mode:
 // #define QUIET_MODE_LEDS
 
+// Enable modem debug messages
+// #define ENABLE_DEBUG
+
 #endif

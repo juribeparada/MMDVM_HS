@@ -61,7 +61,7 @@ void CDMRIdleRX::databit(bool bit)
     if (m_endPtr >= DMR_FRAME_LENGTH_BITS)
       m_endPtr -= DMR_FRAME_LENGTH_BITS;
           
-    DEBUG3("SYNC MS Data found pos/end:", m_dataPtr, m_endPtr);
+    // DEBUG3("SYNC MS Data found pos/end:", m_dataPtr, m_endPtr);
   }
 
   if (m_dataPtr == m_endPtr) {

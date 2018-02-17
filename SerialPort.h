@@ -48,12 +48,14 @@ public:
   void writeNXDNData(const uint8_t* data, uint8_t length);
   void writeNXDNLost();
 
+#if defined(ENABLE_DEBUG)
   void writeDebug(const char* text);
   void writeDebug(const char* text, int16_t n1);
   void writeDebugI(const char* text, int32_t n1);
   void writeDebug(const char* text, int16_t n1, int16_t n2);
   void writeDebug(const char* text, int16_t n1, int16_t n2, int16_t n3);
   void writeDebug(const char* text, int16_t n1, int16_t n2, int16_t n3, int16_t n4);
+#endif
 
 private:
   uint8_t m_buffer[256U];

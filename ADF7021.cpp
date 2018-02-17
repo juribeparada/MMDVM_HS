@@ -974,6 +974,8 @@ void CIO::updateCal()
     setRX();
 }
 
+#if defined(ENABLE_DEBUG)
+
 uint32_t CIO::RXfreq()
 {
   return (uint32_t)((float)(ADF7021_PFD / f_div) * ((float)((32768 * m_RX_N_divider) + m_RX_F_divider) / 32768.0)) + 100000;
@@ -1021,5 +1023,7 @@ void CIO::printConf()
   DEBUG2("P25 +1 sym dev (Hz):", devP25());
   DEBUG2("NXDN +1 sym dev (Hz):", devNXDN());
 }
+
+#endif
 
 #endif

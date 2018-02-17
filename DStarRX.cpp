@@ -382,10 +382,12 @@ void CDStarRX::processData(bool bit)
   bool syncSeen = false;
   if (m_dataBits >= SYNC_SCAN_START && m_dataBits <= (SYNC_POS + 1U)) {
     if (countBits32((m_patternBuffer & DATA_SYNC_MASK) ^ DATA_SYNC_DATA) <= DATA_SYNC_ERRS) {
-      if (m_dataBits < SYNC_POS)
+      if (m_dataBits < SYNC_POS) {
         DEBUG2("DStarRX: found data sync in Data, early", SYNC_POS - m_dataBits);
-      else
+      }
+      else {
         DEBUG1("DStarRX: found data sync in Data");
+      }
 
       m_rxBufferBits = DSTAR_DATA_LENGTH_BITS;
       m_dataBits = 0U;
