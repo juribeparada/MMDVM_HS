@@ -67,6 +67,10 @@ CNXDNTX    nxdnTX;
 
 CCalDMR    calDMR;
 
+#if defined(SEND_RSSI_DATA)
+CCalRSSI   calRSSI;
+#endif
+
 CCWIdTX    cwIdTX;
 
 CSerialPort serial;
@@ -108,6 +112,11 @@ void loop()
 
   if (m_calState == STATE_DMRCAL || m_calState == STATE_DMRDMO1K)
     calDMR.process();
+
+#if defined(SEND_RSSI_DATA)
+  if (m_calState == STATE_RSSICAL)
+    calRSSI.process();
+#endif
 
   if (m_modemState == STATE_IDLE)
     cwIdTX.process();

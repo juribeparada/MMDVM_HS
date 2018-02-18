@@ -43,6 +43,7 @@ enum MMDVM_STATE {
 
   // Dummy states start at 90
   STATE_DMRDMO1K  = 92,
+  STATE_RSSICAL   = 96,
   STATE_CWID      = 97,
   STATE_DMRCAL    = 98,
   STATE_DSTARCAL  = 99
@@ -75,6 +76,7 @@ const uint8_t  MARK_NONE  = 0x00U;
 #include "NXDNRX.h"
 #include "NXDNTX.h"
 #include "CWIdTX.h"
+#include "CalRSSI.h"
 #include "CalDMR.h"
 #include "Debug.h"
 #include "Utils.h"
@@ -128,7 +130,11 @@ extern CP25TX p25TX;
 extern CNXDNRX nxdnRX;
 extern CNXDNTX nxdnTX;
 
-extern CCalDMR calDMR;
+extern CCalDMR  calDMR;
+
+#if defined(SEND_RSSI_DATA)
+extern CCalRSSI calRSSI;
+#endif
 
 extern CCWIdTX cwIdTX;
 

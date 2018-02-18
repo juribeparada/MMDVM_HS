@@ -32,6 +32,7 @@ const uint8_t MMDVM_SET_MODE     = 0x03U;
 const uint8_t MMDVM_SET_FREQ     = 0x04U;
 
 const uint8_t MMDVM_CAL_DATA     = 0x08U;
+const uint8_t MMDVM_RSSI_DATA    = 0x09U;
 
 const uint8_t MMDVM_SEND_CWID    = 0x0AU;
 
@@ -220,7 +221,7 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
 
   MMDVM_STATE modemState = MMDVM_STATE(data[3U]);
 
-  if (modemState != STATE_IDLE && modemState != STATE_DSTAR && modemState != STATE_DMR && modemState != STATE_YSF && modemState != STATE_P25 && modemState != STATE_NXDN && modemState != STATE_DSTARCAL && modemState != STATE_DMRCAL && modemState != STATE_DMRDMO1K)
+  if (modemState != STATE_IDLE && modemState != STATE_DSTAR && modemState != STATE_DMR && modemState != STATE_YSF && modemState != STATE_P25 && modemState != STATE_NXDN && modemState != STATE_DSTARCAL && modemState != STATE_DMRCAL && modemState != STATE_DMRDMO1K && modemState != STATE_RSSICAL)
     return 4U;
   if (modemState == STATE_DSTAR && !dstarEnable)
     return 4U;
@@ -260,7 +261,7 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
   m_p25Enable   = p25Enable;
   m_nxdnEnable   = nxdnEnable;
 
-  if (modemState == STATE_DMRCAL || modemState == STATE_DMRDMO1K) {
+  if (modemState == STATE_DMRCAL || modemState == STATE_DMRDMO1K || modemState == STATE_RSSICAL) {
     m_dmrEnable = true;
     m_modemState = STATE_DMR;
     m_calState = modemState;
@@ -291,7 +292,7 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
 
   io.setLoDevYSF(ysfLoDev);
 
-  if (!m_firstCal || (modemState != STATE_DMRCAL && modemState != STATE_DMRDMO1K)) {
+  if (!m_firstCal || (modemState != STATE_DMRCAL && modemState != STATE_DMRDMO1K && modemState != STATE_RSSICAL)) {
     if(m_dstarEnable)
       io.ifConf(STATE_DSTAR, true);
     else if(m_dmrEnable)
@@ -309,7 +310,7 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
   io.printConf();
 #endif
 
-  if (modemState == STATE_DMRCAL || modemState == STATE_DMRDMO1K)
+  if (modemState == STATE_DMRCAL || modemState == STATE_DMRDMO1K || modemState == STATE_RSSICAL)
     m_firstCal = true;
 
   return 0U;
@@ -326,7 +327,7 @@ uint8_t CSerialPort::setMode(const uint8_t* data, uint8_t length)
   if (modemState == m_modemState)
     return 0U;
 
-  if (modemState != STATE_IDLE && modemState != STATE_DSTAR && modemState != STATE_DMR && modemState != STATE_YSF && modemState != STATE_P25 && modemState != STATE_NXDN && modemState != STATE_DSTARCAL && modemState != STATE_DMRCAL && modemState != STATE_DMRDMO1K)
+  if (modemState != STATE_IDLE && modemState != STATE_DSTAR && modemState != STATE_DMR && modemState != STATE_YSF && modemState != STATE_P25 && modemState != STATE_NXDN && modemState != STATE_DSTARCAL && modemState != STATE_DMRCAL && modemState != STATE_DMRDMO1K && modemState != STATE_RSSICAL)
     return 4U;
   if (modemState == STATE_DSTAR && !m_dstarEnable)
     return 4U;
@@ -339,7 +340,7 @@ uint8_t CSerialPort::setMode(const uint8_t* data, uint8_t length)
   if (modemState == STATE_NXDN && !m_nxdnEnable)
     return 4U;
 
-  if (modemState == STATE_DMRCAL || modemState == STATE_DMRDMO1K) {
+  if (modemState == STATE_DMRCAL || modemState == STATE_DMRDMO1K || modemState == STATE_RSSICAL) {
     m_dmrEnable = true;
     tmpState = STATE_DMR;
     m_calState = modemState;
@@ -532,8 +533,11 @@ void CSerialPort::process()
             break;
 
           case MMDVM_CAL_DATA:
-            if (m_calState == STATE_DMRCAL || m_calState == STATE_DMRDMO1K)
+            if (m_calState == STATE_DMRCAL || m_calState == STATE_DMRDMO1K) {
               err = calDMR.write(m_buffer + 3U, m_len - 3U);
+            } else if (m_calState == STATE_RSSICAL) {
+              err = 0U;
+            }
             if (err == 0U) {
               sendACK();
             } else {
@@ -1029,6 +1033,30 @@ void CSerialPort::writeNXDNLost()
 
   writeInt(1U, reply, 3);
 }
+
+#if defined(SEND_RSSI_DATA)
+
+void CSerialPort::writeRSSIData(const uint8_t* data, uint8_t length)
+{
+  if (m_calState != STATE_RSSICAL)
+    return;
+
+  uint8_t reply[30U];
+
+  reply[0U] = MMDVM_FRAME_START;
+  reply[1U] = 0U;
+  reply[2U] = MMDVM_RSSI_DATA;
+
+  uint8_t count = 3U;
+  for (uint8_t i = 0U; i < length; i++, count++)
+    reply[count] = data[i];
+
+  reply[1U] = count;
+
+  writeInt(1U, reply, count);
+}
+
+#endif
 
 #if defined(ENABLE_DEBUG)
 

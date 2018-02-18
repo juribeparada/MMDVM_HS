@@ -48,6 +48,10 @@ public:
   void writeNXDNData(const uint8_t* data, uint8_t length);
   void writeNXDNLost();
 
+#if defined(SEND_RSSI_DATA)
+  void writeRSSIData(const uint8_t* data, uint8_t length);
+#endif
+
 #if defined(ENABLE_DEBUG)
   void writeDebug(const char* text);
   void writeDebug(const char* text, int16_t n1);
