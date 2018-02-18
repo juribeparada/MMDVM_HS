@@ -267,6 +267,8 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
     m_calState = modemState;
     if (m_firstCal)
       io.updateCal();
+    if (modemState == STATE_RSSICAL)
+      io.ifConf(STATE_DMR, true);
   }
   else {
     m_modemState  = modemState;
