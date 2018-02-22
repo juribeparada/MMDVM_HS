@@ -206,6 +206,13 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
     
   bool ysfLoDev  = (data[0U] & 0x08U) == 0x08U;
   bool simplex   = (data[0U] & 0x80U) == 0x80U;
+
+#if !defined(DUPLEX)
+  if  (!simplex) {
+    DEBUG1("Full duplex not supported with this firmware");
+    return 6U;
+  }
+#endif
   
   m_debug = (data[0U] & 0x10U) == 0x10U;
 
