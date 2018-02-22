@@ -49,7 +49,7 @@
 #define ENABLE_SCAN_MODE
 
 // Send RSSI value:
-// #define SEND_RSSI_DATA
+#define SEND_RSSI_DATA
 
 // Enable Nextion LCD serial port repeater on USART2 (ZUMspot Libre Kit and ZUMspot RPi):
 #define SERIAL_REPEATER
