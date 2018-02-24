@@ -24,8 +24,8 @@
 
 #define VER_MAJOR       "1"
 #define VER_MINOR       "3"
-#define VER_REV         "2"
-#define VERSION_DATE    "20180222"
+#define VER_REV         "3"
+#define VERSION_DATE    "20180224"
 
 #if defined(ZUMSPOT_ADF7021)
 #define BOARD_INFO      "ZUMspot"
