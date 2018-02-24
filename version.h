@@ -31,6 +31,8 @@
 #define BOARD_INFO      "ZUMspot"
 #elif defined(MMDVM_HS_HAT_REV12)
 #define BOARD_INFO      "MMDVM_HS_Hat"
+#elif defined(MMDVM_HS_DUAL_HAT_REV10)
+#define BOARD_INFO      "MMDVM_HS_Dual_Hat"
 #elif defined(NANO_HOTSPOT)
 #define BOARD_INFO      "Nano_hotSPOT"
 #else
