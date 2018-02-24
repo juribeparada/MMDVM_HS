@@ -544,6 +544,8 @@ modified RF7021SE and Blue Pill STM32F103).
 
 - #define MMDVM_HS_HAT_REV12: enable this option if you have a MMDVM_HS_Hat board for RPi.
 
+- #define MMDVM_HS_DUAL_HAT_REV10: enable this option if you have a MMDVM_HS_Dual_Hat board for RPi/USB.
+
 - #define NANO_HOTSPOT: enable this option if you have a Nano hotSPOT (BI7JTA).
 
 - #define ENABLE_ADF7021: add support for ADF7021 (all boards, enabled by default).
