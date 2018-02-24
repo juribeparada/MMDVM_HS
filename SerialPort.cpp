@@ -207,13 +207,6 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
   bool ysfLoDev  = (data[0U] & 0x08U) == 0x08U;
   bool simplex   = (data[0U] & 0x80U) == 0x80U;
 
-#if !defined(DUPLEX)
-  if  (!simplex) {
-    DEBUG1("Full duplex not supported with this firmware");
-    return 6U;
-  }
-#endif
-  
   m_debug = (data[0U] & 0x10U) == 0x10U;
 
   bool dstarEnable = (data[1U] & 0x01U) == 0x01U;
@@ -266,7 +259,7 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
   m_dmrEnable   = dmrEnable;
   m_ysfEnable   = ysfEnable;
   m_p25Enable   = p25Enable;
-  m_nxdnEnable   = nxdnEnable;
+  m_nxdnEnable  = nxdnEnable;
 
   if (modemState == STATE_DMRCAL || modemState == STATE_DMRDMO1K || modemState == STATE_RSSICAL) {
     m_dmrEnable = true;
@@ -278,11 +271,18 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
       io.ifConf(STATE_DMR, true);
   }
   else {
-    m_modemState  = modemState;
+    m_modemState = modemState;
     m_calState = STATE_IDLE;
   }
 
   m_duplex      = !simplex;
+
+#if !defined(DUPLEX)
+  if (m_duplex && m_calState == STATE_IDLE && modemState != STATE_DSTARCAL) {
+    DEBUG1("Full duplex not supported with this firmware");
+    return 6U;
+  }
+#endif
 
   dstarTX.setTXDelay(txDelay);
   ysfTX.setTXDelay(txDelay);
