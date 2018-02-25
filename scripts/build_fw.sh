@@ -50,6 +50,12 @@ make
 mv ~/MMDVM_HS/bin/mmdvm_f1.bin ~/MMDVM_HS/bin/mmdvm_hs_hat_fw.bin
 make clean
 
+# Building MMDVM_HS_Dual_Hat
+cp ~/MMDVM_HS/configs/MMDVM_HS_Dual_Hat.h ~/MMDVM_HS/Config.h
+make
+mv ~/MMDVM_HS/bin/mmdvm_f1.bin ~/MMDVM_HS/bin/mmdvm_hs_dual_hat_fw.bin
+make clean
+
 # Building Nano hotSPOT
 cp ~/MMDVM_HS/configs/Nano_hotSPOT.h ~/MMDVM_HS/Config.h
 make

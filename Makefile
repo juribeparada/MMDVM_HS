@@ -411,6 +411,8 @@ endif
 
 mmdvm_hs_hat: zumspot-pi
 
+mmdvm_hs_dual_hat: zumspot-pi
+
 dfu:
 ifdef devser
 	$(DFU_RST) $(devser) 750
