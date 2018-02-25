@@ -26,7 +26,9 @@
 #define LIBRE_KIT_ADF7021
 // 3) MMDVM_HS_Hat revisions 1.1, 1.2 and 1.4 (DB9MAT & DF2ET)
 // #define MMDVM_HS_HAT_REV12
-// 4) Nano hotSPOT (BI7JTA)
+// 4) MMDVM_HS_Dual_Hat revisions 1.0 (DB9MAT & DF2ET & DO7EN)
+// #define MMDVM_HS_DUAL_HAT_REV10
+// 5) Nano hotSPOT (BI7JTA)
 // #define NANO_HOTSPOT
 
 // Enable ADF7021 support:
