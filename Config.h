@@ -23,11 +23,11 @@
 // 1) ZUMspot RPi or ZUMspot USB:
 // #define ZUMSPOT_ADF7021
 // 2) Libre Kit board or any homebrew hotspot with modified RF7021SE and Blue Pill STM32F103:
-// #define LIBRE_KIT_ADF7021
+#define LIBRE_KIT_ADF7021
 // 3) MMDVM_HS_Hat revisions 1.1, 1.2 and 1.4 (DB9MAT & DF2ET)
 // #define MMDVM_HS_HAT_REV12
 // 4) MMDVM_HS_Dual_Hat revisions 1.0 (DB9MAT & DF2ET & DO7EN)
-#define MMDVM_HS_DUAL_HAT_REV10
+// #define MMDVM_HS_DUAL_HAT_REV10
 // 5) Nano hotSPOT (BI7JTA)
 // #define NANO_HOTSPOT
 
@@ -35,7 +35,7 @@
 #define ENABLE_ADF7021
 
 // Enable full duplex support with dual ADF7021 (valid for homebrew hotspots only):
-#define DUPLEX
+// #define DUPLEX
 
 // TCXO of the ADF7021
 // For 14.7456 MHz:
@@ -44,14 +44,14 @@
 // #define ADF7021_12_2880
 
 // Host communication selection:
-#define STM32_USART1_HOST
-// #define STM32_USB_HOST
+// #define STM32_USART1_HOST
+#define STM32_USB_HOST
 
 // Enable mode detection:
 #define ENABLE_SCAN_MODE
 
 // Send RSSI value:
-#define SEND_RSSI_DATA
+// #define SEND_RSSI_DATA
 
 // Enable Nextion LCD serial port repeater on USART2 (ZUMspot Libre Kit and ZUMspot RPi):
 #define SERIAL_REPEATER
