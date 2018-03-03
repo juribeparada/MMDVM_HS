@@ -43,6 +43,16 @@ Please see [BUILD.md](BUILD.md) for more details, and also [MMDVM](https://group
 
 Please check the latest firmware [here](https://github.com/juribeparada/MMDVM_HS/releases).
 
+## Pi-Star binary firmware installation
+
+You could use the command "sudo pistar-zumspotflash ..." under SSH console:
+
+- sudo pistar-zumspotflash rpi: ZUMspot RPi board
+- sudo pistar-zumspotflash usb: ZUMspot USB dongle
+- sudo pistar-zumspotflash libre: ZUMspot Libre Kit or generic MMDVM_HS board with USB
+- sudo pistar-zumspotflash hs_hat: MMDVM_HS_Hat board
+- sudo pistar-zumspotflash nano_hs: Nano hotSPOT board
+
 ### Windows
 
 Download the ZUMspotFW firmware upgrade utility (ZUMspotFW_setup.exe) from the [releases section](https://github.com/juribeparada/MMDVM_HS/releases/download/v1.0.2/ZUMSpotFW_setup.exe).
