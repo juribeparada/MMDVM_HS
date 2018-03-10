@@ -43,7 +43,7 @@ Please see [BUILD.md](BUILD.md) for more details, and also [MMDVM](https://group
 
 Please check the latest firmware [here](https://github.com/juribeparada/MMDVM_HS/releases).
 
-## Pi-Star binary firmware installation
+### Pi-Star binary firmware installation
 
 You could use the command "sudo pistar-zumspotflash ..." under SSH console:
 
