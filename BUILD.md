@@ -548,6 +548,8 @@ modified RF7021SE and Blue Pill STM32F103).
 
 - #define NANO_HOTSPOT: enable this option if you have a Nano hotSPOT (BI7JTA).
 
+- #define NANO_DV_REV10: enable this option if you have a Nano DV (BG4TGO & BG5HHP).
+
 - #define ENABLE_ADF7021: add support for ADF7021 (all boards, enabled by default).
 
 - #define DUPLEX: enable duplex mode with dual ADF7021. It is still under development.

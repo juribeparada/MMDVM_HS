@@ -24,8 +24,8 @@
 
 #define VER_MAJOR       "1"
 #define VER_MINOR       "3"
-#define VER_REV         "3"
-#define VERSION_DATE    "20180224"
+#define VER_REV         "4"
+#define VERSION_DATE    "20180404"
 
 #if defined(ZUMSPOT_ADF7021)
 #define BOARD_INFO      "ZUMspot"
@@ -35,6 +35,8 @@
 #define BOARD_INFO      "MMDVM_HS_Dual_Hat"
 #elif defined(NANO_HOTSPOT)
 #define BOARD_INFO      "Nano_hotSPOT"
+#elif defined(NANO_DV_REV10)
+#define BOARD_INFO      "Nano_DV"
 #else
 #define BOARD_INFO      "MMDVM_HS"
 #endif

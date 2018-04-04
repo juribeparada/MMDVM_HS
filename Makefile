@@ -400,6 +400,15 @@ ifneq ($(wildcard /usr/bin/stm32flash),)
 	/usr/bin/stm32flash -v -w bin/$(BINBIN_F1) -g 0x0 -R -i 200,-3,3:-200,3 /dev/ttyAMA0
 endif
 
+nano-dv:
+ifneq ($(wildcard /usr/local/bin/stm32flash),)
+	/usr/local/bin/stm32flash -v -w bin/$(BINBIN_F1) -g 0x0 -R -i 10,-14,14:-10,14 /dev/ttyAMA0
+endif
+
+ifneq ($(wildcard /usr/bin/stm32flash),)
+	/usr/bin/stm32flash -v -w bin/$(BINBIN_F1) -g 0x0 -R -i 10,-14,14:-10,14 /dev/ttyAMA0
+endif
+
 zumspot-pi:
 ifneq ($(wildcard /usr/local/bin/stm32flash),)
 	/usr/local/bin/stm32flash -v -w bin/$(BINBIN_F1) -g 0x0 -R -i 20,-21,21:-20,21 /dev/ttyAMA0

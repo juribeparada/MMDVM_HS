@@ -29,9 +29,9 @@
 // 4) MMDVM_HS_Dual_Hat revisions 1.0 (DB9MAT & DF2ET & DO7EN)
 // #define MMDVM_HS_DUAL_HAT_REV10
 // 5) Nano hotSPOT (BI7JTA)
-#define NANO_HOTSPOT
+// #define NANO_HOTSPOT
 // 6) Nano DV revisions 1.0 (BG4TGO & BG5HHP)
-// #define NANO_DV_REV10
+#define NANO_DV_REV10
 
 // Enable ADF7021 support:
 #define ENABLE_ADF7021
