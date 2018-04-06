@@ -402,11 +402,11 @@ endif
 
 nano-dv:
 ifneq ($(wildcard /usr/local/bin/stm32flash),)
-	/usr/local/bin/stm32flash -v -w bin/$(BINBIN_F1) -g 0x0 -R -i 10,-14,14:-10,14 /dev/ttyAMA0
+	/usr/local/bin/stm32flash -v -w bin/$(BINBIN_F1) -g 0x0 -R -i 67,-66,66:-67,66 /dev/ttyAMA0
 endif
 
 ifneq ($(wildcard /usr/bin/stm32flash),)
-	/usr/bin/stm32flash -v -w bin/$(BINBIN_F1) -g 0x0 -R -i 10,-14,14:-10,14 /dev/ttyAMA0
+	/usr/bin/stm32flash -v -w bin/$(BINBIN_F1) -g 0x0 -R -i 67,-66,66:-67,66 /dev/ttyAMA0
 endif
 
 zumspot-pi:
