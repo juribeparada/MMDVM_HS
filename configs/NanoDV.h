@@ -41,9 +41,9 @@
 
 // TCXO of the ADF7021
 // For 14.7456 MHz:
-#define ADF7021_14_7456
+// #define ADF7021_14_7456
 // For 12.2880 MHz:
-// #define ADF7021_12_2880
+#define ADF7021_12_2880
 
 // Host communication selection:
 #define STM32_USART1_HOST
@@ -62,10 +62,10 @@
 // #define SERIAL_REPEATER_USART1
 
 // Enable P25 Wide modulation:
-// #define ENABLE_P25_WIDE
+#define ENABLE_P25_WIDE
 
 // Disable mode LEDs blink during scan mode:
-// #define QUIET_MODE_LEDS
+#define QUIET_MODE_LEDS
 
 // Enable modem debug messages
 // #define ENABLE_DEBUG
