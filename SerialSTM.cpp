@@ -44,6 +44,10 @@ USART2 - TXD PA2  - RXD PA3
 #define TX_SERIAL_FIFO_SIZE 256U
 #define RX_SERIAL_FIFO_SIZE 256U
 
+#if defined(STM32_USART1_HOST) && defined(STM32_USB_HOST)
+#error "You have to select STM32_USART1_HOST or STM32_USB_HOST, but not both"
+#endif
+
 #if defined(STM32_USART1_HOST) || defined(SERIAL_REPEATER_USART1)
 
 extern "C" {
