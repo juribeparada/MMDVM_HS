@@ -10,7 +10,7 @@ This software is licenced under the GPL v2 and is intended for amateur and educa
 
 - Supported modes: D-Star, DMR, Yaesu Fusion, P25 Phase 1 and NXDN
 - Automatic mode detection (scanning)
-- G4KLX software suite: [MMDVMHost](https://github.com/g4klx/MMDVMHost), [ircDDBGateway](https://github.com/dl5di/OpenDV), [YSFGateway](https://github.com/g4klx/YSFClients), [P25Gateway](https://github.com/g4klx/P25Clients), [DMRGateway](https://github.com/g4klx/DMRGateway) and [MMDVMCal](https://github.com/g4klx/MMDVMCal)
+- G4KLX software suite: [MMDVMHost](https://github.com/g4klx/MMDVMHost), [ircDDBGateway](https://github.com/dl5di/OpenDV), [YSFGateway](https://github.com/g4klx/YSFClients), [P25Gateway](https://github.com/g4klx/P25Clients), [DMRGateway](https://github.com/g4klx/DMRGateway), [NXDNGateway](https://github.com/g4klx/NXDNClients) and [MMDVMCal](https://github.com/g4klx/MMDVMCal)
 - Bands: 144, 220, 430 and 900 MHz (VHF requires external inductor)
 - Status LEDs (PTT, COR and digital modes)
 - Serial repeater port for Nextion displays
@@ -34,6 +34,8 @@ VHF (144-148 MHz) support for ZUMSpot is added by an external 18 nH inductor bet
 Dual ADF7021 for full duplex operation (#define DUPLEX in Config.h) will work only with a big RX/TX frequency separation (5 MHz or more in UHF band for example) and proper antenna filtering. At the moment #define LIBRE_KIT_ADF7021 (Config.h) with STM32F103 platform is supported. Please see [BUILD.md](BUILD.md) for pinout details.
 
 If you can't decode any 4FSK modulation (DMR, YSF, P25 or NXDN) with your ZUMspot, the common solution is to adjust RX frequency offset (RXOffset) in your MMDVM.ini file. Please try with steps of +-100 Hz until you get low BER. If you don't have test equipment, the procedure is trial and error. In some cases TXOffset adjustment is also required for proper radio decoding. If you have test equipment, please use [MMDVMCal](https://github.com/g4klx/MMDVMCal).
+
+If you have problems updating firmware using USB bootloader (DFU mode) on Orange Pi or any other system different from RPi, you could compile the dfu tool directly. You could get the source code of a dfu tool [here](https://sourceforge.net/projects/dfu-programmer/files/dfu-programmer/0.7.0/).
 
 # Quick start
 
