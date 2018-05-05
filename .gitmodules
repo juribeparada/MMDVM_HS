@@ -1,0 +1,3 @@
+[submodule "STM32F10X_Lib"]
+	path = STM32F10X_Lib
+	url = https://github.com/juribeparada/STM32F10X_Lib
