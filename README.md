@@ -120,7 +120,8 @@ Download the sources:
     cd ~
     git clone https://github.com/juribeparada/MMDVM_HS
     cd MMDVM_HS/
-    git clone https://github.com/juribeparada/STM32F10X_Lib
+    git submodule init
+    git submodule update
 
 Build the firmware with USB bootloader support (the default Config.h is OK for Libre Kit):
 
@@ -192,7 +193,8 @@ Download the firmware sources:
     cd ~
     git clone https://github.com/juribeparada/MMDVM_HS
     cd MMDVM_HS/
-    git clone https://github.com/juribeparada/STM32F10X_Lib
+    git submodule init
+    git submodule update
 
 Edit Config.h
 
