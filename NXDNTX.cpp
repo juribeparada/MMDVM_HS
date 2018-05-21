@@ -27,7 +27,7 @@ const uint8_t NXDN_PREAMBLE[] = {0x57U, 0x75U, 0xFDU};
 const uint8_t NXDN_SYNC = 0x5FU;
 
 CNXDNTX::CNXDNTX() :
-m_buffer(1500U),
+m_buffer(2500U),
 m_poBuffer(),
 m_poLen(0U),
 m_poPtr(0U),
