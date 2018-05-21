@@ -64,9 +64,9 @@ void CDMRDMOTX::process()
         for (unsigned int i = 0U; i < 39U; i++)
           m_poBuffer[i + DMR_FRAME_LENGTH_BYTES] = PR_FILL[i];
 
+        m_poLen = 72U;
       }
       m_poPtr = 0U;
-      m_poLen = 72U;
     }
   }
 
