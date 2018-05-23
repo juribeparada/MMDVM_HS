@@ -114,7 +114,7 @@ void CIO::process()
       m_watchdog = 0U;
     }
 
-#if defined(QUIET_MODE_LEDS)
+#if defined(CONSTANT_SRV_LED)
     LED_pin(HIGH);
 #else
     if (m_ledCount >= 24000U) {

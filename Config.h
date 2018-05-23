@@ -67,6 +67,9 @@
 // Disable mode LEDs blink during scan mode:
 // #define QUIET_MODE_LEDS
 
+// Constant Service LED once repeater is running 
+// #define CONSTANT_SRV_LED
+
 // Enable modem debug messages
 // #define ENABLE_DEBUG
 
