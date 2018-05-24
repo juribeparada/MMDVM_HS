@@ -197,7 +197,7 @@ LDFLAGS_F7 =-T stm32f7xx_link.ld $(MCFLAGS_F7) $(INCLUDES_LIBS_F7)
 # Common flags
 CFLAGS=-Os -ffunction-sections -fdata-sections -nostdlib -DCUSTOM_NEW -DNO_EXCEPTIONS -Wno-unused-parameter -nostdlib
 CXXFLAGS=-Os -fno-exceptions -ffunction-sections -fdata-sections -nostdlib -fno-rtti -DCUSTOM_NEW -DNO_EXCEPTIONS -Wno-unused-parameter
-LDFLAGS=-Os --specs=nano.specs --specs=nosys.specs -Wl,--print-memory-usage
+LDFLAGS=-Os --specs=nano.specs --specs=nosys.specs
 
 # Build Rules
 .PHONY: all release_f1 release_f4 release_f7 hs bl pi-f4 f446 f767 clean
