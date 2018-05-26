@@ -17,7 +17,7 @@
 #   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 # Configure latest version
-FW_VERSION="v1.3.6"
+FW_VERSION="v1.3.7"
 
 # Change USB-serial port name ONLY in macOS
 MAC_DEV_USB_SER="/dev/cu.usbmodem1441"
