@@ -72,9 +72,11 @@ Download the script (*.sh) that matches with your ZUMspot/MMDVM_HS board:
 - install_fw_nanohs.sh: only for Nano hotSPOT board (BI7JTA)
 - install_fw_nanodv.sh: only for Nano DV board (BG4TGO & BG5HHP)
 - install_fw_hsdualhat.sh: only for MMDVM_HS_Dual_Hat board (DB9MAT & DF2ET & DO7EN)
-- install_fw_librekit.sh: only for ZUMspot Libre Kit board (KI6ZUM & VE2GZI) or generic MMDVM_HS board
+- install_fw_librekit.sh: only for ZUMspot Libre Kit board (KI6ZUM & VE2GZI) or generic MMDVM_HS board with USB interface
 - install_fw_usb.sh: only for ZUMspot USB dongle (KI6ZUM & VE2GZI)
-- install_fw_duplex.sh: only for MMDVM_HS with dual ADF7021 (EA7GIB) or generic dual ADF7021 board
+- install_fw_duplex.sh: only for MMDVM_HS with dual ADF7021 (EA7GIB) or generic dual ADF7021 board with USB interface
+- install_fw_gen_gpio.sh: only for generic MMDVM_HS board (EA7GIB) with GPIO serial interface
+- install_fw_duplex_gpio.sh: only for MMDVM_HS with dual ADF7021 (EA7GIB) or generic dual ADF7021 board with GPIO serial interface
 
 For example, download the ZUMspot RPi upgrade script:
 

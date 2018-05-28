@@ -68,4 +68,16 @@ make
 mv ~/MMDVM_HS/bin/mmdvm_f1.bin ~/MMDVM_HS/bin/nano_dv_fw.bin
 make clean
 
+# Building Generic Simplex GPIO
+cp ~/MMDVM_HS/configs/generic_gpio.h ~/MMDVM_HS/Config.h
+make
+mv ~/MMDVM_HS/bin/mmdvm_f1.bin ~/MMDVM_HS/bin/generic_gpio_fw.bin
+make clean
+
+# Building Generic Duplex GPIO
+cp ~/MMDVM_HS/configs/generic_duplex_gpio.h ~/MMDVM_HS/Config.h
+make
+mv ~/MMDVM_HS/bin/mmdvm_f1.bin ~/MMDVM_HS/bin/generic_duplex_gpio_fw.bin
+make clean
+
 cp ~/MMDVM_HS/configs/ZUMspot_Libre.h ~/MMDVM_HS/Config.h
