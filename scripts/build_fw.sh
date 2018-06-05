@@ -50,6 +50,12 @@ make
 mv ~/MMDVM_HS/bin/mmdvm_f1.bin ~/MMDVM_HS/bin/mmdvm_hs_hat_fw.bin
 make clean
 
+# Building MMDVM_HS_Hat (12.288 MHz TCXO)
+cp ~/MMDVM_HS/configs/MMDVM_HS_Hat-12mhz.h ~/MMDVM_HS/Config.h
+make
+mv ~/MMDVM_HS/bin/mmdvm_f1.bin ~/MMDVM_HS/bin/mmdvm_hs_hat_fw-12mhz.bin
+make clean
+
 # Building MMDVM_HS_Dual_Hat
 cp ~/MMDVM_HS/configs/MMDVM_HS_Dual_Hat.h ~/MMDVM_HS/Config.h
 make
