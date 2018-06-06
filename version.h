@@ -41,6 +41,13 @@
 #define BOARD_INFO      "MMDVM_HS"
 #endif
 
+#if defined(ADF7021_14_7456)
+#define TCXO_FREQ       "14.7456"
+#endif
+#if defined(ADF7021_12_2880)
+#define TCXO_FREQ       "12.2880"
+#endif
+
 #if defined(ENABLE_ADF7021) && defined(ADF7021_N_VER)
 #define RF_CHIP         "ADF7021N"
 #elif defined(ENABLE_ADF7021)
@@ -55,7 +62,7 @@
 
 #define FW_VERSION      "v" VER_MAJOR "." VER_MINOR "." VER_REV " " VERSION_DATE
 
-#define DESCRIPTION     BOARD_INFO "-" FW_VERSION " " RF_DUAL RF_CHIP " FW by CA6JAU"
+#define DESCRIPTION     BOARD_INFO "-" FW_VERSION " " TCXO_FREQ "MHz " RF_DUAL RF_CHIP " FW by CA6JAU"
 
 #if defined(MADEBYMAKEFILE)
 #include "GitVersion.h"
