@@ -1,4 +1,5 @@
 /*
+ *   Copyright (C) 2015,2016,2017,2018 by Jonathan Naylor G4KLX
  *   Copyright (C) 2018 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -90,18 +91,16 @@ uint8_t CPOCSAGTX::writeData(const uint8_t* data, uint8_t length)
 void CPOCSAGTX::writeByte(uint8_t c)
 {
   uint8_t bit;
-  uint8_t mask = 0x01U;
+  uint8_t mask = 0x80U;
   
-  for (uint8_t i = 0U; i < 8U; i++) {
+  for (uint8_t i = 0U; i < 8U; i++, c <<= 1) {
     if ((c & mask) == mask)
       bit = 1U;
     else
       bit = 0U;
 
     io.write(&bit, 1);
-    mask <<= 1;
   }
-
 }
 
 void CPOCSAGTX::setTXDelay(uint8_t delay)
