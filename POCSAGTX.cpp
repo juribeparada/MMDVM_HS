@@ -1,6 +1,5 @@
 /*
- *   Copyright (C) 2009-2016,2018 by Jonathan Naylor G4KLX
- *   Copyright (C) 2016,2017,2018 by Andy Uribe CA6JAU
+ *   Copyright (C) 2018 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -19,25 +18,20 @@
 
 #include "Config.h"
 #include "Globals.h"
-#include "NXDNTX.h"
+#include "POCSAGTX.h"
+#include "POCSAGDefines.h"
 
-#include "NXDNDefines.h"
-
-const uint8_t NXDN_PREAMBLE[] = {0x57U, 0x75U, 0xFDU};
-const uint8_t NXDN_SYNC = 0x5FU;
-
-CNXDNTX::CNXDNTX() :
-m_buffer(1500U),
+CPOCSAGTX::CPOCSAGTX() :
+m_buffer(1000U),
 m_poBuffer(),
 m_poLen(0U),
 m_poPtr(0U),
-m_txDelay(240U),      // 200ms
-m_delay(false),
-m_preamble(false)
+m_txDelay(POCSAG_PREAMBLE_LENGTH_BYTES),
+m_delay(false)
 {
 }
 
-void CNXDNTX::process()
+void CPOCSAGTX::process()
 {
   if (m_buffer.getData() == 0U && m_poLen == 0U)
     return;
@@ -45,12 +39,10 @@ void CNXDNTX::process()
   if (m_poLen == 0U) {
     if (!m_tx) {
       m_delay = true;
-      m_preamble = false;
       m_poLen = m_txDelay;
     } else {
       m_delay = false;
-      m_preamble = false;
-      for (uint8_t i = 0U; i < NXDN_FRAME_LENGTH_BYTES; i++)
+      for (uint8_t i = 0U; i < POCSAG_FRAME_LENGTH_BYTES; i++)
         m_poBuffer[m_poLen++] = m_buffer.get();
     }
 
@@ -62,10 +54,8 @@ void CNXDNTX::process()
     
     while (space > 8U) {
       if (m_delay) {
-        writeByte(NXDN_SYNC);
         m_poPtr++;
-      } else if (m_preamble) {
-        writeByte(NXDN_PREAMBLE[m_poPtr++]);
+        writeByte(POCSAG_SYNC);
       }
       else
         writeByte(m_poBuffer[m_poPtr++]); 
@@ -73,60 +63,56 @@ void CNXDNTX::process()
       space -= 8U;
       
       if (m_poPtr >= m_poLen) {
-        if (m_delay) {
-          m_preamble = true;
-          m_delay = false;
-          m_poPtr = 0U;
-          m_poLen = 3U;
-        } else {
-          m_poPtr = 0U;
-          m_poLen = 0U;
-          m_preamble = false;
-          m_delay = false;
-          return;
-        }
+        m_poPtr = 0U;
+        m_poLen = 0U;
+        m_delay = false;
+        return;
       }
     }
   }
 }
 
-uint8_t CNXDNTX::writeData(const uint8_t* data, uint8_t length)
+uint8_t CPOCSAGTX::writeData(const uint8_t* data, uint8_t length)
 {
-  if (length != (NXDN_FRAME_LENGTH_BYTES + 1U))
+  if (length != POCSAG_FRAME_LENGTH_BYTES)
     return 4U;
 
   uint16_t space = m_buffer.getSpace();
-  if (space < NXDN_FRAME_LENGTH_BYTES)
+  if (space < POCSAG_FRAME_LENGTH_BYTES)
     return 5U;
 
-  for (uint8_t i = 0U; i < NXDN_FRAME_LENGTH_BYTES; i++)
-    m_buffer.put(data[i + 1U]);
+  for (uint8_t i = 0U; i < POCSAG_FRAME_LENGTH_BYTES; i++)
+    m_buffer.put(data[i]);
 
   return 0U;
 }
 
-void CNXDNTX::writeByte(uint8_t c)
+void CPOCSAGTX::writeByte(uint8_t c)
 {
   uint8_t bit;
-  uint8_t mask = 0x80U;
+  uint8_t mask = 0x01U;
   
-  for (uint8_t i = 0U; i < 8U; i++, c <<= 1) {
+  for (uint8_t i = 0U; i < 8U; i++) {
     if ((c & mask) == mask)
       bit = 1U;
     else
       bit = 0U;
 
     io.write(&bit, 1);
+    mask <<= 1;
   }
+
 }
 
-void CNXDNTX::setTXDelay(uint8_t delay)
+void CPOCSAGTX::setTXDelay(uint8_t delay)
 {
-  m_txDelay = 300U + uint16_t(delay) * 6U;        // 500ms + tx delay
+  m_txDelay = POCSAG_PREAMBLE_LENGTH_BYTES + uint16_t(delay);
+
+  if (m_txDelay > 1200U)
+    m_txDelay = 1200U;
 }
 
-uint16_t CNXDNTX::getSpace() const
+uint8_t CPOCSAGTX::getSpace() const
 {
-  return m_buffer.getSpace() / NXDN_FRAME_LENGTH_BYTES;
+  return m_buffer.getSpace() / POCSAG_FRAME_LENGTH_BYTES;
 }
-

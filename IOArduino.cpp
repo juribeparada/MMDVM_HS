@@ -316,6 +316,11 @@ void CIO::NXDN_pin(bool on)
   digitalWrite(PIN_NXDN_LED, on ? HIGH : LOW);
 }
 
+void CIO::POCSAG_pin(bool on)
+{
+  // TODO: add a LED pin for POCSAG mode
+}
+
 void CIO::PTT_pin(bool on) 
 {
   digitalWrite(PIN_PTT_LED, on ? HIGH : LOW);

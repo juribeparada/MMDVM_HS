@@ -647,6 +647,11 @@ void CIO::NXDN_pin(bool on)
   GPIO_WriteBit(PORT_NXDN_LED, PIN_NXDN_LED, on ? Bit_SET : Bit_RESET);
 }
 
+void CIO::POCSAG_pin(bool on)
+{
+  // TODO: add a LED pin for POCSAG mode
+}
+
 void CIO::PTT_pin(bool on)
 {
   GPIO_WriteBit(PORT_PTT_LED, PIN_PTT_LED, on ? Bit_SET : Bit_RESET);

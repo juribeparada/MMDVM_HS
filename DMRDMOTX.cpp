@@ -36,7 +36,6 @@ m_poBuffer(),
 m_poLen(0U),
 m_poPtr(0U),
 m_txDelay(240U),      // 200ms
-m_count(0U),
 m_delay(false),
 m_cal(false)
 {

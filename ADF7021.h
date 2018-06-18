@@ -67,6 +67,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 // DEMOD_CLK = 4.9152 MHz (DMR, YSF_L, P25)
 // DEMOD_CLK = 7.3728 MHz (YSF_H)
 // DEMOD CLK = 3.6864 MHz (NXDN)
+// DEMOD_CLK = 7.3728 MHz (POCSAG)
 #define ADF7021_PFD              3686400.0
 
 // PLL (REG 01)
@@ -86,6 +87,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_DEV_P25          22U
 #endif
 #define ADF7021_DEV_NXDN         13U
+#define ADF7021_DEV_POCSAG       160U
 
 // TX/RX CLOCK register (REG 03)
 #define ADF7021_REG3_DSTAR       0x2A4C4193
@@ -102,6 +104,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_REG3_P25         0x2A4C80D3
 #define ADF7021_REG3_NXDN        0x2A4CC113
 #endif
+#define ADF7021_REG3_POCSAG      0x2A4F0093
 
 // Discriminator bandwith, demodulator (REG 04)
 // Bug in ADI evaluation software, use datasheet formula (4FSK)
@@ -111,6 +114,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_DISC_BW_YSF_H    516U // K=28
 #define ADF7021_DISC_BW_P25      394U // K=32
 #define ADF7021_DISC_BW_NXDN     295U // K=32
+#define ADF7021_DISC_BW_POCSAG   406U // K=22
 
 // Post demodulator bandwith (REG 04)
 #define ADF7021_POST_BW_DSTAR    10U
@@ -118,6 +122,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_POST_BW_YSF      20U
 #define ADF7021_POST_BW_P25      6U
 #define ADF7021_POST_BW_NXDN     7U
+#define ADF7021_POST_BW_POCSAG   1U
 
 // IF filter (REG 05)
 #define ADF7021_REG5             0x000024F5
@@ -127,6 +132,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 
 // AFC configuration (REG 10)
 #define ADF7021_REG10_DSTAR      0x0C96473A
+#define ADF7021_REG10_POCSAG     0x1496473A
 
 #if defined(ADF7021_ENABLE_4FSK_AFC)
 #define ADF7021_REG10_DMR        0x01FE473A
@@ -162,6 +168,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 // DEMOD_CLK = 2.4576 MHz (DSTAR)
 // DEMOD_CLK = 6.1440 MHz (DMR, YSF_H, YSF_L, P25)
 // DEMOD_CLK = 3.0720 MHz (NXDN)
+// DEMOD_CLK = 6.1440 MHz (POCSAG)
 #define ADF7021_PFD              6144000.0
 
 // PLL (REG 01)
@@ -181,6 +188,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_DEV_P25          13U
 #endif
 #define ADF7021_DEV_NXDN         8U
+#define ADF7021_DEV_POCSAG       96U
 
 // TX/RX CLOCK register (REG 03)
 #define ADF7021_REG3_DSTAR       0x29EC4153
@@ -197,6 +205,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_REG3_P25         0x29ECA093
 #define ADF7021_REG3_NXDN        0x29ECA113
 #endif
+#define ADF7021_REG3_POCSAG      0x29EE8093
 
 // Discriminator bandwith, demodulator (REG 04)
 // Bug in ADI evaluation software, use datasheet formula (4FSK)
@@ -206,6 +215,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_DISC_BW_YSF_H    430U // K=28
 #define ADF7021_DISC_BW_P25      493U // K=32
 #define ADF7021_DISC_BW_NXDN     246U // K=32
+#define ADF7021_DISC_BW_POCSAG   338U // K=22
 
 // Post demodulator bandwith (REG 04)
 #define ADF7021_POST_BW_DSTAR    10U
@@ -213,6 +223,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_POST_BW_YSF      20U
 #define ADF7021_POST_BW_P25      6U
 #define ADF7021_POST_BW_NXDN     8U
+#define ADF7021_POST_BW_POCSAG   1U
 
 // IF filter (REG 05)
 #define ADF7021_REG5             0x00001ED5
@@ -222,6 +233,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 
 // AFC (REG 10)
 #define ADF7021_REG10_DSTAR      0x0C96557A
+#define ADF7021_REG10_POCSAG     0x1496557A
 
 #if defined(ADF7021_ENABLE_4FSK_AFC)
 #define ADF7021_REG10_DMR        0x01FE557A

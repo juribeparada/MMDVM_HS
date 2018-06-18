@@ -48,6 +48,7 @@ m_watchdog(0U)
   YSF_pin(LOW);
   P25_pin(LOW);
   NXDN_pin(LOW);
+  POCSAG_pin(LOW);
   COS_pin(LOW);
   DEB_pin(LOW);
 
@@ -85,6 +86,7 @@ void CIO::selfTest()
       YSF_pin(ledValue);
       P25_pin(ledValue);
       NXDN_pin(ledValue);
+      POCSAG_pin(ledValue);
       COS_pin(ledValue);
 
       blinks++;
@@ -106,7 +108,7 @@ void CIO::process()
   if (m_started) {
     // Two seconds timeout
     if (m_watchdog >= 19200U) {
-      if (m_modemState == STATE_DSTAR || m_modemState == STATE_DMR || m_modemState == STATE_YSF ||  m_modemState == STATE_P25 ||  m_modemState == STATE_NXDN) {
+      if (m_modemState == STATE_DSTAR || m_modemState == STATE_DMR || m_modemState == STATE_YSF || m_modemState == STATE_P25 || m_modemState == STATE_NXDN) {
         m_modemState = STATE_IDLE;
         setMode(m_modemState);
       }
@@ -139,6 +141,11 @@ void CIO::process()
       // Restoring previous mode
       io.ifConf(m_modemState_prev, true);
     }
+    if(m_pocsag_state) { // check for POCSAG end of transmission
+      m_pocsag_state = false;
+      // Restoring previous mode
+      io.ifConf(m_modemState_prev, true);
+    }
     setRX(false);
   }
   
@@ -157,7 +164,7 @@ void CIO::process()
 
   if(m_modeTimerCnt >= scantime) {
     m_modeTimerCnt = 0U;
-    if( (m_modemState == STATE_IDLE) && (m_scanPauseCnt == 0U) && m_scanEnable && !m_cwid_state) {
+    if( (m_modemState == STATE_IDLE) && (m_scanPauseCnt == 0U) && m_scanEnable && !m_cwid_state && !m_pocsag_state) {
       m_scanPos = (m_scanPos + 1U) % m_TotalModes;
       #if !defined(QUIET_MODE_LEDS)
       setMode(m_Modes[m_scanPos]);
@@ -306,7 +313,8 @@ void CIO::setMode(MMDVM_STATE modemState)
   DMR_pin(modemState   == STATE_DMR);
   YSF_pin(modemState   == STATE_YSF);
   P25_pin(modemState   == STATE_P25);
-  NXDN_pin(modemState   == STATE_NXDN);
+  NXDN_pin(modemState  == STATE_NXDN);
+  POCSAG_pin(modemState  == STATE_POCSAG);
 }
 
 void CIO::setDecode(bool dcd)
