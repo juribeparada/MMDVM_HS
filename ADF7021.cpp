@@ -333,7 +333,7 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
       // Register 13 not used with 2FSK
       ADF7021_REG13 = (uint32_t) 0b1101                     << 0;   // register 13
 
-      ADF7021_REG2  = (uint32_t) 0b00                       << 28;  // clock normal
+      ADF7021_REG2  = (uint32_t) 0b10                       << 28;  // inverted data, clock normal
       ADF7021_REG2 |= (uint32_t) (ADF7021_DEV_POCSAG / div2)<< 19;  // deviation
       ADF7021_REG2 |= (uint32_t) 0b000                      << 4;   // modulation (2FSK)
       break;
