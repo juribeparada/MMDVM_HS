@@ -187,8 +187,18 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
   uint32_t ADF7021_REG13 = 0U;
   int32_t AFC_OFFSET = 0;
 
-  if(modemState != STATE_CWID && modemState != STATE_POCSAG)
+  uint32_t frequency_tx_tmp, frequency_rx_tmp;
+
+  if (modemState != STATE_CWID && modemState != STATE_POCSAG)
     m_modemState_prev = modemState;
+
+  // Change frequency for POCSAG mode, store a backup of DV frequencies
+  if (modemState == STATE_POCSAG) {
+    frequency_tx_tmp = m_frequency_tx;
+    frequency_rx_tmp = m_frequency_rx;
+    m_frequency_tx   = m_pocsag_freq_tx;
+    m_frequency_rx   = m_pocsag_freq_tx;
+  }
 
   // Toggle CE pin for ADF7021 reset
   if(reset) {
@@ -545,7 +555,13 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
   AD7021_control_word = 0x000E000F;
 #endif
   Send_AD7021_control();
-  
+
+  // Restore normal DV frequencies
+  if (modemState == STATE_POCSAG) {
+    m_frequency_tx = frequency_tx_tmp;
+    m_frequency_rx = frequency_rx_tmp;
+  }
+
 #if defined(DUPLEX)
 if(m_duplex && (modemState != STATE_CWID && modemState != STATE_POCSAG))
   ifConf2(modemState);

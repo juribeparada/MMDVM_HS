@@ -24,6 +24,7 @@
 
 uint32_t    m_frequency_rx;
 uint32_t    m_frequency_tx;
+uint32_t    m_pocsag_freq_tx;
 uint8_t     m_power;
 
 CIO::CIO():
@@ -288,7 +289,7 @@ bool CIO::hasRXOverflow()
   return m_rxBuffer.hasOverflowed();
 }
 
-uint8_t CIO::setFreq(uint32_t frequency_rx, uint32_t frequency_tx, uint8_t rf_power)
+uint8_t CIO::setFreq(uint32_t frequency_rx, uint32_t frequency_tx, uint8_t rf_power, uint32_t pocsag_freq_tx)
 {
   // Configure power level
   setPower(rf_power);
@@ -300,9 +301,16 @@ uint8_t CIO::setFreq(uint32_t frequency_rx, uint32_t frequency_tx, uint8_t rf_po
   ((frequency_rx >= UHF2_MIN)&&(frequency_rx < UHF2_MAX)) || ((frequency_tx >= UHF2_MIN)&&(frequency_tx < UHF2_MAX)) ) )
     return 4U;
 
+  if( !( ((pocsag_freq_tx >= VHF1_MIN)&&(pocsag_freq_tx < VHF1_MAX)) || \
+  ((pocsag_freq_tx >= UHF1_MIN)&&(pocsag_freq_tx < UHF1_MAX)) || \
+  ((pocsag_freq_tx >= VHF2_MIN)&&(pocsag_freq_tx < VHF2_MAX)) || \
+  ((pocsag_freq_tx >= UHF2_MIN)&&(pocsag_freq_tx < UHF2_MAX)) ) )
+    return 4U;
+
   // Configure frequency
   m_frequency_rx = frequency_rx;
   m_frequency_tx = frequency_tx;
+  m_pocsag_freq_tx = pocsag_freq_tx;
 
   return 0U;
 }

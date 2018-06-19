@@ -388,31 +388,41 @@ uint8_t CSerialPort::setMode(const uint8_t* data, uint8_t length)
 
 uint8_t CSerialPort::setFreq(const uint8_t* data, uint8_t length)
 {
-    uint32_t freq_rx, freq_tx;
-    uint8_t rf_power;
+  uint32_t freq_rx, freq_tx, pocsag_freq_tx;
+  uint8_t rf_power;
 
-    if (length < 9U)
-      return 4U;
+  if (length < 9U)
+    return 4U;
 
-    // Old MMDVMHost, set full power
-    if (length == 9U)
-      rf_power = 255U;
+  // Very old MMDVMHost, set full power
+  if (length == 9U)
+    rf_power = 255U;
 
-    // New MMDVMHost, set power from MMDVM.ini
-    if (length == 10U)
-      rf_power = data[9U];
+  // Current MMDVMHost, set power from MMDVM.ini
+  if (length >= 10U)
+    rf_power = data[9U];
 
-    freq_rx  = data[1U] * 1U;
-    freq_rx += data[2U] * 256U;
-    freq_rx += data[3U] * 65536U;
-    freq_rx += data[4U] * 16777216U;
-    
-    freq_tx  = data[5U] * 1U;
-    freq_tx += data[6U] * 256U;
-    freq_tx += data[7U] * 65536U;
-    freq_tx += data[8U] * 16777216U;
-    
-    return io.setFreq(freq_rx, freq_tx, rf_power);
+  freq_rx  = data[1U] << 0;
+  freq_rx |= data[2U] << 8;
+  freq_rx |= data[3U] << 16;
+  freq_rx |= data[4U] << 24;
+
+  freq_tx  = data[5U] << 0;
+  freq_tx |= data[6U] << 8;
+  freq_tx |= data[7U] << 16;
+  freq_tx |= data[8U] << 24;
+
+  // New MMDVMHost, set POCSAG TX frequency
+  if (length >= 14U) {
+    pocsag_freq_tx  = data[10U] << 0;
+    pocsag_freq_tx |= data[11U] << 8;
+    pocsag_freq_tx |= data[12U] << 16;
+    pocsag_freq_tx |= data[13U] << 24;
+  }
+  else
+    pocsag_freq_tx = freq_tx;
+
+  return io.setFreq(freq_rx, freq_tx, rf_power, pocsag_freq_tx);
 }
 
 void CSerialPort::setMode(MMDVM_STATE modemState)
