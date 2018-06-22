@@ -333,7 +333,7 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
       ADF7021_REG10 = ADF7021_REG10_POCSAG;
 
       ADF7021_REG4  = (uint32_t) 0b0100                     << 0;   // register 4
-      ADF7021_REG4 |= (uint32_t) 0b001                      << 4;   // demod mode, 2FSK
+      ADF7021_REG4 |= (uint32_t) 0b000                      << 4;   // 2FSK linear demodulator
       ADF7021_REG4 |= (uint32_t) 0b1                        << 7;
       ADF7021_REG4 |= (uint32_t) 0b10                       << 8;
       ADF7021_REG4 |= (uint32_t) ADF7021_DISC_BW_POCSAG     << 10;  // Disc BW
