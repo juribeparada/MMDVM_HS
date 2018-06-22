@@ -140,12 +140,14 @@ void CIO::process()
     if(m_cwid_state) { // check for CW ID end of transmission
       m_cwid_state = false;
       // Restoring previous mode
-      io.ifConf(m_modemState_prev, true);
+      if (m_TotalModes)
+        io.ifConf(m_modemState_prev, true);
     }
     if(m_pocsag_state) { // check for POCSAG end of transmission
       m_pocsag_state = false;
       // Restoring previous mode
-      io.ifConf(m_modemState_prev, true);
+      if (m_TotalModes)
+        io.ifConf(m_modemState_prev, true);
     }
     setRX(false);
   }
