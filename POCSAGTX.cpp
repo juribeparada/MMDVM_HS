@@ -105,10 +105,10 @@ void CPOCSAGTX::writeByte(uint8_t c)
 
 void CPOCSAGTX::setTXDelay(uint8_t delay)
 {
-  m_txDelay = POCSAG_PREAMBLE_LENGTH_BYTES + uint16_t(delay);
+  m_txDelay = POCSAG_PREAMBLE_LENGTH_BYTES + (delay * 3U) / 2U;
 
-  if (m_txDelay > 1200U)
-    m_txDelay = 1200U;
+  if (m_txDelay > 150U)
+    m_txDelay = 150U;
 }
 
 uint8_t CPOCSAGTX::getSpace() const
