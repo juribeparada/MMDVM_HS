@@ -318,7 +318,10 @@ void CIO::NXDN_pin(bool on)
 
 void CIO::POCSAG_pin(bool on)
 {
-  // TODO: add a LED pin for POCSAG mode
+  // Use D-Star and DMR LED to indicate POCSAG mode
+  // TODO: add a separate LED pin for POCSAG mode
+  digitalWrite(PIN_DSTAR_LED, on ? HIGH : LOW);
+  digitalWrite(PIN_DMR_LED, on ? HIGH : LOW);
 }
 
 void CIO::PTT_pin(bool on) 
