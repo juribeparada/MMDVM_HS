@@ -644,15 +644,21 @@ void CIO::P25_pin(bool on)
 
 void CIO::NXDN_pin(bool on)
 {
+#if defined(USE_ALTERNATE_NXDN_LEDS)
+  GPIO_WriteBit(PORT_YSF_LED, PIN_YSF_LED, on ? Bit_SET : Bit_RESET);
+  GPIO_WriteBit(PORT_P25_LED, PIN_P25_LED, on ? Bit_SET : Bit_RESET);
+#else
   GPIO_WriteBit(PORT_NXDN_LED, PIN_NXDN_LED, on ? Bit_SET : Bit_RESET);
+#endif
 }
 
 void CIO::POCSAG_pin(bool on)
 {
-  // Use D-Star and DMR LED to indicate POCSAG mode
-  // TODO: add a separate LED pin for POCSAG mode
+#if defined(USE_ALTERNATE_POCSAG_LEDS)
   GPIO_WriteBit(PORT_DSTAR_LED, PIN_DSTAR_LED, on ? Bit_SET : Bit_RESET);
   GPIO_WriteBit(PORT_DMR_LED, PIN_DMR_LED, on ? Bit_SET : Bit_RESET);
+#endif
+  // TODO: add a separate LED pin for POCSAG mode
 }
 
 void CIO::PTT_pin(bool on)
