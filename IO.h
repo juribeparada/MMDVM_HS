@@ -42,6 +42,7 @@
 
 extern uint32_t  m_frequency_rx;
 extern uint32_t  m_frequency_tx;
+extern uint32_t  m_pocsag_freq_tx;
 extern uint8_t   m_power;
 
 class CIO {
@@ -76,6 +77,7 @@ public:
   void      YSF_pin(bool on);
   void      P25_pin(bool on);
   void      NXDN_pin(bool on);
+  void      POCSAG_pin(bool on);
   void      COS_pin(bool on);
   void      interrupt(void);
 #if defined(DUPLEX)
@@ -92,7 +94,7 @@ public:
   void      process(void);
   bool      hasTXOverflow(void);
   bool      hasRXOverflow(void);
-  uint8_t   setFreq(uint32_t frequency_rx, uint32_t frequency_tx, uint8_t rf_power);
+  uint8_t   setFreq(uint32_t frequency_rx, uint32_t frequency_tx, uint8_t rf_power, uint32_t pocsag_freq_tx);
   void      setPower(uint8_t power);
   void      setMode(MMDVM_STATE modemState);
   void      setDecode(bool dcd);
@@ -110,7 +112,7 @@ public:
 #endif
   void      start(void);
   void      startInt(void);
-  void      setDeviations(uint8_t dstarTXLevel, uint8_t dmrTXLevel, uint8_t ysfTXLevel, uint8_t p25TXLevel, uint8_t nxdnTXLevel, bool ysfLoDev);
+  void      setDeviations(uint8_t dstarTXLevel, uint8_t dmrTXLevel, uint8_t ysfTXLevel, uint8_t p25TXLevel, uint8_t nxdnTXLevel, uint8_t pocsagTXLevel, bool ysfLoDev);
   void      updateCal(void);
 
 #if defined(SEND_RSSI_DATA)
@@ -131,6 +133,7 @@ public:
   uint16_t  devYSF(void);
   uint16_t  devP25(void);
   uint16_t  devNXDN(void);
+  uint16_t  devPOCSAG(void);
   void      printConf();
 #endif
 

@@ -1,7 +1,6 @@
 /*
- *   Copyright (C) 2015,2016 by Jonathan Naylor G4KLX
- *   Copyright (C) 2016 by Colin Durbridge G4EML
- *   Copyright (C) 2016,2017,2018 by Andy Uribe CA6JAU
+ *   Copyright (C) 2015,2016,2017,2018 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2018 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -18,39 +17,30 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#if !defined(DMRDMOTX_H)
-#define  DMRDMOTX_H
+#if !defined(POCSAGTX_H)
+#define  POCSAGTX_H
 
-#include "DMRDefines.h"
-
-#include "SerialRB.h"
-
-class CDMRDMOTX {
+class CPOCSAGTX {
 public:
-  CDMRDMOTX();
+  CPOCSAGTX();
 
   uint8_t writeData(const uint8_t* data, uint8_t length);
 
-  void process();
-
-  void setCal(bool start);
-
   void setTXDelay(uint8_t delay);
 
-  uint16_t getSpace() const;
+  uint8_t getSpace() const;
+
+  void process();
 
 private:
-  CSerialRB            m_fifo;
-  uint8_t              m_poBuffer[80U];
-  uint16_t             m_poLen;
-  uint16_t             m_poPtr;
-  uint16_t             m_txDelay;
-  bool                 m_delay;
-  bool                 m_cal;
+  CSerialRB        m_buffer;
+  uint8_t          m_poBuffer[200U];
+  uint16_t         m_poLen;
+  uint16_t         m_poPtr;
+  uint16_t         m_txDelay;
+  bool             m_delay;
 
   void writeByte(uint8_t c);
-  void createCal();
-
 };
 
 #endif

@@ -24,6 +24,7 @@
 
 uint32_t    m_frequency_rx;
 uint32_t    m_frequency_tx;
+uint32_t    m_pocsag_freq_tx;
 uint8_t     m_power;
 
 CIO::CIO():
@@ -48,6 +49,7 @@ m_watchdog(0U)
   YSF_pin(LOW);
   P25_pin(LOW);
   NXDN_pin(LOW);
+  POCSAG_pin(LOW);
   COS_pin(LOW);
   DEB_pin(LOW);
 
@@ -85,6 +87,7 @@ void CIO::selfTest()
       YSF_pin(ledValue);
       P25_pin(ledValue);
       NXDN_pin(ledValue);
+      POCSAG_pin(ledValue);
       COS_pin(ledValue);
 
       blinks++;
@@ -106,7 +109,7 @@ void CIO::process()
   if (m_started) {
     // Two seconds timeout
     if (m_watchdog >= 19200U) {
-      if (m_modemState == STATE_DSTAR || m_modemState == STATE_DMR || m_modemState == STATE_YSF ||  m_modemState == STATE_P25 ||  m_modemState == STATE_NXDN) {
+      if (m_modemState == STATE_DSTAR || m_modemState == STATE_DMR || m_modemState == STATE_YSF || m_modemState == STATE_P25 || m_modemState == STATE_NXDN) {
         m_modemState = STATE_IDLE;
         setMode(m_modemState);
       }
@@ -137,7 +140,14 @@ void CIO::process()
     if(m_cwid_state) { // check for CW ID end of transmission
       m_cwid_state = false;
       // Restoring previous mode
-      io.ifConf(m_modemState_prev, true);
+      if (m_TotalModes)
+        io.ifConf(m_modemState_prev, true);
+    }
+    if(m_pocsag_state) { // check for POCSAG end of transmission
+      m_pocsag_state = false;
+      // Restoring previous mode
+      if (m_TotalModes)
+        io.ifConf(m_modemState_prev, true);
     }
     setRX(false);
   }
@@ -157,7 +167,7 @@ void CIO::process()
 
   if(m_modeTimerCnt >= scantime) {
     m_modeTimerCnt = 0U;
-    if( (m_modemState == STATE_IDLE) && (m_scanPauseCnt == 0U) && m_scanEnable && !m_cwid_state) {
+    if( (m_modemState == STATE_IDLE) && (m_scanPauseCnt == 0U) && m_scanEnable && !m_cwid_state && !m_pocsag_state) {
       m_scanPos = (m_scanPos + 1U) % m_TotalModes;
       #if !defined(QUIET_MODE_LEDS)
       setMode(m_Modes[m_scanPos]);
@@ -281,7 +291,7 @@ bool CIO::hasRXOverflow()
   return m_rxBuffer.hasOverflowed();
 }
 
-uint8_t CIO::setFreq(uint32_t frequency_rx, uint32_t frequency_tx, uint8_t rf_power)
+uint8_t CIO::setFreq(uint32_t frequency_rx, uint32_t frequency_tx, uint8_t rf_power, uint32_t pocsag_freq_tx)
 {
   // Configure power level
   setPower(rf_power);
@@ -293,9 +303,16 @@ uint8_t CIO::setFreq(uint32_t frequency_rx, uint32_t frequency_tx, uint8_t rf_po
   ((frequency_rx >= UHF2_MIN)&&(frequency_rx < UHF2_MAX)) || ((frequency_tx >= UHF2_MIN)&&(frequency_tx < UHF2_MAX)) ) )
     return 4U;
 
+  if( !( ((pocsag_freq_tx >= VHF1_MIN)&&(pocsag_freq_tx < VHF1_MAX)) || \
+  ((pocsag_freq_tx >= UHF1_MIN)&&(pocsag_freq_tx < UHF1_MAX)) || \
+  ((pocsag_freq_tx >= VHF2_MIN)&&(pocsag_freq_tx < VHF2_MAX)) || \
+  ((pocsag_freq_tx >= UHF2_MIN)&&(pocsag_freq_tx < UHF2_MAX)) ) )
+    return 4U;
+
   // Configure frequency
   m_frequency_rx = frequency_rx;
   m_frequency_tx = frequency_tx;
+  m_pocsag_freq_tx = pocsag_freq_tx;
 
   return 0U;
 }
@@ -306,7 +323,8 @@ void CIO::setMode(MMDVM_STATE modemState)
   DMR_pin(modemState   == STATE_DMR);
   YSF_pin(modemState   == STATE_YSF);
   P25_pin(modemState   == STATE_P25);
-  NXDN_pin(modemState   == STATE_NXDN);
+  NXDN_pin(modemState  == STATE_NXDN);
+  POCSAG_pin(modemState  == STATE_POCSAG);
 }
 
 void CIO::setDecode(bool dcd)

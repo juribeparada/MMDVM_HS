@@ -37,7 +37,7 @@
 #define ENABLE_ADF7021
 
 // Enable full duplex support with dual ADF7021 (valid for homebrew hotspots only):
-// #define DUPLEX
+#define DUPLEX
 
 // TCXO of the ADF7021
 // For 14.7456 MHz:
@@ -69,6 +69,12 @@
 
 // Constant Service LED once repeater is running 
 // #define CONSTANT_SRV_LED
+
+// Use the YSF and P25 LEDs for NXDN
+// #define USE_ALTERNATE_NXDN_LEDS
+
+// Use the D-Star and DMR LEDs for POCSAG
+// #define USE_ALTERNATE_POCSAG_LEDS
 
 // Enable modem debug messages
 // #define ENABLE_DEBUG

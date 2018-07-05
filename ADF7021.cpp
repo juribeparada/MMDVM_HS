@@ -48,6 +48,7 @@ uint16_t           m_dmrDev;
 uint16_t           m_ysfDev;
 uint16_t           m_p25Dev;
 uint16_t           m_nxdnDev;
+uint16_t           m_pocsagDev;
 
 static void Send_AD7021_control_shift()
 {
@@ -186,8 +187,18 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
   uint32_t ADF7021_REG13 = 0U;
   int32_t AFC_OFFSET = 0;
 
-  if(modemState != STATE_CWID)
+  uint32_t frequency_tx_tmp, frequency_rx_tmp;
+
+  if (modemState != STATE_CWID && modemState != STATE_POCSAG)
     m_modemState_prev = modemState;
+
+  // Change frequency for POCSAG mode, store a backup of DV frequencies
+  if (modemState == STATE_POCSAG) {
+    frequency_tx_tmp = m_frequency_tx;
+    frequency_rx_tmp = m_frequency_rx;
+    m_frequency_tx   = m_pocsag_freq_tx;
+    m_frequency_rx   = m_pocsag_freq_tx;
+  }
 
   // Toggle CE pin for ADF7021 reset
   if(reset) {
@@ -226,6 +237,7 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
 
   switch (modemState) {
     case STATE_DSTAR:
+    case STATE_POCSAG:
       AFC_OFFSET = 0;
       break;
     case STATE_DMR:
@@ -312,6 +324,28 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
       ADF7021_REG2 = (uint32_t) 0b10                       << 28;  // invert data (and RC alpha = 0.5)
       ADF7021_REG2 |= (uint32_t) (m_cwIdTXLevel / div2)    << 19;  // deviation
       ADF7021_REG2 |= (uint32_t) 0b111                     << 4;   // modulation (RC 4FSK)
+      break;
+
+    case STATE_POCSAG:
+      // Dev: 4500 Hz, symb rate = 1200
+
+      ADF7021_REG3 = ADF7021_REG3_POCSAG;
+      ADF7021_REG10 = ADF7021_REG10_POCSAG;
+
+      ADF7021_REG4  = (uint32_t) 0b0100                     << 0;   // register 4
+      ADF7021_REG4 |= (uint32_t) 0b000                      << 4;   // 2FSK linear demodulator
+      ADF7021_REG4 |= (uint32_t) 0b1                        << 7;
+      ADF7021_REG4 |= (uint32_t) 0b10                       << 8;
+      ADF7021_REG4 |= (uint32_t) ADF7021_DISC_BW_POCSAG     << 10;  // Disc BW
+      ADF7021_REG4 |= (uint32_t) ADF7021_POST_BW_POCSAG     << 20;  // Post dem BW
+      ADF7021_REG4 |= (uint32_t) 0b10                       << 30;  // IF filter (25 kHz)
+
+      // Register 13 not used with 2FSK
+      ADF7021_REG13 = (uint32_t) 0b1101                     << 0;   // register 13
+
+      ADF7021_REG2  = (uint32_t) 0b10                       << 28;  // inverted data, clock normal
+      ADF7021_REG2 |= (uint32_t) (m_pocsagDev / div2)       << 19;  // deviation
+      ADF7021_REG2 |= (uint32_t) 0b000                      << 4;   // modulation (2FSK)
       break;
 
     case STATE_DSTAR:
@@ -521,9 +555,15 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
   AD7021_control_word = 0x000E000F;
 #endif
   Send_AD7021_control();
-  
+
+  // Restore normal DV frequencies
+  if (modemState == STATE_POCSAG) {
+    m_frequency_tx = frequency_tx_tmp;
+    m_frequency_rx = frequency_rx_tmp;
+  }
+
 #if defined(DUPLEX)
-if(m_duplex && (modemState != STATE_CWID))
+if(m_duplex && (modemState != STATE_CWID && modemState != STATE_POCSAG))
   ifConf2(modemState);
 #endif
 }
@@ -888,7 +928,7 @@ void CIO::setPower(uint8_t power)
   m_power = power >> 2;
 }
 
-void CIO::setDeviations(uint8_t dstarTXLevel, uint8_t dmrTXLevel, uint8_t ysfTXLevel, uint8_t p25TXLevel, uint8_t nxdnTXLevel, bool ysfLoDev)
+void CIO::setDeviations(uint8_t dstarTXLevel, uint8_t dmrTXLevel, uint8_t ysfTXLevel, uint8_t p25TXLevel, uint8_t nxdnTXLevel, uint8_t pocsagTXLevel, bool ysfLoDev)
 {
   m_dstarDev = uint16_t((ADF7021_DEV_DSTAR * uint16_t(dstarTXLevel)) / 128U);
   m_dmrDev = uint16_t((ADF7021_DEV_DMR * uint16_t(dmrTXLevel)) / 128U);
@@ -900,6 +940,7 @@ void CIO::setDeviations(uint8_t dstarTXLevel, uint8_t dmrTXLevel, uint8_t ysfTXL
 
   m_p25Dev = uint16_t((ADF7021_DEV_P25 * uint16_t(p25TXLevel)) / 128U);
   m_nxdnDev = uint16_t((ADF7021_DEV_NXDN * uint16_t(nxdnTXLevel)) / 128U);
+  m_pocsagDev = uint16_t((ADF7021_DEV_POCSAG * uint16_t(pocsagTXLevel)) / 128U);
 }
 
 void CIO::updateCal()
@@ -1011,6 +1052,11 @@ uint16_t CIO::devNXDN()
   return (uint16_t)((ADF7021_PFD * m_nxdnDev) / (f_div * 65536));
 }
 
+uint16_t CIO::devPOCSAG()
+{
+  return (uint16_t)((ADF7021_PFD * m_pocsagDev) / (f_div * 65536));
+}
+
 void CIO::printConf()
 {
   DEBUG1("MMDVM_HS FW configuration:");
@@ -1022,6 +1068,7 @@ void CIO::printConf()
   DEBUG2("YSF +1 sym dev (Hz):", devYSF());
   DEBUG2("P25 +1 sym dev (Hz):", devP25());
   DEBUG2("NXDN +1 sym dev (Hz):", devNXDN());
+  DEBUG2("POCSAG dev (Hz):", devPOCSAG());
 }
 
 #endif

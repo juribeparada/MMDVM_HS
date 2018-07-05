@@ -186,9 +186,8 @@ m_poBuffer(),
 m_poLen(0U),
 m_poPtr(0U),
 m_txDelay(60U),      // 100ms
-m_count(0U)
+m_delay(false)
 {
-
 }
 
 void CDStarTX::process()
@@ -201,7 +200,6 @@ void CDStarTX::process()
   if (type == DSTAR_HEADER && m_poLen == 0U) {
     if (!m_tx) {
       m_delay = true;
-      m_count = 0U;
       m_poLen = m_txDelay;
     } else {
       m_delay = false;
@@ -228,8 +226,6 @@ void CDStarTX::process()
  
   if (type == DSTAR_DATA && m_poLen == 0U) {
     m_delay = false;
-    if (!m_tx)
-      m_count = 0U;
 
     // Pop the type byte off
     m_buffer.get();

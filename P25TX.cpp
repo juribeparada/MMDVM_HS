@@ -31,7 +31,7 @@ m_poBuffer(),
 m_poLen(0U),
 m_poPtr(0U),
 m_txDelay(240U),      // 200ms
-m_count(0U)
+m_delay(false)
 {
 }
 
@@ -43,7 +43,6 @@ void CP25TX::process()
   if (m_poLen == 0U) {
     if (!m_tx) {
       m_delay = true;
-      m_count = 0U;
       m_poLen = m_txDelay;
     } else {
       uint8_t length = m_buffer.get();
