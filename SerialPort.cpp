@@ -798,9 +798,10 @@ void CSerialPort::process()
 
           case MMDVM_POCSAG_DATA:
             if (m_pocsagEnable) {
-              if (m_modemState == STATE_IDLE || m_modemState == STATE_POCSAG)
+              if (m_modemState == STATE_IDLE || m_modemState == STATE_POCSAG) {
                 m_pocsag_state = true;
                 err = pocsagTX.writeData(m_buffer + 3U, m_len - 3U);
+              }
             }
             if (err == 0U) {
               if (m_modemState == STATE_IDLE)
