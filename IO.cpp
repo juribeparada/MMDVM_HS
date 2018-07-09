@@ -319,12 +319,36 @@ uint8_t CIO::setFreq(uint32_t frequency_rx, uint32_t frequency_tx, uint8_t rf_po
 
 void CIO::setMode(MMDVM_STATE modemState)
 {
-  DSTAR_pin(modemState == STATE_DSTAR);
-  DMR_pin(modemState   == STATE_DMR);
-  YSF_pin(modemState   == STATE_YSF);
-  P25_pin(modemState   == STATE_P25);
-  NXDN_pin(modemState  == STATE_NXDN);
-  POCSAG_pin(modemState  == STATE_POCSAG);
+#if defined(USE_ALTERNATE_POCSAG_LEDS)
+  if (modemState != STATE_POCSAG) {
+#endif
+    DSTAR_pin(modemState  == STATE_DSTAR);
+    DMR_pin(modemState    == STATE_DMR);
+#if defined(USE_ALTERNATE_POCSAG_LEDS)
+  }
+#endif
+#if defined(USE_ALTERNATE_NXDN_LEDS)
+  if (modemState != STATE_NXDN) {
+#endif
+    YSF_pin(modemState    == STATE_YSF);
+    P25_pin(modemState    == STATE_P25);
+#if defined(USE_ALTERNATE_NXDN_LEDS)
+  }
+#endif
+#if defined(USE_ALTERNATE_NXDN_LEDS)
+  if (modemState != STATE_YSF && modemState != STATE_P25) {
+#endif
+    NXDN_pin(modemState   == STATE_NXDN);
+#if defined(USE_ALTERNATE_NXDN_LEDS)
+  }
+#endif
+#if defined(USE_ALTERNATE_POCSAG_LEDS)
+  if (modemState != STATE_DSTAR && modemState != STATE_DMR) {
+#endif
+    POCSAG_pin(modemState == STATE_POCSAG);
+#if defined(USE_ALTERNATE_POCSAG_LEDS)
+  }
+#endif
 }
 
 void CIO::setDecode(bool dcd)
