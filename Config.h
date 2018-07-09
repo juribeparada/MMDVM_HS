@@ -37,7 +37,7 @@
 #define ENABLE_ADF7021
 
 // Enable full duplex support with dual ADF7021 (valid for homebrew hotspots only):
-#define DUPLEX
+// #define DUPLEX
 
 // TCXO of the ADF7021
 // For 14.7456 MHz:
