@@ -74,7 +74,7 @@
 // #define USE_ALTERNATE_NXDN_LEDS
 
 // Use the D-Star and DMR LEDs for POCSAG
-// #define USE_ALTERNATE_POCSAG_LEDS
+#define USE_ALTERNATE_POCSAG_LEDS
 
 // Enable modem debug messages
 // #define ENABLE_DEBUG
