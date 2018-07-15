@@ -119,6 +119,20 @@ void CIO::process()
 
 #if defined(CONSTANT_SRV_LED)
     LED_pin(HIGH);
+#elif defined(CONSTANT_SRV_LED_INVERTED)
+    LED_pin(LOW);
+#elif defined(DISCREET_SRV_LED)
+    if (m_ledCount == 10000U) LED_pin(LOW);
+    if (m_ledCount >= 480000U) {
+      m_ledCount = 0U;
+      LED_pin(HIGH);
+    };
+#elif defined(DISCREET_SRV_LED_INVERTED)
+    if (m_ledCount == 10000U) LED_pin(HIGH);
+    if (m_ledCount >= 480000U) {
+      m_ledCount = 0U;
+      LED_pin(LOW);
+    };
 #else
     if (m_ledCount >= 24000U) {
       m_ledCount = 0U;

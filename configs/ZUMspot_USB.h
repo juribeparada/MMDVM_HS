@@ -67,8 +67,11 @@
 // Disable mode LEDs blink during scan mode:
 // #define QUIET_MODE_LEDS
 
-// Constant Service LED once repeater is running 
+// Engage a constant or descreet Service LED mode once repeater is running 
 // #define CONSTANT_SRV_LED
+// #define CONSTANT_SRV_LED_INVERTED
+// #define DISCREET_SRV_LED
+// #define DISCREET_SRV_LED_INVERTED
 
 // Use the YSF and P25 LEDs for NXDN
 // #define USE_ALTERNATE_NXDN_LEDS
