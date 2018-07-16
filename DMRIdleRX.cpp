@@ -34,7 +34,13 @@ const uint16_t NOENDPTR = 9999U;
 const uint8_t CONTROL_IDLE = 0x80U;
 const uint8_t CONTROL_DATA = 0x40U;
 
+const uint8_t BIT_MASK_TABLE[] = {0x80U, 0x40U, 0x20U, 0x10U, 0x08U, 0x04U, 0x02U, 0x01U};
+
+#define WRITE_BIT1(p,i,b) p[(i)>>3] = (b) ? (p[(i)>>3] | BIT_MASK_TABLE[(i)&7]) : (p[(i)>>3] & ~BIT_MASK_TABLE[(i)&7])
+#define READ_BIT1(p,i)    ((p[(i)>>3] & BIT_MASK_TABLE[(i)&7]) >> (7 - ((i)&7)))
+
 CDMRIdleRX::CDMRIdleRX() :
+m_patternBuffer(0U),
 m_buffer(),
 m_dataPtr(0U),
 m_endPtr(NOENDPTR),
@@ -50,8 +56,8 @@ void CDMRIdleRX::reset()
 
 void CDMRIdleRX::databit(bool bit)
 {
-  m_buffer[m_dataPtr] = bit;
-  
+  WRITE_BIT1(m_buffer, m_dataPtr, bit);
+
   m_patternBuffer <<= 1;
   if (bit)
     m_patternBuffer |= 0x01U;
@@ -68,7 +74,7 @@ void CDMRIdleRX::databit(bool bit)
     uint16_t ptr = m_endPtr + 1;
 
     if (ptr >= DMR_FRAME_LENGTH_BITS)
-	  ptr -= DMR_FRAME_LENGTH_BITS;
+      ptr -= DMR_FRAME_LENGTH_BITS;
 
     uint8_t frame[DMR_FRAME_LENGTH_BYTES + 1U];
     bitsToBytes(ptr, DMR_FRAME_LENGTH_BYTES, frame + 1U);
@@ -95,28 +101,36 @@ void CDMRIdleRX::bitsToBytes(uint16_t start, uint8_t count, uint8_t* buffer)
 {
   for (uint8_t i = 0U; i < count; i++) {
     buffer[i]  = 0U;
-    buffer[i] |= ((m_buffer[start++] & 0x01) << 7);
+    buffer[i] |= READ_BIT1(m_buffer, start) << 7;
+    start++;
     if (start >= DMR_FRAME_LENGTH_BITS)
       start -= DMR_FRAME_LENGTH_BITS;
-    buffer[i] |= ((m_buffer[start++] & 0x01) << 6);
+    buffer[i] |= READ_BIT1(m_buffer, start) << 6;
+    start++;
     if (start >= DMR_FRAME_LENGTH_BITS)
       start -= DMR_FRAME_LENGTH_BITS;
-    buffer[i] |= ((m_buffer[start++] & 0x01) << 5);
+    buffer[i] |= READ_BIT1(m_buffer, start) << 5;
+    start++;
     if (start >= DMR_FRAME_LENGTH_BITS)
       start -= DMR_FRAME_LENGTH_BITS;
-    buffer[i] |= ((m_buffer[start++] & 0x01) << 4);
+    buffer[i] |= READ_BIT1(m_buffer, start) << 4;
+    start++;
     if (start >= DMR_FRAME_LENGTH_BITS)
       start -= DMR_FRAME_LENGTH_BITS;
-    buffer[i] |= ((m_buffer[start++] & 0x01) << 3);
+    buffer[i] |= READ_BIT1(m_buffer, start) << 3;
+    start++;
     if (start >= DMR_FRAME_LENGTH_BITS)
       start -= DMR_FRAME_LENGTH_BITS;
-    buffer[i] |= ((m_buffer[start++] & 0x01) << 2);
+    buffer[i] |= READ_BIT1(m_buffer, start) << 2;
+    start++;
     if (start >= DMR_FRAME_LENGTH_BITS)
       start -= DMR_FRAME_LENGTH_BITS;
-    buffer[i] |= ((m_buffer[start++] & 0x01) << 1);
+    buffer[i] |= READ_BIT1(m_buffer, start) << 1;
+    start++;
     if (start >= DMR_FRAME_LENGTH_BITS)
       start -= DMR_FRAME_LENGTH_BITS;
-    buffer[i] |= ((m_buffer[start++] & 0x01) << 0);
+    buffer[i] |= READ_BIT1(m_buffer, start) << 0;
+    start++;
     if (start >= DMR_FRAME_LENGTH_BITS)
       start -= DMR_FRAME_LENGTH_BITS;
   }

@@ -40,6 +40,7 @@ const uint8_t BIT_MASK_TABLE[] = {0x80U, 0x40U, 0x20U, 0x10U, 0x08U, 0x04U, 0x02
 
 CDMRDMORX::CDMRDMORX() :
 m_patternBuffer(0x00U),
+m_buffer(),
 m_dataPtr(0U),
 m_syncPtr(0U),
 m_startPtr(0U),
