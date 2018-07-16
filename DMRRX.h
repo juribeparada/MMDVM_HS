@@ -39,6 +39,7 @@ public:
 
 private:
   CDMRSlotRX m_slotRX;
+  uint8_t    m_control_old;
 };
 
 #endif

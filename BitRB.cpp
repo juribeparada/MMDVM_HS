@@ -36,7 +36,7 @@ m_full(false),
 m_overflow(false)
 {
   m_bits    = new uint8_t[length / 8U];
-  m_control = new uint8_t[length];
+  m_control = new uint8_t[length / 8U];
 }
 
 uint16_t CBitRB::getSpace() const
@@ -74,7 +74,7 @@ bool CBitRB::put(uint8_t bit, uint8_t control)
   }
 
   WRITE_BIT1(m_bits, m_head, bit);
-  m_control[m_head] = control;
+  WRITE_BIT1(m_control, m_head, control);
 
   m_head++;
   if (m_head >= m_length)
@@ -92,7 +92,7 @@ bool CBitRB::get(uint8_t& bit, uint8_t& control)
     return false;
 
   bit     = READ_BIT1(m_bits, m_tail);
-  control = m_control[m_tail];
+  control = READ_BIT1(m_control, m_tail);
 
   m_full = false;
 

@@ -24,23 +24,21 @@
 #include "Globals.h"
 #include "DMRRX.h"
 
-CDMRRX::CDMRRX()
+CDMRRX::CDMRRX() :
+m_control_old(0U)
 {
 }
 
 void CDMRRX::databit(bool bit, const uint8_t control)
 {
-  switch (control) {
-    case MARK_SLOT1:
-      m_slotRX.start(false);
-      break;
-    case MARK_SLOT2:
+  if (control != m_control_old) {
+    m_control_old = control;
+    if (control)
       m_slotRX.start(true);
-      break;
-    default:
-      break;
+    else
+      m_slotRX.start(false);
   }
-  
+
   io.setDecode(m_slotRX.databit(bit));
 }
 

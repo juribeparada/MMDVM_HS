@@ -70,6 +70,7 @@ private:
   uint16_t                         m_poPtr;
   uint32_t                         m_frameCount;
   bool                             m_abort[2U];
+  uint8_t                          m_control_old;
 
   void createData(uint8_t slotIndex);
   void createCACH(uint8_t txSlotIndex, uint8_t rxSlotIndex);
