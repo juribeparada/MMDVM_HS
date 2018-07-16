@@ -26,6 +26,8 @@
 
 #include "DMRDefines.h"
 
+const uint16_t DMR_IDLE_LENGTH_BITS = 576U;
+
 class CDMRIdleRX {
 public:
   CDMRIdleRX();
@@ -38,7 +40,7 @@ public:
 
 private:
   uint64_t m_patternBuffer;
-  uint8_t  m_buffer[DMR_FRAME_LENGTH_BITS / 8U];
+  uint8_t  m_buffer[DMR_IDLE_LENGTH_BITS / 8U];
   uint16_t m_dataPtr;
   uint16_t m_endPtr;
   uint8_t  m_colorCode;
