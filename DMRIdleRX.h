@@ -26,7 +26,7 @@
 
 #include "DMRDefines.h"
 
-const uint16_t DMR_IDLE_LENGTH_BITS = 576U;
+const uint16_t DMR_IDLE_LENGTH_BITS = 400U;
 
 class CDMRIdleRX {
 public:
