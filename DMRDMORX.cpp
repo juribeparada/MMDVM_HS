@@ -1,6 +1,6 @@
 /*
  *   Copyright (C) 2009-2016 by Jonathan Naylor G4KLX
- *   Copyright (C) 2016,2017 by Andy Uribe CA6JAU
+ *   Copyright (C) 2016,2017,2018 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -65,7 +65,7 @@ void CDMRDMORX::reset()
 }
 
 void CDMRDMORX::databit(bool bit)
-{ 
+{
   WRITE_BIT1(m_buffer, m_dataPtr, bit);
 
   m_patternBuffer <<= 1;
@@ -92,7 +92,7 @@ void CDMRDMORX::databit(bool bit)
         correlateSync();
     }
   }
-  
+
   if (m_dataPtr == m_endPtr) {
     frame[0U] = m_control;
 
@@ -189,7 +189,7 @@ void CDMRDMORX::databit(bool bit)
     // End of this slot, reset some items for the next slot.
     m_control = CONTROL_NONE;
   }
- 
+
   m_dataPtr++;
 
   if (m_dataPtr >= DMO_BUFFER_LENGTH_BITS)
@@ -199,41 +199,37 @@ void CDMRDMORX::databit(bool bit)
 }
 
 void CDMRDMORX::correlateSync()
-{  
+{
   if ( (countBits64((m_patternBuffer & DMR_SYNC_BITS_MASK) ^ DMR_MS_DATA_SYNC_BITS) <= MAX_SYNC_BYTES_ERRS) || \
     (countBits64((m_patternBuffer & DMR_SYNC_BITS_MASK) ^ DMR_S2_DATA_SYNC_BITS) <= MAX_SYNC_BYTES_ERRS) ) {
+    m_control = CONTROL_DATA;
+    m_syncPtr = m_dataPtr;
 
-  m_control = CONTROL_DATA;
-  m_syncPtr = m_dataPtr;
+    m_startPtr = m_dataPtr + DMO_BUFFER_LENGTH_BITS - DMR_SLOT_TYPE_LENGTH_BITS / 2U - DMR_INFO_LENGTH_BITS / 2U - DMR_SYNC_LENGTH_BITS + 1;
+    if (m_startPtr >= DMO_BUFFER_LENGTH_BITS)
+      m_startPtr -= DMO_BUFFER_LENGTH_BITS;
 
-  m_startPtr = m_dataPtr + DMO_BUFFER_LENGTH_BITS - DMR_SLOT_TYPE_LENGTH_BITS / 2U - DMR_INFO_LENGTH_BITS / 2U - DMR_SYNC_LENGTH_BITS + 1;
-  if (m_startPtr >= DMO_BUFFER_LENGTH_BITS)
-    m_startPtr -= DMO_BUFFER_LENGTH_BITS;
+    m_endPtr = m_dataPtr + DMR_SLOT_TYPE_LENGTH_BITS / 2U + DMR_INFO_LENGTH_BITS / 2U;
+    if (m_endPtr >= DMO_BUFFER_LENGTH_BITS)
+      m_endPtr -= DMO_BUFFER_LENGTH_BITS;
 
-  m_endPtr = m_dataPtr + DMR_SLOT_TYPE_LENGTH_BITS / 2U + DMR_INFO_LENGTH_BITS / 2U;
-  if (m_endPtr >= DMO_BUFFER_LENGTH_BITS)
-    m_endPtr -= DMO_BUFFER_LENGTH_BITS;
-    
-  m_modeTimerCnt = 0;
-
-  //DEBUG4("SYNC MS Data found pos/start/end:", m_dataPtr, m_startPtr, m_endPtr);
+    m_modeTimerCnt = 0;
+    //DEBUG4("SYNC MS Data found pos/start/end:", m_dataPtr, m_startPtr, m_endPtr);
   } else if ( (countBits64((m_patternBuffer & DMR_SYNC_BITS_MASK) ^ DMR_MS_VOICE_SYNC_BITS) <= MAX_SYNC_BYTES_ERRS) || \
     (countBits64((m_patternBuffer & DMR_SYNC_BITS_MASK) ^ DMR_S2_VOICE_SYNC_BITS) <= MAX_SYNC_BYTES_ERRS) ) {
+    m_control  = CONTROL_VOICE;
+    m_syncPtr  = m_dataPtr;
 
-  m_control  = CONTROL_VOICE;
-  m_syncPtr  = m_dataPtr;
+    m_startPtr = m_dataPtr + DMO_BUFFER_LENGTH_BITS - DMR_SLOT_TYPE_LENGTH_BITS / 2U - DMR_INFO_LENGTH_BITS / 2U - DMR_SYNC_LENGTH_BITS + 1;
+    if (m_startPtr >= DMO_BUFFER_LENGTH_BITS)
+      m_startPtr -= DMO_BUFFER_LENGTH_BITS;
 
-  m_startPtr = m_dataPtr + DMO_BUFFER_LENGTH_BITS - DMR_SLOT_TYPE_LENGTH_BITS / 2U - DMR_INFO_LENGTH_BITS / 2U - DMR_SYNC_LENGTH_BITS + 1;
-  if (m_startPtr >= DMO_BUFFER_LENGTH_BITS)
-    m_startPtr -= DMO_BUFFER_LENGTH_BITS;
+    m_endPtr   = m_dataPtr + DMR_SLOT_TYPE_LENGTH_BITS / 2U + DMR_INFO_LENGTH_BITS / 2U;
+    if (m_endPtr >= DMO_BUFFER_LENGTH_BITS)
+      m_endPtr -= DMO_BUFFER_LENGTH_BITS;
 
-  m_endPtr   = m_dataPtr + DMR_SLOT_TYPE_LENGTH_BITS / 2U + DMR_INFO_LENGTH_BITS / 2U;
-  if (m_endPtr >= DMO_BUFFER_LENGTH_BITS)
-    m_endPtr -= DMO_BUFFER_LENGTH_BITS;
-
-  m_modeTimerCnt = 0;
-  
-  //DEBUG4("SYNC MS Voice found pos/start/end: ", m_dataPtr, m_startPtr, m_endPtr);
+    m_modeTimerCnt = 0;
+    //DEBUG4("SYNC MS Voice found pos/start/end: ", m_dataPtr, m_startPtr, m_endPtr);
   }
 }
 

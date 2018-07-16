@@ -1,6 +1,6 @@
 /*
  *   Copyright (C) 2009-2017 by Jonathan Naylor G4KLX
- *   Copyright (C) 2017 by Andy Uribe CA6JAU
+ *   Copyright (C) 2017,2018 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -60,12 +60,11 @@ void CDMRIdleRX::databit(bool bit)
   m_patternBuffer <<= 1;
   if (bit)
     m_patternBuffer |= 0x01U;
-    
+
   if (countBits64((m_patternBuffer & DMR_SYNC_BITS_MASK) ^ DMR_MS_DATA_SYNC_BITS) <= MAX_SYNC_BYTES_ERRS) {
     m_endPtr = m_dataPtr + DMR_SLOT_TYPE_LENGTH_BITS / 2U + DMR_INFO_LENGTH_BITS / 2U;
     if (m_endPtr >= DMR_IDLE_LENGTH_BITS)
       m_endPtr -= DMR_IDLE_LENGTH_BITS;
-          
     // DEBUG3("SYNC MS Data found pos/end:", m_dataPtr, m_endPtr);
   }
 
@@ -81,7 +80,7 @@ void CDMRIdleRX::databit(bool bit)
     uint8_t dataType;
     CDMRSlotType slotType;
     slotType.decode(frame + 1U, colorCode, dataType);
-    
+
     if (colorCode == m_colorCode && dataType == DT_CSBK) {
       frame[0U] = CONTROL_IDLE | CONTROL_DATA | DT_CSBK;
       serial.writeDMRData(false, frame, DMR_FRAME_LENGTH_BYTES + 1U);
