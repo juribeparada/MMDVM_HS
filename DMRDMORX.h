@@ -41,7 +41,7 @@ public:
 
 private:
   uint64_t    m_patternBuffer;
-  uint8_t     m_buffer[DMO_BUFFER_LENGTH_BITS];
+  uint8_t     m_buffer[DMO_BUFFER_LENGTH_BITS / 8U];  // 72 bytes
   uint8_t     frame[DMR_FRAME_LENGTH_BYTES + 3U];
   uint16_t    m_dataPtr;
   uint16_t    m_syncPtr;

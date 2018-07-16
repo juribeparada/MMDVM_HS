@@ -50,7 +50,7 @@ public:
 private:
   bool        m_slot;
   uint64_t    m_patternBuffer;
-  uint8_t     m_buffer[DMR_BUFFER_LENGTH_BITS];
+  uint8_t     m_buffer[DMR_BUFFER_LENGTH_BITS / 8U];  // 72 bytes
   uint16_t    m_dataPtr;
 
   uint8_t     frame1[DMR_FRAME_LENGTH_BYTES + 3U];
