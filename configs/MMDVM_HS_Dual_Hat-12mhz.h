@@ -45,6 +45,16 @@
 // For 12.2880 MHz:
 #define ADF7021_12_2880
 
+// Configure receiver gain for ADF7021
+// AGC automatic, default settings:
+#define AD7021_GAIN_AUTO
+// AGC automatic with high LNA linearity:
+// #define AD7021_GAIN_AUTO_LIN
+// AGC OFF, lowest gain: 
+// #define AD7021_GAIN_LOW
+// AGC OFF, highest gain:
+// #define AD7021_GAIN_HIGH
+
 // Host communication selection:
 #define STM32_USART1_HOST
 // #define STM32_USB_HOST

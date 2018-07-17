@@ -118,7 +118,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 
 // Post demodulator bandwith (REG 04)
 #define ADF7021_POST_BW_DSTAR    10U
-#define ADF7021_POST_BW_DMR      150U
+#define ADF7021_POST_BW_DMR      80U
 #define ADF7021_POST_BW_YSF      20U
 #define ADF7021_POST_BW_P25      6U
 #define ADF7021_POST_BW_NXDN     7U
@@ -219,7 +219,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 
 // Post demodulator bandwith (REG 04)
 #define ADF7021_POST_BW_DSTAR    10U
-#define ADF7021_POST_BW_DMR      150U
+#define ADF7021_POST_BW_DMR      80U
 #define ADF7021_POST_BW_YSF      20U
 #define ADF7021_POST_BW_P25      6U
 #define ADF7021_POST_BW_NXDN     8U

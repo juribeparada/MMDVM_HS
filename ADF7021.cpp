@@ -525,7 +525,15 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
   Send_AD7021_control();
 
   // AGC (auto, defaults) (9)
-  AD7021_control_word = 0x000231E9;
+#if defined(AD7021_GAIN_AUTO)
+  AD7021_control_word = 0x000231E9; // AGC ON, normal operation
+#elif defined(AD7021_GAIN_AUTO_LIN)
+  AD7021_control_word = 0x100231E9; // AGC ON, LNA high linearity
+#elif defined(AD7021_GAIN_LOW)
+  AD7021_control_word = 0x120631E9; // AGC OFF, low gain, LNA high linearity
+#elif defined(AD7021_GAIN_HIGH)
+  AD7021_control_word = 0x00A631E9; // AGC OFF, high gain
+#endif
   Send_AD7021_control();
 
   // AFC (10)
