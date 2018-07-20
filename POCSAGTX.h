@@ -32,6 +32,8 @@ public:
 
   void process();
 
+  bool busy();
+
 private:
   CSerialRB        m_buffer;
   uint8_t          m_poBuffer[200U];

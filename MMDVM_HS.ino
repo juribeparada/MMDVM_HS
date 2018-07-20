@@ -115,7 +115,7 @@ void loop()
   if (m_nxdnEnable && m_modemState == STATE_NXDN)
     nxdnTX.process();
 
-  if (m_pocsagEnable && m_modemState == STATE_POCSAG)
+  if (m_pocsagEnable && (m_modemState == STATE_POCSAG || pocsagTX.busy()))
     pocsagTX.process();
 
   if (m_calState == STATE_DMRCAL || m_calState == STATE_DMRDMO1K)
