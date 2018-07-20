@@ -34,35 +34,32 @@ m_delay(false)
 
 void CPOCSAGTX::process()
 {
-  if (m_buffer.getData() == 0U && m_poLen == 0U)
-    return;
-
-  if (m_poLen == 0U) {
+  if (m_poLen == 0U && m_buffer.getData() > 0U) {
     if (!m_tx) {
       m_delay = true;
       m_poLen = m_txDelay;
     } else {
       m_delay = false;
       for (uint8_t i = 0U; i < POCSAG_FRAME_LENGTH_BYTES; i++)
-        m_poBuffer[m_poLen++] = m_buffer.get();
-    }
+        m_poBuffer[i] = m_buffer.get();
 
+      m_poLen = POCSAG_FRAME_LENGTH_BYTES;
+    }
     m_poPtr = 0U;
   }
 
   if (m_poLen > 0U) {
     uint16_t space = io.getSpace();
-    
+
     while (space > 8U) {
       if (m_delay) {
         m_poPtr++;
         writeByte(POCSAG_SYNC);
-      }
-      else
-        writeByte(m_poBuffer[m_poPtr++]); 
+      } else
+          writeByte(m_poBuffer[m_poPtr++]); 
 
       space -= 8U;
-      
+
       if (m_poPtr >= m_poLen) {
         m_poPtr = 0U;
         m_poLen = 0U;
@@ -92,7 +89,7 @@ void CPOCSAGTX::writeByte(uint8_t c)
 {
   uint8_t bit;
   uint8_t mask = 0x80U;
-  
+
   for (uint8_t i = 0U; i < 8U; i++, c <<= 1) {
     if ((c & mask) == mask)
       bit = 1U;

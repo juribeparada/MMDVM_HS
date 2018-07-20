@@ -77,10 +77,10 @@ void CDMRDMOTX::process()
         m_poPtr++;
         writeByte(DMR_SYNC);
       } else
-        writeByte(m_poBuffer[m_poPtr++]);   
+          writeByte(m_poBuffer[m_poPtr++]);   
 
       space -= 8U;
-      
+
       if (m_poPtr >= m_poLen) {
         m_poPtr = 0U;
         m_poLen = 0U;

@@ -29,8 +29,8 @@ uint8_t     m_power;
 
 CIO::CIO():
 m_started(false),
-m_rxBuffer(RX_RINGBUFFER_SIZE),
-m_txBuffer(TX_RINGBUFFER_SIZE),
+m_rxBuffer(1024U),
+m_txBuffer(1024U),
 m_LoDevYSF(false),
 m_ledCount(0U),
 m_scanEnable(false),
