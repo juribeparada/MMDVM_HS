@@ -23,7 +23,7 @@ FW_VERSION="v1.4.3"
 MAC_DEV_USB_SER="/dev/cu.usbmodem1441"
 	
 # Download latest firmware for Nano DV
-curl -OL https://github.com/juribeparada/MMDVM_HS/releases/download/$FW_VERSION/nano_dv_fw.bin
+curl -OL https://github.com/juribeparada/MMDVM_HS/releases/download/$FW_VERSION/nanodv_npi_fw.bin
 
 # Download STM32F10X_Lib (only for binary tools)
 if [ ! -d "./STM32F10X_Lib/utils" ]; then
