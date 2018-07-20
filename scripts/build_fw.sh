@@ -74,10 +74,16 @@ make
 mv ~/MMDVM_HS/bin/mmdvm_f1.bin ~/MMDVM_HS/bin/nano_hotspot_fw.bin
 make clean
 
-# Building Nano DV
-cp ~/MMDVM_HS/configs/NanoDV.h ~/MMDVM_HS/Config.h
+# Building NanoDV NPi
+cp ~/MMDVM_HS/configs/NanoDV_NPi.h ~/MMDVM_HS/Config.h
 make
-mv ~/MMDVM_HS/bin/mmdvm_f1.bin ~/MMDVM_HS/bin/nano_dv_fw.bin
+mv ~/MMDVM_HS/bin/mmdvm_f1.bin ~/MMDVM_HS/bin/nanodv_npi_fw.bin
+make clean
+
+# Building NanoDV USB
+cp ~/MMDVM_HS/configs/NanoDV_USB.h ~/MMDVM_HS/Config.h
+make bl
+mv ~/MMDVM_HS/bin/mmdvm_f1bl.bin ~/MMDVM_HS/bin/nanodv_usb_fw.bin
 make clean
 
 # Building Generic Simplex GPIO

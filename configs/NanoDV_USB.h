@@ -30,7 +30,7 @@
 // #define MMDVM_HS_DUAL_HAT_REV10
 // 5) Nano hotSPOT (BI7JTA)
 // #define NANO_HOTSPOT
-// 6) Nano DV revisions 1.0 (BG4TGO & BG5HHP)
+// 6) NanoDV NPi or USB revisions 1.0 (BG4TGO & BG5HHP)
 #define NANO_DV_REV10
 
 // Enable ADF7021 support:
@@ -56,8 +56,8 @@
 // #define AD7021_GAIN_HIGH
 
 // Host communication selection:
-#define STM32_USART1_HOST
-// #define STM32_USB_HOST
+// #define STM32_USART1_HOST
+#define STM32_USB_HOST
 
 // Enable mode detection:
 #define ENABLE_SCAN_MODE
@@ -80,14 +80,14 @@
 // Engage a constant or descreet Service LED mode once repeater is running 
 // #define CONSTANT_SRV_LED
 // #define CONSTANT_SRV_LED_INVERTED
-// #define DISCREET_SRV_LED
+#define DISCREET_SRV_LED
 // #define DISCREET_SRV_LED_INVERTED
 
 // Use the YSF and P25 LEDs for NXDN
 // #define USE_ALTERNATE_NXDN_LEDS
 
 // Use the D-Star and DMR LEDs for POCSAG
-// #define USE_ALTERNATE_POCSAG_LEDS
+#define USE_ALTERNATE_POCSAG_LEDS
 
 // Enable modem debug messages
 // #define ENABLE_DEBUG
