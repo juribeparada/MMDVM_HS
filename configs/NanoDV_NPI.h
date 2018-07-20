@@ -80,14 +80,14 @@
 // Engage a constant or descreet Service LED mode once repeater is running 
 // #define CONSTANT_SRV_LED
 // #define CONSTANT_SRV_LED_INVERTED
-// #define DISCREET_SRV_LED
+#define DISCREET_SRV_LED
 // #define DISCREET_SRV_LED_INVERTED
 
 // Use the YSF and P25 LEDs for NXDN
 // #define USE_ALTERNATE_NXDN_LEDS
 
 // Use the D-Star and DMR LEDs for POCSAG
-// #define USE_ALTERNATE_POCSAG_LEDS
+#define USE_ALTERNATE_POCSAG_LEDS
 
 // Enable modem debug messages
 // #define ENABLE_DEBUG
