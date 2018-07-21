@@ -83,6 +83,8 @@ private:
   void bitsToBytes(uint16_t start, uint8_t count, uint8_t* buffer);
   void writeRSSIData1();
   void writeRSSIData2();
+  void reset1();
+  void reset2();
 };
 
 #endif

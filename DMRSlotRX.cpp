@@ -80,6 +80,12 @@ void CDMRSlotRX::reset()
   m_delayPtr  = 0U;
   m_patternBuffer = 0U;
 
+  reset1();
+  reset2();
+}
+
+void CDMRSlotRX::reset1()
+{
   m_syncPtr1   = 0U;
   m_control1   = CONTROL_NONE;
   m_syncCount1 = 0U;
@@ -88,8 +94,10 @@ void CDMRSlotRX::reset()
   m_endPtr1    = NOENDPTR;
   m_type1      = 0U;
   m_n1         = 0U;
+}
 
-  
+void CDMRSlotRX::reset2()
+{
   m_syncPtr2   = 0U;
   m_control2   = CONTROL_NONE;
   m_syncCount2 = 0U;
@@ -228,8 +236,7 @@ void CDMRSlotRX::procSlot1()
         m_syncCount1++;
         if (m_syncCount1 >= MAX_SYNC_LOST_FRAMES) {
           serial.writeDMRLost(0U);
-          m_state1  = DMRRXS_NONE;
-          m_endPtr1 = NOENDPTR;
+          reset1();
         }
       }
 
@@ -249,7 +256,7 @@ void CDMRSlotRX::procSlot1()
         }
       }
     }
-    
+
     // End of this slot, reset some items for the next slot.
     m_control1 = CONTROL_NONE;
   }
@@ -331,8 +338,7 @@ void CDMRSlotRX::procSlot2()
         m_syncCount2++;
         if (m_syncCount2 >= MAX_SYNC_LOST_FRAMES) {
           serial.writeDMRLost(1U);
-          m_state2  = DMRRXS_NONE;
-          m_endPtr2 = NOENDPTR;
+          reset2();
         }
       }
 
@@ -352,7 +358,7 @@ void CDMRSlotRX::procSlot2()
         }
       }
     }
-    
+
     // End of this slot, reset some items for the next slot.
     m_control2 = CONTROL_NONE;
   }
@@ -469,10 +475,10 @@ void CDMRSlotRX::writeRSSIData1()
 {
 #if defined(SEND_RSSI_DATA)
   uint16_t rssi = io.readRSSI();
-  
+
   frame1[34U] = (rssi >> 8) & 0xFFU;
   frame1[35U] = (rssi >> 0) & 0xFFU;
-  
+
   serial.writeDMRData(0U, frame1, DMR_FRAME_LENGTH_BYTES + 3U);
 #else
   serial.writeDMRData(0U, frame1, DMR_FRAME_LENGTH_BYTES + 1U);
@@ -483,10 +489,10 @@ void CDMRSlotRX::writeRSSIData2()
 {
 #if defined(SEND_RSSI_DATA)
   uint16_t rssi = io.readRSSI();
-  
+
   frame2[34U] = (rssi >> 8) & 0xFFU;
   frame2[35U] = (rssi >> 0) & 0xFFU;
-  
+
   serial.writeDMRData(1U, frame2, DMR_FRAME_LENGTH_BYTES + 3U);
 #else
   serial.writeDMRData(1U, frame2, DMR_FRAME_LENGTH_BYTES + 1U);
