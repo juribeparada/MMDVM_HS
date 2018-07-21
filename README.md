@@ -57,9 +57,13 @@ You could use some pi-star commands under SSH console:
 - sudo pistar-zumspotflash rpi_duplex: ZUMSpot duplex board conected to GPIO
 - sudo pistar-zumspotflash usb: ZUMspot USB dongle
 - sudo pistar-zumspotflash libre: ZUMspot Libre Kit or generic MMDVM_HS board with USB
-- sudo pistar-mmdvmhshatflash hs_hat: MMDVM_HS_Hat board conected to GPIO
-- sudo pistar-mmdvmhshatflash hs_dual_hat: HS_DUAL_HAT board conected to GPIO
+- sudo pistar-mmdvmhshatflash hs_hat: MMDVM_HS_Hat board (14.7456MHz TCXO)
+- sudo pistar-mmdvmhshatflash hs_dual_hat: HS_DUAL_HAT board (14.7456MHz TCXO)
+- sudo pistar-mmdvmhshatflash hs_hat-12mhz: MMDVM_HS_Hat board (12.288MHz TCXO)
+- sudo pistar-mmdvmhshatflash hs_dual_hat-12mhz: HS_DUAL_HAT board (12.288MHz TCXO)
 - sudo pistar-nanohsflash nano_hs: Nano hotSPOT board
+- sudo pistar-nanodvflash pi: NanoDV NPi board
+- sudo pistar-nanodvflash usb: NanoDV USB board
 
 ### Windows
 
@@ -75,7 +79,8 @@ Download the script (*.sh) that matches with your ZUMspot/MMDVM_HS board:
 - install_fw_hshat.sh: only for MMDVM_HS_Hat board (DB9MAT & DF2ET)
 - install_fw_hshat-12mhz.sh: only for MMDVM_HS_Hat board with 12.288 MHz TCXO (DB9MAT & DF2ET)
 - install_fw_nanohs.sh: only for Nano hotSPOT board (BI7JTA)
-- install_fw_nanodv.sh: only for Nano DV board (BG4TGO & BG5HHP)
+- install_fw_nanodv_npi.sh: only for NanoDV NPi board 1.0 (BG4TGO & BG5HHP)
+- install_fw_nanodv_usb.sh: only for NanoDV USB board 1.0 (BG4TGO & BG5HHP)
 - install_fw_hsdualhat.sh: only for MMDVM_HS_Dual_Hat board (DB9MAT & DF2ET & DO7EN)
 - install_fw_librekit.sh: only for ZUMspot Libre Kit board (KI6ZUM & VE2GZI) or generic MMDVM_HS board with USB interface
 - install_fw_usb.sh: only for ZUMspot USB dongle (KI6ZUM & VE2GZI)
@@ -212,8 +217,11 @@ and enable:
     #define ZUMSPOT_ADF7021
     #define ENABLE_ADF7021
     #define ADF7021_14_7456
+    #define AD7021_GAIN_AUTO
     #define STM32_USART1_HOST
     #define ENABLE_SCAN_MODE
+    #define USE_ALTERNATE_NXDN_LEDS
+    #define USE_ALTERNATE_POCSAG_LEDS
 
 Build the firmware:
 
