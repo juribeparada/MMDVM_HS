@@ -72,7 +72,7 @@ void CPOCSAGTX::process()
 
 bool CPOCSAGTX::busy()
 {
-  if (m_poLen > 0U)
+  if (m_poLen > 0U || m_buffer.getData() > 0U)
     return true;
   else
     return false;
