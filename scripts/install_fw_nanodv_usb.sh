@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#   Copyright (C) 2018 by Andy Uribe CA6JAU
+#   Copyright (C) 2017,2018 by Andy Uribe CA6JAU
 
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -22,8 +22,8 @@ FW_VERSION="v1.4.3"
 # Change USB-serial port name ONLY in macOS
 MAC_DEV_USB_SER="/dev/cu.usbmodem1441"
 	
-# Download latest firmware for Nano DV
-curl -OL https://github.com/juribeparada/MMDVM_HS/releases/download/$FW_VERSION/nano_dv_fw.bin
+# Download latest firmware for ZUMspot USB
+curl -OL https://github.com/juribeparada/MMDVM_HS/releases/download/$FW_VERSION/nanodv_usb_fw.bin
 
 # Download STM32F10X_Lib (only for binary tools)
 if [ ! -d "./STM32F10X_Lib/utils" ]; then
@@ -72,6 +72,12 @@ fi
 # Stop MMDVMHost process to free serial port
 sudo killall MMDVMHost >/dev/null 2>&1
 
-# Upload the firmware
-eval sudo $STM32FLASH -v -w nano_dv_fw.bin -g 0x0 -R -i 67,-66,66:-67,66 /dev/ttyAMA0
+# Reset ZUMspot to enter bootloader mode
+eval sudo $DFU_RST $DEV_USB_SER 750
 
+# Upload the firmware
+eval sudo $DFU_UTIL -D nanodv_usb_fw.bin -d 1eaf:0003 -a 2 -R -R
+
+echo
+echo "Please RESET your Nano DV !"
+echo
