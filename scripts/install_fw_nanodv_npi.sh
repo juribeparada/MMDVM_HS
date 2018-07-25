@@ -73,5 +73,5 @@ fi
 sudo killall MMDVMHost >/dev/null 2>&1
 
 # Upload the firmware
-eval sudo $STM32FLASH -v -w nano_dv_fw.bin -g 0x0 -R -i 67,-66,66:-67,66 /dev/ttyAMA0
+eval sudo $STM32FLASH -v -w nanodv_npi_fw.bin -g 0x0 -R -i 67,-66,66:-67,66 /dev/ttyAMA0
 
