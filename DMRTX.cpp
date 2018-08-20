@@ -255,14 +255,20 @@ void CDMRTX::createData(uint8_t slotIndex)
   if (m_fifo[slotIndex].getData() > 0U && m_frameCount >= STARTUP_COUNT) {
     for (unsigned int i = 0U; i < DMR_FRAME_LENGTH_BYTES; i++) {
       m_poBuffer[i]   = m_fifo[slotIndex].get();
-      m_markBuffer[i] = MARK_NONE;
+      if (i == 8U)
+        m_markBuffer[i] = slotIndex == 0U ? MARK_SLOT1 : MARK_SLOT2;
+      else
+        m_markBuffer[i] = MARK_NONE;
     }
   } else {
     m_abort[slotIndex] = false;
     // Transmit an idle message
     for (unsigned int i = 0U; i < DMR_FRAME_LENGTH_BYTES; i++) {
       m_poBuffer[i]   = m_idle[i];
-      m_markBuffer[i] = MARK_NONE;
+      if (i == 8U)
+        m_markBuffer[i] = slotIndex == 0U ? MARK_SLOT1 : MARK_SLOT2;
+      else
+        m_markBuffer[i] = MARK_NONE;
     }
   }
 
@@ -287,7 +293,7 @@ void CDMRTX::createCACH(uint8_t txSlotIndex, uint8_t rxSlotIndex)
   ::memcpy(m_poBuffer, m_shortLC + m_cachPtr, 3U);
   m_markBuffer[0U] = MARK_NONE;
   m_markBuffer[1U] = MARK_NONE;
-  m_markBuffer[2U] = rxSlotIndex == 1U ? MARK_SLOT1 : MARK_SLOT2;
+  m_markBuffer[2U] = MARK_NONE;
 
   bool at = false;
   if (m_frameCount >= STARTUP_COUNT)

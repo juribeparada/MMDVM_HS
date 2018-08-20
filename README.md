@@ -107,7 +107,7 @@ and wait to complete the upgrading process.
 
 You could use example files from MMDVM_HS/configs folder and overwrite the Config.h file, in order to compile a firmware with default settings. There are a specific config file for each ZUMspot or any MMDVM_HS compatible boards. In general, there are two possible compilation ways:
 
-- Board with USB interface
+- Boards with USB interface:
 
 Boards with STM32_USB_HOST option enabled in Config.h (ZUMspot Libre Kit, ZUMspot USB, GIBSpot USB, NanoDV USB, etc). Those boards need to have the USB bootloader installed. For example:
 
@@ -115,7 +115,7 @@ Boards with STM32_USB_HOST option enabled in Config.h (ZUMspot Libre Kit, ZUMspo
     make bl
     make dfu
 
-- Board with GPIO interface
+- Boards with GPIO interface:
 
 Boards with STM32_USART1_HOST option enabled in Config.h (ZUMspot RPi, MMDVM_HS_Hat, MMDVM_HS_Dual_Hat, Nano hotSPOT, etc). No USB bootloader needed. For example:
 
