@@ -394,7 +394,7 @@ void CDMRSlotRX::correlateSync()
       m_endPtr1 = endPtr;
       m_control1 = control;
     }
-    //DEBUG5("SYNC corr MS Data found slot/pos/start/end:", m_slot ? 2U : 1U, m_dataPtr, startPtr, endPtr);
+    DEBUG5("SYNC corr MS Data found slot/pos/start/end:", m_slot ? 2U : 1U, m_dataPtr, startPtr, endPtr);
   } else if (countBits64((m_patternBuffer & DMR_SYNC_BITS_MASK) ^ DMR_MS_VOICE_SYNC_BITS) <= MAX_SYNC_BYTES_ERRS) {
     control  = CONTROL_VOICE;
     syncPtr  = m_dataPtr;
@@ -418,7 +418,7 @@ void CDMRSlotRX::correlateSync()
       m_endPtr1 = endPtr;
       m_control1 = control;
     }
-    //DEBUG5("SYNC corr MS Voice found slot/pos/start/end: ", m_slot ? 2U : 1U, m_dataPtr, startPtr, endPtr);
+    DEBUG5("SYNC corr MS Voice found slot/pos/start/end: ", m_slot ? 2U : 1U, m_dataPtr, startPtr, endPtr);
   }
 }
 
