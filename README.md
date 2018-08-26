@@ -23,9 +23,49 @@ This software is licenced under the GPL v2 and is intended for amateur and educa
 - CW ID support
 - Full duplex support with two ADF7021
 
+# Known issues
+
+## Common issues for simplex and duplex boards
+
+- High RX BER or not RX, poor TX audio (4FSK modes): adjust frequency offset, specially RXOffset.
+- Poor audio with MD380: increase DMR deviation to 55 % or 60 %.
+- Bad RX sensitivity: this is not a firmware issue, ADF7021 has a minimum signal detection around -109 dBm in DMR, but RX performance depends on RF board design, external RX noise, frequency, etc. At the moment only original ZUMspot RPi can reach the best RX sensitivity in 70 cm band.
+
+## Duplex boards
+
+- Not DMR activation ("repeater fail" error) with MD380, Ailunce HD1 or some other radios: increase DMR deviation to 55 % or 60 %.
+- RX timeout: this is due to TX and RX clock differences, which does not have easy solution. Be sure your firmware version is >= 1.4.7, which minimizes this problem.
+
+# Notes for previous users of MMDVM boards
+
+MMDVM_HS boards do not need deviation calibration like MMDVM boards, but could be necessary some frequency offset calibration (ADF7021 does not have AFC for 4FSK modes).
+
+The following options in MMDVM.ini ([Modem] setion) have not any effect for MMDVM_HS boards:
+
+    TXInvert
+    RXInvert
+    PTTInvert
+    RXLevel
+    RXDCOffset
+    TXDCOffset
+
+The following options in MMDVM.ini ([Modem] setion) are very important for MMDVM_HS boards:
+
+    RXOffset: RX frequency offset (HS RX BER improvement)
+    TXOffset: TX frequency offset (radio RX improvement)
+    TXLevel: default deviation setting (recommended value: 50)
+    RFLevel: RF power output (recommended value: 100)
+    CWIdTXLevel: CW ID deviation setting (recommended value: 50)
+    D-StarTXLevel: D-Star deviation setting (recommended value: 50)
+    DMRTXLevel: DMR deviation setting (recommended value: 50)
+    YSFTXLevel: YSF deviation setting (recommended value: 50)
+    P25TXLevel: P25 deviation setting (recommended value: 50)
+    NXDNTXLevel: NXDN deviation setting (recommended value: 50)
+    POCSAGTXLevel: POCSAG deviation setting (recommended value: 50)
+
 # Important notes
 
-The ADF7021 (or RF7021SE module) must operate with a 14.7456 MHz TCXO and with at least 2 ppm of frequency stability. You could use also 12.2880 MHz TCXO, but this frequency configuration has less testing. Any other TCXO frequency is not supported.
+The ADF7021 (or RF7021SE module) must operate with a 14.7456 MHz TCXO and with at least 2 ppm of frequency stability. For 800-900 MHz frequency band you will need even a better frequency stability TCXO. You could use also 12.2880 MHz TCXO. Any other TCXO frequency is not supported. Please note that a bad quality TXCO not only affects the frequency offset, also affects clock data rate, which is not possible to fix and will cause BER issues.
 
 Please set TXLevel=50 in MMDVM.ini to configure default deviation levels for all modes. You could modify this value and other TXLevel paramenters to change deviation levels. Use [MMDVMCal](https://github.com/g4klx/MMDVMCal) to check DMR deviation level and TX frequency offset with calibrated test equipment.
 
