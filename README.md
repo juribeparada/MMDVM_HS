@@ -40,7 +40,7 @@ This software is licenced under the GPL v2 and is intended for amateur and educa
 
 MMDVM_HS boards do not need deviation calibration like MMDVM boards, but could be necessary some frequency offset calibration (ADF7021 does not have AFC for 4FSK modes).
 
-The following options in MMDVM.ini ([Modem] setion) have not any effect for MMDVM_HS boards:
+The following options in MMDVM.ini ([Modem] section) have not any effect for MMDVM_HS boards:
 
     TXInvert
     RXInvert
@@ -49,7 +49,7 @@ The following options in MMDVM.ini ([Modem] setion) have not any effect for MMDV
     RXDCOffset
     TXDCOffset
 
-The following options in MMDVM.ini ([Modem] setion) are very important for MMDVM_HS boards:
+The following options in MMDVM.ini ([Modem] section) are very important for MMDVM_HS boards:
 
     RXOffset: RX frequency offset (HS RX BER improvement)
     TXOffset: TX frequency offset (radio RX improvement)
@@ -65,7 +65,7 @@ The following options in MMDVM.ini ([Modem] setion) are very important for MMDVM
 
 # Important notes
 
-The ADF7021 (or RF7021SE module) must operate with a 14.7456 MHz TCXO and with at least 2 ppm of frequency stability. For 800-900 MHz frequency band you will need even a better frequency stability TCXO. You could use also 12.2880 MHz TCXO. Any other TCXO frequency is not supported. Please note that a bad quality TXCO not only affects the frequency offset, also affects clock data rate, which is not possible to fix and will cause BER issues.
+The ADF7021 (or RF7021SE module) must operate with a 14.7456 MHz TCXO and with at least 2.5 ppm of frequency stability. For 800-900 MHz frequency band you will need even a better frequency stability TCXO. You could use also 12.2880 MHz TCXO. Any other TCXO frequency is not supported. Please note that a bad quality TCXO not only affects the frequency offset, also affects clock data rate, which is not possible to fix and will cause BER issues.
 
 Please set TXLevel=50 in MMDVM.ini to configure default deviation levels for all modes. You could modify this value and other TXLevel paramenters to change deviation levels. Use [MMDVMCal](https://github.com/g4klx/MMDVMCal) to check DMR deviation level and TX frequency offset with calibrated test equipment.
 
