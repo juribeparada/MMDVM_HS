@@ -33,6 +33,7 @@ This software is licenced under the GPL v2 and is intended for amateur and educa
 
 ## Duplex boards
 
+- Very difficult DMR activation ("repeater fail" error): disable mode scanning, select just DMR mode.
 - Not DMR activation ("repeater fail" error) with MD380, Ailunce HD1 or some other radios: increase DMR deviation to 55 % or 60 %.
 - RX timeout: this is due to TX and RX clock differences, which does not have easy solution. Be sure your firmware version is >= 1.4.7, which minimizes this problem.
 
@@ -65,7 +66,7 @@ The following options in MMDVM.ini ([Modem] section) are very important for MMDV
 
 # Important notes
 
-The ADF7021 (or RF7021SE module) must operate with a 14.7456 MHz TCXO and with at least 2.5 ppm of frequency stability. For 800-900 MHz frequency band you will need even a better frequency stability TCXO. You could use also 12.2880 MHz TCXO. Any other TCXO frequency is not supported. Please note that a bad quality TCXO not only affects the frequency offset, also affects clock data rate, which is not possible to fix and will cause BER issues.
+The ADF7021 (or RF7021SE module) must operate with a 14.7456 MHz TCXO and with at least 2.5 ppm of frequency stability or better. For 800-900 MHz frequency band you will need even a better frequency stability TCXO. You could use also 12.2880 MHz TCXO. Any other TCXO frequency is not supported. Please note that a bad quality TCXO not only affects the frequency offset, also affects clock data rate, which is not possible to fix and will cause BER issues.
 
 Please set TXLevel=50 in MMDVM.ini to configure default deviation levels for all modes. You could modify this value and other TXLevel paramenters to change deviation levels. Use [MMDVMCal](https://github.com/g4klx/MMDVMCal) to check DMR deviation level and TX frequency offset with calibrated test equipment.
 
