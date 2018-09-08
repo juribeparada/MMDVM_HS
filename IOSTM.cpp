@@ -278,8 +278,15 @@ extern "C" {
 }
 
 void CIO::Init()
-{ 
-  // USB Conf IO:
+{
+  GPIO_InitTypeDef GPIO_InitStruct;
+  GPIO_StructInit(&GPIO_InitStruct);
+
+  EXTI_InitTypeDef EXTI_InitStructure;
+#if defined(DUPLEX)
+  EXTI_InitTypeDef EXTI_InitStructure2;
+#endif
+
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC | RCC_APB2Periph_AFIO, ENABLE);
   
 #if defined(PI_HAT_7021_REV_02)
@@ -288,31 +295,24 @@ void CIO::Init()
   GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);
 #endif
 
+  // Pin PA11,PA12 = LOW, USB Reset
+  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStruct.GPIO_Pin   = GPIO_Pin_11 | GPIO_Pin_12;
+  GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
+  GPIO_Init(GPIOA, &GPIO_InitStruct);
+  GPIO_WriteBit(GPIOA, GPIO_Pin_11, Bit_RESET);
+  GPIO_WriteBit(GPIOA, GPIO_Pin_12, Bit_RESET);
+
+  // 10 ms delay
+  delay_us(10000U);
+
+  GPIO_InitStruct.GPIO_Pin   = GPIO_Pin_11 | GPIO_Pin_12;
+  GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
+  GPIO_Init(GPIOA, &GPIO_InitStruct);
+
   RCC_USBCLKConfig(RCC_USBCLKSource_PLLCLK_1Div5);
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_USB, ENABLE);
   NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
-
-  EXTI_InitTypeDef EXTI_InitStructure;
-#if defined(DUPLEX)
-  EXTI_InitTypeDef EXTI_InitStructure2;
-#endif
-
-  GPIO_InitTypeDef GPIO_InitStruct;
-  GPIO_StructInit(&GPIO_InitStruct);
-
-  // Pin PA12 = LOW, USB Reset in generic boards
-  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStruct.GPIO_Pin   = GPIO_Pin_12;
-  GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
-  GPIO_Init(GPIOA, &GPIO_InitStruct);
-  GPIO_WriteBit(GPIOA, GPIO_Pin_12, Bit_RESET);
-
-  volatile unsigned int delay;
-  for(delay = 0;delay<512;delay++);
-
-  GPIO_InitStruct.GPIO_Pin   = GPIO_Pin_12;
-  GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
-  GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   // Pin SCLK
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;

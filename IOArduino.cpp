@@ -153,7 +153,7 @@ void CIO::Init()
 #endif
 
 #endif
- 
+
   pinMode(PIN_SCLK, OUTPUT);
   pinMode(PIN_SDATA, OUTPUT);
   pinMode(PIN_SREAD, INPUT);
@@ -170,19 +170,18 @@ void CIO::Init()
   pinMode(PIN_NXDN_LED, OUTPUT);
   pinMode(PIN_PTT_LED, OUTPUT);
   pinMode(PIN_COS_LED, OUTPUT);
-  
+
 #if defined(DUPLEX)
   pinMode(PIN_SLE2, OUTPUT);
   pinMode(PIN_RXD2, INPUT);
   pinMode(PIN_TXD2, INPUT);
 #endif
-  
+
 #if defined(BIDIR_DATA_PIN)
   pinMode(PIN_TXD, INPUT);
 #else
   pinMode(PIN_TXD, OUTPUT);
 #endif
-
 }
 
 void CIO::startInt()
