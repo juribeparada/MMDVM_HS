@@ -303,8 +303,13 @@ void CIO::Init()
   GPIO_WriteBit(GPIOA, GPIO_Pin_11, Bit_RESET);
   GPIO_WriteBit(GPIOA, GPIO_Pin_12, Bit_RESET);
 
+#if defined(LONG_USB_RESET)
   // 10 ms delay
   delay_us(10000U);
+#else
+  volatile unsigned int delay;
+  for(delay = 0;delay<512;delay++);
+#endif
 
   GPIO_InitStruct.GPIO_Pin   = GPIO_Pin_11 | GPIO_Pin_12;
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
