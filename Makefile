@@ -40,6 +40,9 @@ BINBIN_F1=mmdvm_f1.bin
 BINELF_F1BL=mmdvm_f1bl.elf
 BINHEX_F1BL=mmdvm_f1bl.hex
 BINBIN_F1BL=mmdvm_f1bl.bin
+BINELF_F1NOBL=mmdvm_f1nobl.elf
+BINHEX_F1NOBL=mmdvm_f1nobl.hex
+BINBIN_F1NOBL=mmdvm_f1nobl.bin
 BINELF_F4=mmdvm_f4.elf
 BINHEX_F4=mmdvm_f4.hex
 BINBIN_F4=mmdvm_f4.bin
@@ -103,7 +106,7 @@ ifeq ($(OS),Windows_NT)
 	DFU_UTIL=./$(F1_LIB_PATH)/utils/win/dfu-util.exe
 	STM32FLASH=./$(F1_LIB_PATH)/utils/win/stm32flash.exe
 else
-	CLEANCMD=rm -f $(OBJ_F1BL) $(OBJ_F4) $(OBJ_F7) $(BINDIR)/*.hex $(BINDIR)/mmdvm_f1.bin $(BINDIR)/*.elf
+	CLEANCMD=rm -f $(OBJ_F1BL) $(OBJ_F4) $(OBJ_F7) $(BINDIR)/*.hex $(BINDIR)/mmdvm_f1.bin $(BINDIR)/mmdvm_f1bl.bin $(BINDIR)/mmdvm_f1nobl.bin $(BINDIR)/*.elf
 	MDDIRS=mkdir $@
 
 	ifeq ($(shell uname -s),Linux)
@@ -200,7 +203,7 @@ CXXFLAGS=-Os -fno-exceptions -ffunction-sections -fdata-sections -nostdlib -fno-
 LDFLAGS=-Os --specs=nano.specs --specs=nosys.specs
 
 # Build Rules
-.PHONY: all release_f1 release_f4 release_f7 hs bl pi-f4 f446 f767 clean
+.PHONY: all release_f1 release_f4 release_f7 hs bl nobl pi-f4 f446 f767 clean
 
 all: hs
 
@@ -229,6 +232,11 @@ bl: CXXFLAGS+=$(CXXFLAGS_F1) $(DEFS_F1_HS_BL)
 bl: LDFLAGS+=$(LDFLAGS_F1_BL)
 bl: release_f1bl
 
+nobl: CFLAGS+=$(CFLAGS_F1) $(DEFS_F1_HS)
+nobl: CXXFLAGS+=$(CXXFLAGS_F1) $(DEFS_F1_HS)
+nobl: LDFLAGS+=$(LDFLAGS_F1_N)
+nobl: release_f1nobl
+
 release_f1: GitVersion.h
 release_f1: $(BINDIR)
 release_f1: $(OBJDIR_F1)
@@ -240,6 +248,12 @@ release_f1bl: $(BINDIR)
 release_f1bl: $(OBJDIR_F1)
 release_f1bl: $(BINDIR)/$(BINHEX_F1BL)
 release_f1bl: $(BINDIR)/$(BINBIN_F1BL)
+
+release_f1nobl: GitVersion.h
+release_f1nobl: $(BINDIR)
+release_f1nobl: $(OBJDIR_F1)
+release_f1nobl: $(BINDIR)/$(BINHEX_F1NOBL)
+release_f1nobl: $(BINDIR)/$(BINBIN_F1NOBL)
 
 release_f4: GitVersion.h
 release_f4: $(BINDIR)
@@ -277,6 +291,19 @@ $(BINDIR)/$(BINELF_F1BL): $(OBJ_F1BL)
 	$(CXX) $(OBJ_F1BL) $(LDFLAGS) -o $@
 	@echo "Linking complete!\n"
 	$(SIZE) $(BINDIR)/$(BINELF_F1BL)
+
+$(BINDIR)/$(BINHEX_F1NOBL): $(BINDIR)/$(BINELF_F1NOBL)
+	$(CP) -O ihex $< $@
+	@echo "Objcopy from ELF to IHEX complete!\n"
+
+$(BINDIR)/$(BINBIN_F1NOBL): $(BINDIR)/$(BINELF_F1NOBL)
+	$(CP) -O binary $< $@
+	@echo "Objcopy from ELF to BINARY complete!\n"
+
+$(BINDIR)/$(BINELF_F1NOBL): $(OBJ_F1BL)
+	$(CXX) $(OBJ_F1BL) $(LDFLAGS) -o $@
+	@echo "Linking complete!\n"
+	$(SIZE) $(BINDIR)/$(BINELF_F1NOBL)
 
 $(BINDIR)/$(BINHEX_F1): $(BINDIR)/$(BINELF_F1)
 	$(CP) -O ihex $< $@
@@ -380,6 +407,9 @@ clean:
 stlink:
 	$(ST_FLASH) write bin/$(BINBIN_F1) 0x8000000
 
+stlink-nobl:
+	$(ST_FLASH) write bin/$(BINBIN_F1NOBL) 0x8000000
+
 stlink-bl:
 	$(ST_FLASH) write $(F1_LIB_PATH)/utils/bootloader/generic_boot20_pc13_long_rst.bin 0x8000000
 	$(ST_FLASH) write bin/$(BINBIN_F1BL) 0x8002000
@@ -390,6 +420,9 @@ stlink-bl-old:
 
 serial:
 	$(STM32FLASH) -v -w bin/$(BINBIN_F1) -g 0x0 $(devser)
+
+serial-nobl:
+	$(STM32FLASH) -v -w bin/$(BINBIN_F1NOBL) -g 0x0 $(devser)
 
 serial-bl:
 	$(STM32FLASH) -v -w $(F1_LIB_PATH)/utils/bootloader/generic_boot20_pc13_long_rst.bin -g 0x0 $(devser)
@@ -447,6 +480,19 @@ endif
 
 ifneq ($(wildcard /opt/openocd/bin/openocd),)
 	/opt/openocd/bin/openocd -f /opt/openocd/scripts/interface/stlink-v2-1.cfg -f /opt/openocd/share/openocd/scripts/target/stm32f1x.cfg -c "program bin/$(BINELF_F1) verify reset exit"
+endif
+
+ocd-nobl:
+ifneq ($(wildcard /usr/bin/openocd),)
+	/usr/bin/openocd -f /usr/share/openocd/scripts/interface/stlink-v2-1.cfg -f /usr/share/openocd/scripts/target/stm32f1x.cfg -c "program bin/$(BINELF_F1NOBL) verify reset exit"
+endif
+
+ifneq ($(wildcard /usr/local/bin/openocd),)
+	/usr/local/bin/openocd -f /usr/local/share/openocd/scripts/interface/stlink-v2-1.cfg -f /usr/local/share/openocd/scripts/target/stm32f1x.cfg -c "program bin/$(BINELF_F1NOBL) verify reset exit"
+endif
+
+ifneq ($(wildcard /opt/openocd/bin/openocd),)
+	/opt/openocd/bin/openocd -f /opt/openocd/scripts/interface/stlink-v2-1.cfg -f /opt/openocd/share/openocd/scripts/target/stm32f1x.cfg -c "program bin/$(BINELF_F1NOBL) verify reset exit"
 endif
 
 ocd-bl:

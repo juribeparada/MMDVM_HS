@@ -159,6 +159,12 @@ Boards with STM32_USB_HOST option enabled in Config.h (ZUMspot Libre Kit, ZUMspo
     make bl
     make dfu
 
+You can optionally install a firmware without bootloader, with USB support. Be aware you will need always a ST-Link or serial interface in order to install or update the firmware. For this reason, you should use USB bootloader, unless you have trouble with the bootloader.
+
+    make clean
+    make nobl
+    make stlink-nobl
+
 - Boards with GPIO interface:
 
 Boards with STM32_USART1_HOST option enabled in Config.h (ZUMspot RPi, MMDVM_HS_Hat, MMDVM_HS_Dual_Hat, Nano hotSPOT, etc). No USB bootloader needed. For example:

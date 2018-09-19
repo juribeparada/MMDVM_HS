@@ -489,15 +489,21 @@ Please check here for detailed instructions:
 
 - make serial-bl devser=/dev/ttyXXX: upload firmware with USB bootloader support using serial port bootloader method.
 
+- make serial-nobl devser=/dev/ttyXXX: upload firmware with USB support using serial port bootloader method, but without USB bootloader installation.
+
 - make serial-bl-old devser=/dev/ttyXXX: same as "make serial-bl" but using bootloader with short reset pulse.
 
 - make stlink: upload standard firmware using ST-Link interface.
 
 - make stlink-bl: upload firmware with USB bootloader support using ST-Link interface.
 
+- make stlink-nobl: upload firmware with USB support using ST-Link interface, but without USB bootloader.
+
 - make stlink-bl-old: same as "make stlink-bl" but using bootloader with short reset pulse.
 
 - make ocd: upload standard firmware using ST-Link interface. This method uses a local openocd installation.
+
+- make ocd-nobl: upload firmware with USB support using ST-Link interface, but without USB bootloader. This method uses a local openocd installation.
 
 - make ocd-bl: upload firmware with USB bootloader support using ST-Link interface. This method uses a local openocd installation.
 
