@@ -28,10 +28,11 @@ This software is licenced under the GPL v2 and is intended for amateur and educa
 ## Common issues for simplex and duplex boards
 
 - High RX BER or not RX, poor TX audio (4FSK modes): adjust frequency offset, specially RXOffset.
+- Not instantaneous mode detection (2 modes or more enabled): mode detection could be slow and sometimes you need to hold PTT several seconds, in order to activate the hotspot. There is no solution for that, since ADF7021 works only one mode at once. You can disable mode scanning, enabling just one mode.
 - Poor audio with MD380: increase DMR deviation to 55 % or 60 %.
 - Bad RX sensitivity: this is not a firmware issue, ADF7021 has a minimum signal detection around -109 dBm in DMR, but RX performance depends on RF board design, external RX noise, frequency, etc. At the moment only original ZUMspot RPi can reach the best RX sensitivity in 70 cm band.
 - Not working with RPi 3B+ (USB): be sure your firmware version is >= 1.4.8 and update to new USB bootloader with long reset pulse (make stlink-bl, for example).
-- Not working with USB (not RPi 3B+): compile with disabled "LONG_USB_RESET" option, and use old bootloader (make stlink-bl-old, for example).
+- Not working with USB (not RPi 3B+): compile with "LONG_USB_RESET" option disabled, and use old bootloader (make stlink-bl-old, for example).
 
 ## Duplex boards
 
