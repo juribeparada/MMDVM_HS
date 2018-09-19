@@ -169,23 +169,19 @@ Install the USB bootloader to STM32F103. Follow the instructions:
 
     https://github.com/rogerclarkmelbourne/Arduino_STM32/wiki/stm32duino-bootloader
 
-Connect the ZUMspot Libre Kit to your PC. Install the USB Mapple driver using the bat file 
-(you may also check http://wiki.stm32duino.com/index.php?title=Windows_driver_installation): 
+Connect the ZUMspot Libre Kit to your PC. Install the USB Mapple driver using the bat file (you may also check http://wiki.stm32duino.com/index.php?title=Windows_driver_installation):
 
     My Documents/Arduino/hardware/Arduino_STM32/drivers/win/install_drivers.bat
 
-You have to be sure that Windows detect your ZUMspot as an USB serial device COMx (please
-see Windows Device Manager).
+You have to be sure that Windows detect your ZUMspot as an USB serial device COMx (please see Windows Device Manager).
 
 Download the source (zip file) of MMDVM_HS from:
 
     https://github.com/juribeparada/MMDVM_HS
 
-Do not download or install the STM32F103 library (STM32F10X_Lib) this is not necessary
-under STM32duino.
+Do not download or install the STM32F103 library (STM32F10X_Lib) this is not necessary under STM32duino.
 
-Unzip MMDVM_HS-master.zip and change the folder name to "MMDVM_HS". The path name to this
-folder can't have spaces.
+Unzip MMDVM_HS-master.zip and change the folder name to "MMDVM_HS". The path name to this folder can't have spaces.
 
 Start the Arduino IDE. Open the MMDVM_HS.ino file in the MMDVM_HS folder.
 
@@ -207,9 +203,7 @@ Edit Config.h:
 
 Click the Upload button in the IDE and wait for the transfer.
 
-Once the transfer is completed, press the RESET button of the board or disconnect and
-connect the USB cable. You will see the LED (PC13) of the blue pill blinking. Once you connect
-with MMDVMHost, the LED will blink fast.
+Once the transfer is completed, press the RESET button of the board or disconnect and connect the USB cable. You will see the LED (PC13) of the blue pill blinking. Once you connect with MMDVMHost, the LED will blink fast.
 
 For further help with STM32duino and STM32F103 blue pill boards, please see the STM32duino [forum](http://www.stm32duino.com).
 
@@ -218,30 +212,26 @@ For further help with STM32duino and STM32F103 blue pill boards, please see the 
 Download the source code (zip file) of MMDVM_HS from:
 
     https://github.com/juribeparada/MMDVM_HS
-    
-Unzip MMDVM_HS-master.zip and change the folder name to "MMDVM_HS". The path name to this
-folder can't have spaces.
+
+Unzip MMDVM_HS-master.zip and change the folder name to "MMDVM_HS". The path name to this folder can't have spaces.
 
 Download the ST libraries STM32F10X_Lib-master.zip from:
 
     https://github.com/juribeparada/STM32F10X_Lib/
 
-Extract the STM32F10X_Lib-master folder into the same folder as the MMDVM_HS. Change the folder
-name to "STM32F10X_Lib".
+Extract the STM32F10X_Lib-master folder into the same folder as the MMDVM_HS. Change the folder name to "STM32F10X_Lib".
 
 Download the GNU make utility:
 
     http://gnuwin32.sourceforge.net/packages/make.htm
     
-Download the binaries zip file and extract make.exe and put it in the same directory MMDVM_HS. Download
-the dependencies zip file and extract libintl3.dll and libiconv2.dll and put them in the same directory MMDVM_HS.
+Download the binaries zip file and extract make.exe and put it in the same directory MMDVM_HS. Download the dependencies zip file and extract libintl3.dll and libiconv2.dll and put them in the same directory MMDVM_HS.
 
 Download the GNU ARM embedded toolchain from here:
 
     https://launchpad.net/gcc-arm-embedded/+download
 
 Currently the direct link to the installer is here:
-
     https://launchpad.net/gcc-arm-embedded/5.0/5-2016-q3-update/+download/gcc-arm-none-eabi-5_4-2016q3-20160926-win32.exe
 
 Download STM32duino (Arduino for STM32) from this URL (only for USB drivers):
@@ -251,9 +241,8 @@ Download STM32duino (Arduino for STM32) from this URL (only for USB drivers):
 Unzip and copy Arduino_STM32-ZUMspot folder in (for example):
 
     C:\Arduino_STM32-ZUMspot
-    
-Connect the ZUMspot Libre Kit to your PC. Install the USB Mapple driver using the bat file 
-(you may also check http://wiki.stm32duino.com/index.php?title=Windows_driver_installation): 
+
+Connect the ZUMspot Libre Kit to your PC. Install the USB Mapple driver using the bat file (you may also check http://wiki.stm32duino.com/index.php?title=Windows_driver_installation): 
 
     C:\Arduino_STM32-ZUMspot\drivers\win\install_drivers.bat
     
@@ -321,9 +310,7 @@ If you are using Pi-Star, stop services:
     sudo systemctl stop mmdvmhost.timer
     sudo systemctl stop mmdvmhost.service
 
-Upload bootloader and firmware to ZUMspot Libre Kit, using serial port first (you
-are using an USB-serial converter with device name /dev/ttyUSB0). Move BOOT0
-jumper to 1, next press and release RESET and execute:
+Upload bootloader and firmware to ZUMspot Libre Kit, using serial port first (you are using an USB-serial converter with device name /dev/ttyUSB0). Move BOOT0 jumper to 1, next press and release RESET and execute:
 
     sudo make serial-bl devser=/dev/ttyUSB0
 
@@ -496,25 +483,25 @@ Please check here for detailed instructions:
 
 - make mmdvm_hs_hat: upload the firmware to MMDVM_HS_Hat board (using internal RPi serial port) 
 
-- make dfu [devser=/dev/ttyXXX]: upload firmware using USB bootloader. "devser" is optional,
-and it corresponds to the USB serial port device name. This option permits to perform a reset
-to enter to booloader mode (DFU). If you don't use "devser", you have to press the reset button
-of the ZUMspot just before using this command.
+- make dfu [devser=/dev/ttyXXX]: upload firmware using USB bootloader. "devser" is optional, and it corresponds to the USB serial port device name. This option permits to perform a reset to enter to booloader mode (DFU). If you don't use "devser", you have to press the reset button of the ZUMspot just before using this command.
 
 - make serial devser=/dev/ttyXXX: upload standard firmware using serial port bootloader method.
 
-- make serial-bl devser=/dev/ttyXXX: upload firmware with USB bootloader support using serial
-port bootloader method.
+- make serial-bl devser=/dev/ttyXXX: upload firmware with USB bootloader support using serial port bootloader method.
+
+- make serial-bl-old devser=/dev/ttyXXX: same as "make serial-bl" but using bootloader with short reset pulse.
 
 - make stlink: upload standard firmware using ST-Link interface.
 
 - make stlink-bl: upload firmware with USB bootloader support using ST-Link interface.
 
-- make ocd: upload standard firmware using ST-Link interface. This method uses a local
-openocd installation.
+- make stlink-bl-old: same as "make stlink-bl" but using bootloader with short reset pulse.
 
-- make ocd-bl: upload firmware with USB bootloader support using ST-Link interface. This
-method uses a local openocd installation.
+- make ocd: upload standard firmware using ST-Link interface. This method uses a local openocd installation.
+
+- make ocd-bl: upload firmware with USB bootloader support using ST-Link interface. This method uses a local openocd installation.
+
+- make ocd-bl-old: same as "make ocd-bl" but using bootloader with short reset pulse.
 
 ## Common Makefile commands
 
@@ -539,11 +526,9 @@ ZUMspot RPi (no USB support needed):
 
 # Config.h options
 
-- #define ZUMSPOT_ADF7021: enable pinouts support for ZUMspot RPi or ZUMspot USB. You have
-to enable this option if you have one of these products.
+- #define ZUMSPOT_ADF7021: enable pinouts support for ZUMspot RPi or ZUMspot USB. You have to enable this option if you have one of these products.
 
-- #define LIBRE_KIT_ADF7021: enable this option if you have a ZUMspot Libre Kit (Board with
-modified RF7021SE and Blue Pill STM32F103).
+- #define LIBRE_KIT_ADF7021: enable this option if you have a ZUMspot Libre Kit (Board with modified RF7021SE and Blue Pill STM32F103).
 
 - #define MMDVM_HS_HAT_REV12: enable this option if you have a MMDVM_HS_Hat board for RPi.
 
@@ -561,16 +546,11 @@ modified RF7021SE and Blue Pill STM32F103).
 
 - #define ADF7021_12_2880: select this option if your board uses a 12.2880 MHz.
 
-- #define STM32_USART1_HOST: enable direct serial host communication with ZUMspot (using USART1
-PA9 and PA10 pins). Disable STM32_USB_HOST if you enable this option. Enable this if you have
-a ZUMspot RPi. You don't need to enable this option if you will transfer the bootloader.
+- #define STM32_USART1_HOST: enable direct serial host communication with ZUMspot (using USART1 PA9 and PA10 pins). Disable STM32_USB_HOST if you enable this option. Enable this if you have a ZUMspot RPi. You don't need to enable this option if you will transfer the bootloader.
 
-- #define STM32_USB_HOST: enable USB host communication with ZUMspot (using STM32F103 USB
-interface). Disable STM32_USART1_HOST if you enable this option. Enable this if you have
-a ZUMspot USB or ZUMspot Libre Kit.
+- #define STM32_USB_HOST: enable USB host communication with ZUMspot (using STM32F103 USB interface). Disable STM32_USART1_HOST if you enable this option. Enable this if you have a ZUMspot USB or ZUMspot Libre Kit.
 
-- #define ENABLE_SCAN_MODE: enable automatic mode detection in ZUMspot. This is based on
-scanning over all enabled modes, and you could have some detection delay. Enabled by default.
+- #define ENABLE_SCAN_MODE: enable automatic mode detection in ZUMspot. This is based on scanning over all enabled modes, and you could have some detection delay. Enabled by default.
 
 - #define SEND_RSSI_DATA: enable RSSI reports to MMDVMHost. It is already converted to dBm.
 
@@ -636,8 +616,7 @@ Misc pins:
     PIN_LED        PC13 (status led)
     PIN_DEB        PB9 (debugging pin)
 
-You could install a serie resistor (10 - 100 ohms) in each TxRxData and TxRxCLK lines, for
-reducing EMI.
+You could install a serie resistor (10 - 100 ohms) in each TxRxData and TxRxCLK lines, for reducing EMI.
 
 ## Pinout definitions for Arduino Due/Zero + RF7021SE
 
@@ -676,8 +655,7 @@ Misc pins:
     PIN_LED       13
     PIN_DEB       11
 
-You could install a serie resistor (10 - 100 ohms) in each TxRxData and TxRxCLK lines, for
-reducing EMI.
+You could install a serie resistor (10 - 100 ohms) in each TxRxData and TxRxCLK lines, for reducing EMI.
 
 ## Pinout definitions for Teensy (3.1, 3.2, 3.5 or 3.6) + RF7021SE:
 
@@ -718,8 +696,7 @@ Misc pins:
     PIN_LED       13
     PIN_DEB       23
 
-You could install a serie resistor (10 - 100 ohms) in each TxRxData and TxRxCLK lines, for
-reducing EMI.
+You could install a serie resistor (10 - 100 ohms) in each TxRxData and TxRxCLK lines, for reducing EMI.
 
 # Hidden functions
 
@@ -733,11 +710,9 @@ Also in ADF7021.h:
 
 - #define ADF7021_N_VER: enable support for narrow band version of ADF7021 (ADF7021N). Disabled by default, in general all boards will have just ADF7021.
 
-- #define ADF7021_ENABLE_4FSK_AFC: enable AFC support for DMR, YSF and P25. This is experimental,
-depending on your frequency offset this option will improve or not your BER reception.
+- #define ADF7021_ENABLE_4FSK_AFC: enable AFC support for DMR, YSF and P25. This is experimental, depending on your frequency offset this option will improve or not your BER reception.
 
-- #define ADF7021_AFC_POS: enable this option if you can not receive any signal after enable the
-ADF7021_ENABLE_4FSK_AFC option.
+- #define ADF7021_AFC_POS: enable this option if you can not receive any signal after enable the ADF7021_ENABLE_4FSK_AFC option.
 
 - #define ADF7021_DISABLE_RC_4FSK: disable TX Raised Cosine filter for 4FSK modulation in ADF7021. Default TX pulse shaping filter for 4FSK is not optimum for DMR, YSF and P25. Activating this option might improve audio in 4FSK digital modes.
 
@@ -748,4 +723,3 @@ In Globals.h:
 In IOSTM.cpp:
 
 - #define PI_HAT_7021_REV_02: enable pinouts for first revision of ZUMspot RPi. In general is not used.
-

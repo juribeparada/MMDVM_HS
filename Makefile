@@ -105,19 +105,19 @@ ifeq ($(OS),Windows_NT)
 else
 	CLEANCMD=rm -f $(OBJ_F1BL) $(OBJ_F4) $(OBJ_F7) $(BINDIR)/*.hex $(BINDIR)/mmdvm_f1.bin $(BINDIR)/*.elf
 	MDDIRS=mkdir $@
-	
-    ifeq ($(shell uname -s),Linux)
-    	ifeq ($(shell uname -m),x86_64)
+
+	ifeq ($(shell uname -s),Linux)
+		ifeq ($(shell uname -m),x86_64)
 			DFU_RST=./$(F1_LIB_PATH)/utils/linux64/upload-reset
 			DFU_UTIL=./$(F1_LIB_PATH)/utils/linux64/dfu-util
 			ST_FLASH=./$(F1_LIB_PATH)/utils/linux64/st-flash
 			STM32FLASH=./$(F1_LIB_PATH)/utils/linux64/stm32flash
-    	else ifeq ($(shell uname -m),armv7l)
+		else ifeq ($(shell uname -m),armv7l)
 			DFU_RST=./$(F1_LIB_PATH)/utils/rpi32/upload-reset
 			DFU_UTIL=./$(F1_LIB_PATH)/utils/rpi32/dfu-util
 			ST_FLASH=./$(F1_LIB_PATH)/utils/rpi32/st-flash
 			STM32FLASH=./$(F1_LIB_PATH)/utils/rpi32/stm32flash
-    	else ifeq ($(shell uname -m),armv6l)
+		else ifeq ($(shell uname -m),armv6l)
 			DFU_RST=./$(F1_LIB_PATH)/utils/rpi32/upload-reset
 			DFU_UTIL=./$(F1_LIB_PATH)/utils/rpi32/dfu-util
 			ST_FLASH=./$(F1_LIB_PATH)/utils/rpi32/st-flash
@@ -127,15 +127,15 @@ else
 			DFU_UTIL=./$(F1_LIB_PATH)/utils/linux/dfu-util
 			ST_FLASH=./$(F1_LIB_PATH)/utils/linux/st-flash
 			STM32FLASH=./$(F1_LIB_PATH)/utils/linux/stm32flash
-    	endif
-    endif
+		endif
+	endif
 
-    ifeq ($(shell uname -s),Darwin)
+	ifeq ($(shell uname -s),Darwin)
 		DFU_RST=./$(F1_LIB_PATH)/utils/macosx/upload-reset
 		DFU_UTIL=./$(F1_LIB_PATH)/utils/macosx/dfu-util
 		ST_FLASH=./$(F1_LIB_PATH)/utils/macosx/st-flash
 		STM32FLASH=./$(F1_LIB_PATH)/utils/macosx/stm32flash
-    endif
+	endif
 endif
 
 # Default reference oscillator frequencies
@@ -294,7 +294,7 @@ $(BINDIR)/$(BINELF_F1): $(OBJ_F1)
 $(BINDIR)/$(BINHEX_F4): $(BINDIR)/$(BINELF_F4)
 	$(CP) -O ihex $< $@
 	@echo "Objcopy from ELF to IHEX complete!\n"
-	
+
 $(BINDIR)/$(BINBIN_F4): $(BINDIR)/$(BINELF_F4)
 	$(CP) -O binary $< $@
 	@echo "Objcopy from ELF to BINARY complete!\n"
@@ -307,7 +307,7 @@ $(BINDIR)/$(BINELF_F4): $(OBJ_F4)
 $(BINDIR)/$(BINHEX_F7): $(BINDIR)/$(BINELF_F7)
 	$(CP) -O ihex $< $@
 	@echo "Objcopy from ELF to IHEX complete!\n"
-	
+
 $(BINDIR)/$(BINBIN_F7): $(BINDIR)/$(BINELF_F7)
 	$(CP) -O binary $< $@
 	@echo "Objcopy from ELF to BINARY complete!\n"
@@ -376,18 +376,26 @@ $(OBJDIR_F1)/%.o: $(USB_F1)/%.c
 clean:
 	$(CLEANCMD)
 	$(RM) GitVersion.h
-	
+
 stlink:
 	$(ST_FLASH) write bin/$(BINBIN_F1) 0x8000000
 
 stlink-bl:
+	$(ST_FLASH) write $(F1_LIB_PATH)/utils/bootloader/generic_boot20_pc13_long_rst.bin 0x8000000
+	$(ST_FLASH) write bin/$(BINBIN_F1BL) 0x8002000
+
+stlink-bl-old:
 	$(ST_FLASH) write $(F1_LIB_PATH)/utils/bootloader/generic_boot20_pc13.bin 0x8000000
 	$(ST_FLASH) write bin/$(BINBIN_F1BL) 0x8002000
-	
+
 serial:
 	$(STM32FLASH) -v -w bin/$(BINBIN_F1) -g 0x0 $(devser)
 
 serial-bl:
+	$(STM32FLASH) -v -w $(F1_LIB_PATH)/utils/bootloader/generic_boot20_pc13_long_rst.bin -g 0x0 $(devser)
+	$(STM32FLASH) -v -w bin/$(BINBIN_F1BL) -g 0x0 -S 0x08002000 $(devser)
+
+serial-bl-old:
 	$(STM32FLASH) -v -w $(F1_LIB_PATH)/utils/bootloader/generic_boot20_pc13.bin -g 0x0 $(devser)
 	$(STM32FLASH) -v -w bin/$(BINBIN_F1BL) -g 0x0 -S 0x08002000 $(devser)
 
@@ -427,7 +435,7 @@ ifdef devser
 	$(DFU_RST) $(devser) 750
 endif
 	$(DFU_UTIL) -D bin/$(BINBIN_F1BL) -d 1eaf:0003 -a 2 -R -R
-	
+
 ocd:
 ifneq ($(wildcard /usr/bin/openocd),)
 	/usr/bin/openocd -f /usr/share/openocd/scripts/interface/stlink-v2-1.cfg -f /usr/share/openocd/scripts/target/stm32f1x.cfg -c "program bin/$(BINELF_F1) verify reset exit"
@@ -440,8 +448,24 @@ endif
 ifneq ($(wildcard /opt/openocd/bin/openocd),)
 	/opt/openocd/bin/openocd -f /opt/openocd/scripts/interface/stlink-v2-1.cfg -f /opt/openocd/share/openocd/scripts/target/stm32f1x.cfg -c "program bin/$(BINELF_F1) verify reset exit"
 endif
-  
+
 ocd-bl:
+ifneq ($(wildcard /usr/bin/openocd),)
+	/usr/bin/openocd -f /usr/share/openocd/scripts/interface/stlink-v2-1.cfg -f /usr/share/openocd/scripts/target/stm32f1x.cfg -c "program $(F1_LIB_PATH)/utils/bootloader/generic_boot20_pc13_long_rst.bin verify reset exit 0x08000000"
+	/usr/bin/openocd -f /usr/share/openocd/scripts/interface/stlink-v2-1.cfg -f /usr/share/openocd/scripts/target/stm32f1x.cfg -c "program bin/$(BINBIN_F1BL) verify reset exit 0x08002000"
+endif
+
+ifneq ($(wildcard /usr/local/bin/openocd),)
+	/usr/local/bin/openocd -f /usr/local/share/openocd/scripts/interface/stlink-v2-1.cfg -f /usr/local/share/openocd/scripts/target/stm32f1x.cfg -c "program $(F1_LIB_PATH)/utils/bootloader/generic_boot20_pc13_long_rst.bin verify reset exit 0x08000000"
+	/usr/local/bin/openocd -f /usr/local/share/openocd/scripts/interface/stlink-v2-1.cfg -f /usr/local/share/openocd/scripts/target/stm32f1x.cfg -c "program bin/$(BINBIN_F1BL) verify reset exit 0x08002000"
+endif
+
+ifneq ($(wildcard /opt/openocd/bin/openocd),)
+	/opt/openocd/bin/openocd -f /opt/openocd/scripts/interface/stlink-v2-1.cfg -f /opt/openocd/share/openocd/scripts/target/stm32f1x.cfg -c "program $(F1_LIB_PATH)/utils/bootloader/generic_boot20_pc13_long_rst.bin verify reset exit 0x08000000"
+	/opt/openocd/bin/openocd -f /opt/openocd/scripts/interface/stlink-v2-1.cfg -f /opt/openocd/share/openocd/scripts/target/stm32f1x.cfg -c "program bin/$(BINBIN_F1BL) verify reset exit 0x08002000"
+endif
+
+ocd-bl-old:
 ifneq ($(wildcard /usr/bin/openocd),)
 	/usr/bin/openocd -f /usr/share/openocd/scripts/interface/stlink-v2-1.cfg -f /usr/share/openocd/scripts/target/stm32f1x.cfg -c "program $(F1_LIB_PATH)/utils/bootloader/generic_boot20_pc13.bin verify reset exit 0x08000000"
 	/usr/bin/openocd -f /usr/share/openocd/scripts/interface/stlink-v2-1.cfg -f /usr/share/openocd/scripts/target/stm32f1x.cfg -c "program bin/$(BINBIN_F1BL) verify reset exit 0x08002000"
@@ -472,4 +496,3 @@ endif
 endif
 
 .FORCE:
-
