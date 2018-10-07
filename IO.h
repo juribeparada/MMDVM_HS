@@ -28,6 +28,7 @@
 #define LOW      0
 #define HIGH     1
 
+// HS frequency ranges
 #define VHF1_MIN  144000000
 #define VHF1_MAX  148000000
 #define VHF2_MIN  219000000
@@ -36,6 +37,12 @@
 #define UHF1_MAX  475000000
 #define UHF2_MIN  842000000
 #define UHF2_MAX  950000000
+
+// Banned amateur frequency ranges (satellite only, ISS, etc)
+#define BAN1_MIN  145800000
+#define BAN1_MAX  146000000
+#define BAN2_MIN  435000000
+#define BAN2_MAX  438000000
 
 #define SCAN_TIME  1920
 #define SCAN_PAUSE 20000
