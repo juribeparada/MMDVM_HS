@@ -129,11 +129,13 @@ uint16_t CIO::readRSSI()
 
   SDATA_pin(LOW);
 
-  if (!m_duplex)
-    SLE_pin(HIGH);
 #if defined(DUPLEX)
-  if (m_duplex)
+  if (m_duplex || m_calState == STATE_RSSICAL)
     SLE2_pin(HIGH);
+  else
+    SLE_pin(HIGH);
+#else
+  SLE_pin(HIGH);
 #endif
 
   dlybit();
@@ -151,11 +153,13 @@ uint16_t CIO::readRSSI()
 
   }
 
-  if (!m_duplex)
-    SLE_pin(LOW);
 #if defined(DUPLEX)
-  if (m_duplex)
+  if (m_duplex || m_calState == STATE_RSSICAL)
     SLE2_pin(LOW);
+  else
+    SLE_pin(LOW);
+#else
+  SLE_pin(LOW);
 #endif
 
   // Process RSSI code
