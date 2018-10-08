@@ -113,7 +113,7 @@ uint16_t CIO::readRSSI()
 
   // Register 7, readback enable, ADC RSSI mode
   AD7021_RB = 0x0147;
-  
+
   // Send control register
   for(AD7021_counter = 8; AD7021_counter >= 0; AD7021_counter--) {
     if(bitRead(AD7021_RB, AD7021_counter) == HIGH)
@@ -128,9 +128,16 @@ uint16_t CIO::readRSSI()
   }
 
   SDATA_pin(LOW);
-  SLE_pin(HIGH);
+
+  if (!m_duplex)
+    SLE_pin(HIGH);
+#if defined(DUPLEX)
+  if (m_duplex)
+    SLE2_pin(HIGH);
+#endif
+
   dlybit();
-  
+
   // Read SREAD pin
   for(AD7021_counter = 17; AD7021_counter >= 0; AD7021_counter--) {
     SCLK_pin(HIGH);
@@ -144,12 +151,17 @@ uint16_t CIO::readRSSI()
 
   }
 
-  SLE_pin(LOW);
-  
+  if (!m_duplex)
+    SLE_pin(LOW);
+#if defined(DUPLEX)
+  if (m_duplex)
+    SLE2_pin(LOW);
+#endif
+
   // Process RSSI code
   RB_code = RB_word & 0x7f;
   gain_code = (RB_word >> 7) & 0x0f;
-  
+
   switch(gain_code) {
     case 0b1010:
       gain_corr = 0U;
