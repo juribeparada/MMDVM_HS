@@ -95,4 +95,10 @@
 // Enable modem debug messages
 // #define ENABLE_DEBUG
 
+// Disable frequency bands check
+// #define DISABLE_FREQ_CHECK
+
+// Disable frequency restrictions (satellite, ISS, etc)
+// #define DISABLE_FREQ_BAN
+
 #endif
