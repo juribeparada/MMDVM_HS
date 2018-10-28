@@ -22,6 +22,8 @@
 
 #include "DStarDefines.h"
 
+const uint16_t DSTAR_BUFFER_LENGTH_BITS = 800U;
+
 enum DSRX_STATE {
   DSRXS_NONE,
   DSRXS_HEADER,
@@ -39,7 +41,7 @@ public:
 private:
   DSRX_STATE   m_rxState;
   uint32_t     m_patternBuffer;
-  uint8_t      m_rxBuffer[100U];
+  uint8_t      m_rxBuffer[DSTAR_BUFFER_LENGTH_BITS / 8U];
   unsigned int m_rxBufferBits;
   unsigned int m_dataBits;
   unsigned int m_mar;

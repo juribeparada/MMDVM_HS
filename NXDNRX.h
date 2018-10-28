@@ -36,7 +36,6 @@ public:
   void reset();
 
 private:
-  bool         m_prev;
   NXDNRX_STATE m_state;
   uint64_t     m_bitBuffer;
   uint8_t      m_outBuffer[NXDN_FRAME_LENGTH_BYTES + 3U];
@@ -47,8 +46,7 @@ private:
   void processNone(bool bit);
   void processData(bool bit);
   void writeRSSIData(uint8_t* data);
-  
+
 };
 
 #endif
-

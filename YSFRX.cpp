@@ -1,6 +1,6 @@
 /*
  *   Copyright (C) 2009-2017 by Jonathan Naylor G4KLX
- *   Copyright (C) 2016,2017 by Andy Uribe CA6JAU
+ *   Copyright (C) 2016,2017,2018 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -32,7 +32,6 @@ const uint8_t BIT_MASK_TABLE[] = {0x80U, 0x40U, 0x20U, 0x10U, 0x08U, 0x04U, 0x02
 #define WRITE_BIT1(p,i,b) p[(i)>>3] = (b) ? (p[(i)>>3] | BIT_MASK_TABLE[(i)&7]) : (p[(i)>>3] & ~BIT_MASK_TABLE[(i)&7])
 
 CYSFRX::CYSFRX() :
-m_prev(false),
 m_state(YSFRXS_NONE),
 m_bitBuffer(0x00U),
 m_outBuffer(),
@@ -45,7 +44,6 @@ m_lostCount(0U)
 
 void CYSFRX::reset()
 {
-  m_prev      = false;
   m_state     = YSFRXS_NONE;
   m_bitBuffer = 0x00U;
   m_bufferPtr = 0U;
@@ -75,9 +73,8 @@ void CYSFRX::processNone(bool bit)
     m_lostCount = MAX_SYNC_FRAMES;
     m_bufferPtr = YSF_SYNC_LENGTH_BITS;
     m_state     = YSFRXS_DATA;
-    
+
     io.setDecode(true);
-      
   }
   
 }
@@ -89,9 +86,12 @@ void CYSFRX::processData(bool bit)
     m_bitBuffer |= 0x01U;
 
   WRITE_BIT1(m_buffer, m_bufferPtr, bit);
-  m_bufferPtr++;
 
-  // Only search for a sync in the right place +-2 symbols
+  m_bufferPtr++;
+  if (m_bufferPtr > YSF_FRAME_LENGTH_BITS)
+    reset();
+
+  // Only search for a sync in the right place +-2 bits
   if (m_bufferPtr >= (YSF_SYNC_LENGTH_BITS - 2U) && m_bufferPtr <= (YSF_SYNC_LENGTH_BITS + 2U)) {
     // Fuzzy matching of the data sync bit sequence
     if (countBits64((m_bitBuffer & YSF_SYNC_BITS_MASK) ^ YSF_SYNC_BITS) <= SYNC_BIT_RUN_ERRS) {
@@ -103,18 +103,16 @@ void CYSFRX::processData(bool bit)
 
   // Send a data frame to the host if the required number of bits have been received
   if (m_bufferPtr == YSF_FRAME_LENGTH_BITS) {
-    // We've not seen a data sync for too long, signal RXLOST and change to RX_NONE
     m_lostCount--;
+    // We've not seen a data sync for too long, signal RXLOST and change to RX_NONE
     if (m_lostCount == 0U) {
       DEBUG1("YSFRX: sync timed out, lost lock");
       io.setDecode(false);
-      
       serial.writeYSFLost();
-
-      m_state = YSFRXS_NONE;
+      reset();
     } else {
+      // Write data to host
       m_outBuffer[0U] = m_lostCount == (MAX_SYNC_FRAMES - 1U) ? 0x01U : 0x00U;
-
       writeRSSIData(m_outBuffer);
 
       // Start the next frame

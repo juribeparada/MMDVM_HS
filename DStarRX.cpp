@@ -330,7 +330,10 @@ void CDStarRX::processHeader(bool bit)
     m_patternBuffer |= 0x01U;
 
   WRITE_BIT2(m_rxBuffer, m_rxBufferBits, bit);
+
   m_rxBufferBits++;
+  if (m_rxBufferBits > DSTAR_BUFFER_LENGTH_BITS)
+    reset();
 
   // A full FEC header
   if (m_rxBufferBits == DSTAR_FEC_SECTION_LENGTH_BITS) {
@@ -361,7 +364,10 @@ void CDStarRX::processData(bool bit)
     m_patternBuffer |= 0x01U;
 
   WRITE_BIT2(m_rxBuffer, m_rxBufferBits, bit);
+
   m_rxBufferBits++;
+  if (m_rxBufferBits > DSTAR_BUFFER_LENGTH_BITS)
+    reset();
 
   // Fuzzy matching of the end frame sequences
   if (countBits32((m_patternBuffer & END_SYNC_MASK) ^ END_SYNC_DATA) <= END_SYNC_ERRS) {

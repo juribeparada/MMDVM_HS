@@ -32,7 +32,6 @@ const uint8_t BIT_MASK_TABLE[] = {0x80U, 0x40U, 0x20U, 0x10U, 0x08U, 0x04U, 0x02
 #define WRITE_BIT1(p,i,b) p[(i)>>3] = (b) ? (p[(i)>>3] | BIT_MASK_TABLE[(i)&7]) : (p[(i)>>3] & ~BIT_MASK_TABLE[(i)&7])
 
 CNXDNRX::CNXDNRX() :
-m_prev(false),
 m_state(NXDNRXS_NONE),
 m_bitBuffer(0x00U),
 m_outBuffer(),
@@ -45,7 +44,6 @@ m_lostCount(0U)
 
 void CNXDNRX::reset()
 {
-  m_prev      = false;
   m_state     = NXDNRXS_NONE;
   m_bitBuffer = 0x00U;
   m_bufferPtr = 0U;
@@ -75,11 +73,10 @@ void CNXDNRX::processNone(bool bit)
     m_lostCount = MAX_FSW_FRAMES;
     m_bufferPtr = NXDN_FSW_LENGTH_BITS;
     m_state     = NXDNRXS_DATA;
-    
+
     io.setDecode(true);
-      
   }
-  
+
 }
 
 void CNXDNRX::processData(bool bit)
@@ -89,7 +86,10 @@ void CNXDNRX::processData(bool bit)
     m_bitBuffer |= 0x01U;
 
   WRITE_BIT1(m_buffer, m_bufferPtr, bit);
+
   m_bufferPtr++;
+  if (m_bufferPtr > NXDN_FRAME_LENGTH_BITS)
+    reset();
 
   // Only search for a sync in the right place +-2 symbols
   if (m_bufferPtr >= (NXDN_FSW_LENGTH_BITS - 2U) && m_bufferPtr <= (NXDN_FSW_LENGTH_BITS + 2U)) {
@@ -108,13 +108,11 @@ void CNXDNRX::processData(bool bit)
     if (m_lostCount == 0U) {
       DEBUG1("NXDNRX: sync timed out, lost lock");
       io.setDecode(false);
-      
       serial.writeNXDNLost();
-
-      m_state = NXDNRXS_NONE;
+      reset();
     } else {
+      // Write data to host
       m_outBuffer[0U] = m_lostCount == (MAX_FSW_FRAMES - 1U) ? 0x01U : 0x00U;
-
       writeRSSIData(m_outBuffer);
 
       // Start the next frame
