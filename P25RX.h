@@ -1,6 +1,6 @@
 /*
  *   Copyright (C) 2015,2016,2017 by Jonathan Naylor G4KLX
- *   Copyright (C) 2016,2017 by Andy Uribe CA6JAU
+ *   Copyright (C) 2016,2017,2018 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -24,7 +24,8 @@
 
 enum P25RX_STATE {
   P25RXS_NONE,
-  P25RXS_DATA
+  P25RXS_HDR,
+  P25RXS_LDU
 };
 
 class CP25RX {
@@ -36,17 +37,20 @@ public:
   void reset();
 
 private:
-  bool        m_prev;
   P25RX_STATE m_state;
   uint64_t    m_bitBuffer;
   uint8_t     m_outBuffer[P25_LDU_FRAME_LENGTH_BYTES + 3U];
   uint8_t*    m_buffer;
   uint16_t    m_bufferPtr;
+  uint16_t    m_endPtr;
   uint16_t    m_lostCount;
+  uint8_t     m_duid;
 
   void processNone(bool bit);
-  void processData(bool bit);
+  void processHdr(bool bit);
+  void processLdu(bool bit);
   void writeRSSILdu(uint8_t* data);
+  void setEndPtr();
 };
 
 #endif
