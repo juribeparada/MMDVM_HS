@@ -93,7 +93,7 @@
 // #define LONG_USB_RESET
 
 // Enable modem debug messages
-// #define ENABLE_DEBUG
+#define ENABLE_DEBUG
 
 // Disable frequency bands check
 // #define DISABLE_FREQ_CHECK
