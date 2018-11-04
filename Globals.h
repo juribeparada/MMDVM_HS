@@ -47,7 +47,8 @@ enum MMDVM_STATE {
   STATE_RSSICAL   = 96,
   STATE_CWID      = 97,
   STATE_DMRCAL    = 98,
-  STATE_DSTARCAL  = 99
+  STATE_DSTARCAL  = 99,
+  STATE_INTCAL    = 100
 };
 
 const uint8_t  MARK_SLOT1 = 0x08U;

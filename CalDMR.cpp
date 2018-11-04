@@ -53,7 +53,8 @@ CCalDMR::CCalDMR() :
 m_transmit(false),
 m_state(DMRCAL1K_IDLE),
 m_dmr1k(),
-m_audioSeq(0)
+m_audioSeq(0),
+m_count(0)
 {
   ::memcpy(m_dmr1k, VOICE_1K, DMR_FRAME_LENGTH_BYTES + 1U);
 }
@@ -71,6 +72,17 @@ void CCalDMR::process()
       break;
     case STATE_DMRDMO1K:
       dmrdmo1k();
+      break;
+    case STATE_INTCAL:
+      // Simple interrupt counter for board diagnostics (TCXO, connections, etc)
+      // Not intended for precise interrupt frequency measurements
+      m_count++;
+      if (m_count >= CAL_DLY_LOOP) {
+        m_count = 0U;
+        uint16_t int1, int2;
+        io.getIntCounter(int1, int2);
+        DEBUG3("Counter INT1/INT2:", int1 >> 1U, int2);
+      }
       break;
     default:
       break;

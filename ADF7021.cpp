@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
- 
+
 #include "Config.h"
 
 #if defined(ENABLE_ADF7021)
@@ -283,7 +283,7 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
   m_RX_F_divider = floor(divider + 0.5);
 
   ADF7021_RX_REG0  = (uint32_t) 0b0000;
-  
+
 #if defined(BIDIR_DATA_PIN)
   ADF7021_RX_REG0 |= (uint32_t) 0b01001   << 27;   // mux regulator/receive
 #else
@@ -292,7 +292,7 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
 
   ADF7021_RX_REG0 |= (uint32_t) m_RX_N_divider << 19;   // frequency;
   ADF7021_RX_REG0 |= (uint32_t) m_RX_F_divider << 4;    // frequency;
-  
+
   if( div2 == 1U )
     divider = m_frequency_tx / (ADF7021_PFD / 2U);
   else
@@ -369,7 +369,7 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
 
       ADF7021_REG3 = ADF7021_REG3_DSTAR;
       ADF7021_REG10 = ADF7021_REG10_DSTAR;
-    
+
       // K=32
       ADF7021_REG4  = (uint32_t) 0b0100                    << 0;   // register 4
       ADF7021_REG4 |= (uint32_t) 0b001                     << 4;   // mode, GMSK
@@ -386,10 +386,10 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
       ADF7021_REG2 |= (uint32_t) (m_dstarDev / div2)       << 19;  // deviation
       ADF7021_REG2 |= (uint32_t) 0b001                     << 4;   // modulation (GMSK)
       break;
-      
+
     case STATE_DMR:
       // Dev: +1 symb 648 Hz, symb rate = 4800
-    
+
       ADF7021_REG3 = ADF7021_REG3_DMR;
       ADF7021_REG10 = ADF7021_REG10_DMR;
 
@@ -413,7 +413,7 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
       ADF7021_REG2 |= (uint32_t) 0b111                     << 4;   // modulation (RC 4FSK)
 #endif
       break;
-      
+
     case STATE_YSF:
       // Dev: +1 symb 900 Hz, symb rate = 4800
 
@@ -440,7 +440,7 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
       ADF7021_REG2 |= (uint32_t) 0b111                     << 4;   // modulation (RC 4FSK)
 #endif
       break;
-      
+
     case STATE_P25:
       // Dev: +1 symb 600 Hz, symb rate = 4800
 
@@ -467,7 +467,7 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
       ADF7021_REG2 |= (uint32_t) 0b111                     << 4;   // modulation (RC 4FSK)
 #endif
       break;
-      
+
     case STATE_NXDN:
       // Dev: +1 symb 350 Hz, symb rate = 2400
 
@@ -494,7 +494,7 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
       ADF7021_REG2 |= (uint32_t) 0b111                     << 4;   // modulation (RC 4FSK)
 #endif
       break;
-      
+
     default:
       break;
   }
@@ -531,7 +531,7 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
   ADF7021_REG2 |= (uint32_t) 0b110001      << 7;   // PA  
   AD7021_control_word = ADF7021_REG2;
   Send_AD7021_control();
- 
+
   // TEST DAC (14)
 #if defined(TEST_DAC)
   AD7021_control_word = 0x0000001E;
@@ -567,7 +567,7 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
   // 3FSK/4FSK DEMOD (13)
   AD7021_control_word = ADF7021_REG13;
   Send_AD7021_control();
-  
+
 #if defined(TEST_TX)
   PTT_pin(HIGH); 
   AD7021_control_word = ADF7021_TX_REG0;
@@ -607,7 +607,7 @@ void CIO::ifConf2(MMDVM_STATE modemState)
 
       ADF7021_REG3 = ADF7021_REG3_DSTAR;
       ADF7021_REG10 = ADF7021_REG10_DSTAR;
-    
+
       // K=32
       ADF7021_REG4  = (uint32_t) 0b0100                    << 0;   // register 4
       ADF7021_REG4 |= (uint32_t) 0b001                     << 4;   // mode, GMSK
@@ -624,10 +624,10 @@ void CIO::ifConf2(MMDVM_STATE modemState)
       ADF7021_REG2 |= (uint32_t) (m_dstarDev / div2)<< 19;  // deviation
       ADF7021_REG2 |= (uint32_t) 0b001                     << 4;   // modulation (GMSK)
       break;
-      
+
     case STATE_DMR:
       // Dev: +1 symb 648 Hz, symb rate = 4800
-    
+
       ADF7021_REG3 = ADF7021_REG3_DMR;
       ADF7021_REG10 = ADF7021_REG10_DMR;
 
@@ -647,7 +647,7 @@ void CIO::ifConf2(MMDVM_STATE modemState)
       ADF7021_REG2 |= (uint32_t) (m_dmrDev / div2)  << 19;  // deviation
       ADF7021_REG2 |= (uint32_t) 0b111                     << 4;   // modulation (RC 4FSK)
       break;
-      
+
     case STATE_YSF:
       // Dev: +1 symb 900 Hz, symb rate = 4800
 
@@ -670,7 +670,7 @@ void CIO::ifConf2(MMDVM_STATE modemState)
       ADF7021_REG2 |= (uint32_t) (m_ysfDev / div2)  << 19;  // deviation
       ADF7021_REG2 |= (uint32_t) 0b111                     << 4;   // modulation (RC 4FSK)
       break;
-      
+
     case STATE_P25:
       // Dev: +1 symb 600 Hz, symb rate = 4800
 
@@ -740,7 +740,7 @@ void CIO::ifConf2(MMDVM_STATE modemState)
   // IF coarse cal (5)
   AD7021_control_word = ADF7021_REG5;
   Send_AD7021_control2();
-  
+
   // Delay for coarse IF filter calibration
   delay_IFcal();
 
@@ -754,7 +754,7 @@ void CIO::ifConf2(MMDVM_STATE modemState)
   ADF7021_REG2 |= (uint32_t) 0b110001         << 7;   // PA  
   AD7021_control_word = ADF7021_REG2;
   Send_AD7021_control2();
- 
+
   // TEST DAC (14)
   AD7021_control_word = 0x0000000E;
   Send_AD7021_control2();
@@ -778,7 +778,7 @@ void CIO::ifConf2(MMDVM_STATE modemState)
   // 3FSK/4FSK DEMOD (13)
   AD7021_control_word = ADF7021_REG13;
   Send_AD7021_control2();
-  
+
   // TEST MODE (disabled) (15)
   AD7021_control_word = 0x000E000F;
   Send_AD7021_control2();
@@ -788,7 +788,7 @@ void CIO::ifConf2(MMDVM_STATE modemState)
 void CIO::interrupt()
 {
   uint8_t bit = 0U;
-  
+
   if (!m_started)
     return;
 
@@ -850,7 +850,7 @@ void CIO::interrupt()
       even = ADF7021_EVEN_BIT;
     }
   }
-  
+
   // we sample the RX bit at rising TXD clock edge, so TXD must be 1 and we are not in tx mode
   if (!m_tx && clk == 1U && !m_duplex) {
     if(RXD_pin())
@@ -860,7 +860,7 @@ void CIO::interrupt()
 
     m_rxBuffer.put(bit, m_control);
   }
-  
+
   if (torx_request == true && even == ADF7021_EVEN_BIT && m_tx && clk == 0U) { 
       // that is absolutely crucial in 4FSK, see datasheet:
       // enable sle after 1/4 tBit == 26uS when sending MSB (even == false) and clock is low 
@@ -881,14 +881,15 @@ void CIO::interrupt()
       // last tranmittted bit is always the even bit
       // since the current bit is a transitional "don't care" bit, never transmitted
       even = !ADF7021_EVEN_BIT;
-  }  
+  }
 
   m_watchdog++;
   m_modeTimerCnt++;
+  m_int1counter++;
 
   if(m_scanPauseCnt >= SCAN_PAUSE)
     m_scanPauseCnt = 0U;
-  
+
   if(m_scanPauseCnt != 0U)
     m_scanPauseCnt++;
 }
@@ -897,7 +898,7 @@ void CIO::interrupt()
 void CIO::interrupt2()
 {
   uint8_t bit = 0U;
-  
+
   if(m_duplex) {
     if(RXD2_pin())
       bit = 1U;
@@ -906,6 +907,8 @@ void CIO::interrupt2()
 
     m_rxBuffer.put(bit, m_control);
   }
+
+  m_int2counter++;
 }
 #endif
 

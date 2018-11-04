@@ -51,7 +51,7 @@ void CCalRSSI::process()
 
     if (m_navg >= 6U) {
       uint16_t ave = m_accum / 6U;
-      
+
       uint8_t buffer[6U];
       buffer[0U] = (m_max >> 8) & 0xFFU;
       buffer[1U] = (m_max >> 0) & 0xFFU;

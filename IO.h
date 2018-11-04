@@ -47,6 +47,12 @@
 #define SCAN_TIME  1920
 #define SCAN_PAUSE 20000
 
+#if defined(DUPLEX)
+#define CAL_DLY_LOOP 96100U
+#else
+#define CAL_DLY_LOOP 106000U
+#endif
+
 extern uint32_t  m_frequency_rx;
 extern uint32_t  m_frequency_tx;
 extern uint32_t  m_pocsag_freq_tx;
@@ -70,7 +76,7 @@ public:
   void      CE_pin(bool on);
   bool      RXD_pin(void);
   bool      CLK_pin(void);
-  
+
 #if defined(BIDIR_DATA_PIN)
   void      RXD_pin_write(bool on);
 #endif
@@ -90,7 +96,7 @@ public:
 #if defined(DUPLEX)
   void      interrupt2(void);
 #endif
-  
+
 #if defined(BIDIR_DATA_PIN)
   void      Data_dir_out(bool dir);
 #endif
@@ -108,6 +114,7 @@ public:
   void      setLoDevYSF(bool ysfLoDev);
   void      resetWatchdog(void);
   uint32_t  getWatchdog(void);
+  void      getIntCounter(uint16_t &int1, uint16_t &int2);
   void      selfTest(void);
 
   // RF interface API
@@ -162,6 +169,8 @@ private:
   MMDVM_STATE        m_Modes[5];
   bool               m_ledValue;
   volatile uint32_t  m_watchdog;
+  volatile uint16_t  m_int1counter;
+  volatile uint16_t  m_int2counter;
 
 };
 

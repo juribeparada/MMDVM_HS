@@ -47,6 +47,7 @@ private:
   DMRCAL1K  m_state;
   uint8_t   m_dmr1k[DMR_FRAME_LENGTH_BYTES + 1U];
   uint8_t   m_audioSeq;
+  uint32_t  m_count;
 };
 
 #endif

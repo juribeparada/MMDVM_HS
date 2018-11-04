@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
- 
+
 #include "Config.h"
 #include "Globals.h"
 #include "IO.h"
@@ -37,10 +37,12 @@ m_scanEnable(false),
 m_scanPauseCnt(0U),
 m_scanPos(0U),
 m_ledValue(true),
-m_watchdog(0U)
+m_watchdog(0U),
+m_int1counter(0U),
+m_int2counter(0U)
 {
   Init();
-  
+
   CE_pin(HIGH);
   LED_pin(HIGH);
   PTT_pin(LOW);
@@ -165,7 +167,7 @@ void CIO::process()
     }
     setRX(false);
   }
-  
+
   if(m_modemState_prev == STATE_DSTAR)
     scantime = SCAN_TIME;
   else if(m_modemState_prev == STATE_DMR)
@@ -401,4 +403,12 @@ void CIO::resetWatchdog()
 uint32_t CIO::getWatchdog()
 {
   return m_watchdog;
+}
+
+void CIO::getIntCounter(uint16_t &int1, uint16_t &int2)
+{
+  int1 = m_int1counter;
+  int2 = m_int2counter;
+  m_int1counter = 0U;
+  m_int2counter = 0U;
 }

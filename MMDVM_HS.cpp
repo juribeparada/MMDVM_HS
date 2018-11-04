@@ -123,7 +123,7 @@ void loop()
   if (m_pocsagEnable && (m_modemState == STATE_POCSAG || pocsagTX.busy()))
     pocsagTX.process();
 
-  if (m_calState == STATE_DMRCAL || m_calState == STATE_DMRDMO1K)
+  if (m_calState == STATE_DMRCAL || m_calState == STATE_DMRDMO1K || m_calState == STATE_INTCAL)
     calDMR.process();
 
 #if defined(SEND_RSSI_DATA)

@@ -36,7 +36,7 @@
 #define  DEBUG1(a)
 #define  DEBUG2(a,b)
 #define  DEBUG2I(a,b)
-#define  DEBUG3(a,b,c)
+#define  DEBUG3(a,b,c)      serial.writeDebug((a),(b),(c))
 #define  DEBUG4(a,b,c,d)
 #define  DEBUG5(a,b,c,d,e)
 
