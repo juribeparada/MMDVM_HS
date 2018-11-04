@@ -51,13 +51,13 @@
 #if defined(STM32_USB_HOST)
 #define CAL_DLY_LOOP 98950U
 #else
-#define CAL_DLY_LOOP 105100U
+#define CAL_DLY_LOOP 96100U
 #endif
 #else
 #if defined(STM32_USB_HOST)
 #define CAL_DLY_LOOP 110850U
 #else
-#define CAL_DLY_LOOP 114350U
+#define CAL_DLY_LOOP 104600U
 #endif
 #endif
 
