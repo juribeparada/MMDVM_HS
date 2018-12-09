@@ -83,6 +83,9 @@
 #define PIN_NXDN_LED         GPIO_Pin_8
 #define PORT_NXDN_LED        GPIOA
 
+#define PIN_POCSAG_LED       GPIO_Pin_5
+#define PORT_POCSAG_LED      GPIOA
+
 #define PIN_PTT_LED          GPIO_Pin_12
 #define PORT_PTT_LED         GPIOB
 
@@ -143,8 +146,15 @@
 #define PIN_P25_LED          GPIO_Pin_0
 #define PORT_P25_LED         GPIOB
 
-#define PIN_NXDN_LED         GPIO_Pin_8
+#if defined(STM32_USB_HOST)
+#define PIN_NXDN_LED         GPIO_Pin_1
+#else
+#define PIN_NXDN_LED         GPIO_Pin_7
+#endif
 #define PORT_NXDN_LED        GPIOA
+
+#define PIN_POCSAG_LED       GPIO_Pin_5
+#define PORT_POCSAG_LED      GPIOA
 
 #define PIN_PTT_LED          GPIO_Pin_14
 #define PORT_PTT_LED         GPIOB
@@ -217,6 +227,9 @@
 
 #define PIN_NXDN_LED         GPIO_Pin_8
 #define PORT_NXDN_LED        GPIOA
+
+#define PIN_POCSAG_LED       GPIO_Pin_7
+#define PORT_POCSAG_LED      GPIOA
 
 #define PIN_PTT_LED          GPIO_Pin_14
 #define PORT_PTT_LED         GPIOB
@@ -432,6 +445,12 @@ void CIO::Init()
   GPIO_InitStruct.GPIO_Pin   = PIN_NXDN_LED;
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
   GPIO_Init(PORT_NXDN_LED, &GPIO_InitStruct);
+
+  // POCSAG LED 
+  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStruct.GPIO_Pin   = PIN_POCSAG_LED;
+  GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
+  GPIO_Init(PORT_POCSAG_LED, &GPIO_InitStruct);
 
   // PTT LED
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
@@ -662,8 +681,9 @@ void CIO::POCSAG_pin(bool on)
 #if defined(USE_ALTERNATE_POCSAG_LEDS)
   GPIO_WriteBit(PORT_DSTAR_LED, PIN_DSTAR_LED, on ? Bit_SET : Bit_RESET);
   GPIO_WriteBit(PORT_DMR_LED, PIN_DMR_LED, on ? Bit_SET : Bit_RESET);
+#else
+  GPIO_WriteBit(PORT_POCSAG_LED, PIN_POCSAG_LED, on ? Bit_SET : Bit_RESET);
 #endif
-  // TODO: add a separate LED pin for POCSAG mode
 }
 
 void CIO::PTT_pin(bool on)

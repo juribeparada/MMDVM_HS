@@ -47,7 +47,12 @@
 #define PIN_DMR_LED    PB13
 #define PIN_YSF_LED    PB1
 #define PIN_P25_LED    PB0
-#define PIN_NXDN_LED   PA8
+#if defined(STM32_USB_HOST)
+#define PIN_NXDN_LED   PA1
+#else
+#define PIN_NXDN_LED   PA7
+#endif
+#define PIN_POCSAG_LED PA5
 #define PIN_PTT_LED    PB14
 #define PIN_COS_LED    PB15
 
@@ -71,6 +76,7 @@
 #define PIN_YSF_LED    PB1
 #define PIN_P25_LED    PB0
 #define PIN_NXDN_LED   PA8
+#define PIN_POCSAG_LED PA7
 #define PIN_PTT_LED    PB14
 #define PIN_COS_LED    PB15
 
@@ -81,44 +87,46 @@
 #elif defined(__MK20DX256__) || defined(__MK64FX512__) || defined(__MK66FX1M0__)
 
 // Teensy pin definitions
-#define PIN_SCLK       2 
-#define PIN_SDATA      3
-#define PIN_SREAD      4
-#define PIN_SLE        5
-#define PIN_CE         6
-#define PIN_RXD        7
-#define PIN_TXD        8
-#define PIN_CLKOUT    22
-#define PIN_LED       13
-#define PIN_DEB       23
-#define PIN_DSTAR_LED 16
-#define PIN_DMR_LED   17
-#define PIN_YSF_LED   18
-#define PIN_P25_LED   19
-#define PIN_NXDN_LED  20
-#define PIN_PTT_LED   14
-#define PIN_COS_LED   15
+#define PIN_SCLK        2
+#define PIN_SDATA       3
+#define PIN_SREAD       4
+#define PIN_SLE         5
+#define PIN_CE          6
+#define PIN_RXD         7
+#define PIN_TXD         8
+#define PIN_CLKOUT     22
+#define PIN_LED        13
+#define PIN_DEB        23
+#define PIN_DSTAR_LED  16
+#define PIN_DMR_LED    17
+#define PIN_YSF_LED    18
+#define PIN_P25_LED    19
+#define PIN_NXDN_LED   20
+#define PIN_POCSAG_LED 21
+#define PIN_PTT_LED    14
+#define PIN_COS_LED    15
 
 #else
 
 // Arduino pin definitions (Due and Zero)
-#define PIN_SCLK       3 
-#define PIN_SDATA      4   // 2 in Arduino Zero Pro
-#define PIN_SREAD      5
-#define PIN_SLE        6
-#define PIN_CE        12
-#define PIN_RXD        7
-#define PIN_TXD        8
-#define PIN_CLKOUT     2   // 4 in Arduino Zero Pro
-#define PIN_LED       13
-#define PIN_DEB       11
-#define PIN_DSTAR_LED 14
-#define PIN_DMR_LED   15
-#define PIN_YSF_LED   16
-#define PIN_P25_LED   17
-#define PIN_NXDN_LED  18
-#define PIN_PTT_LED    9
-#define PIN_COS_LED   10
+#define PIN_SCLK        3
+#define PIN_SDATA       4   // 2 in Arduino Zero Pro
+#define PIN_SREAD       5
+#define PIN_SLE         6
+#define PIN_CE         12
+#define PIN_RXD         7
+#define PIN_TXD         8
+#define PIN_CLKOUT      2   // 4 in Arduino Zero Pro
+#define PIN_LED        13
+#define PIN_DEB        11
+#define PIN_DSTAR_LED  14
+#define PIN_DMR_LED    15
+#define PIN_YSF_LED    16
+#define PIN_P25_LED    17
+#define PIN_NXDN_LED   18
+#define PIN_POCSAG_LED 19
+#define PIN_PTT_LED     9
+#define PIN_COS_LED    10
 
 #endif
 
@@ -168,6 +176,7 @@ void CIO::Init()
   pinMode(PIN_YSF_LED, OUTPUT);
   pinMode(PIN_P25_LED, OUTPUT);
   pinMode(PIN_NXDN_LED, OUTPUT);
+  pinMode(PIN_POCSAG_LED, OUTPUT);
   pinMode(PIN_PTT_LED, OUTPUT);
   pinMode(PIN_COS_LED, OUTPUT);
 
@@ -325,8 +334,9 @@ void CIO::POCSAG_pin(bool on)
 #if defined(USE_ALTERNATE_POCSAG_LEDS)
   digitalWrite(PIN_DSTAR_LED, on ? HIGH : LOW);
   digitalWrite(PIN_DMR_LED, on ? HIGH : LOW);
+#else
+  digitalWrite(PIN_POCSAG_LED, on ? HIGH : LOW);
 #endif
-  // TODO: add a separate LED pin for POCSAG mode
 }
 
 void CIO::PTT_pin(bool on) 
