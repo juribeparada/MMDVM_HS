@@ -1,6 +1,7 @@
 /*
  *   Copyright (C) 2015,2016,2017,2018 by Jonathan Naylor G4KLX
  *   Copyright (C) 2018 by Andy Uribe CA6JAU
+ *   Copyright (C) 2019 by Florian Wolters DF2ET
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -28,6 +29,10 @@ public:
 
   void setTXDelay(uint8_t delay);
 
+  void setCal(bool);
+
+  void createCal();
+
   uint8_t getSpace() const;
 
   void process();
@@ -41,6 +46,7 @@ private:
   uint16_t         m_poPtr;
   uint16_t         m_txDelay;
   bool             m_delay;
+  bool             m_cal;
 
   void writeByte(uint8_t c);
 };

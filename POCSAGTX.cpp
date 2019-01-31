@@ -1,6 +1,7 @@
 /*
  *   Copyright (C) 2015,2016,2017,2018 by Jonathan Naylor G4KLX
  *   Copyright (C) 2018 by Andy Uribe CA6JAU
+ *   Copyright (C) 2019 by Florian Wolters DF2ET
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -28,12 +29,18 @@ m_poBuffer(),
 m_poLen(0U),
 m_poPtr(0U),
 m_txDelay(POCSAG_PREAMBLE_LENGTH_BYTES),
-m_delay(false)
+m_delay(false),
+m_cal(false)
 {
 }
 
 void CPOCSAGTX::process()
 {
+  if (m_cal) {
+    m_delay = false;
+    createCal();
+  }
+
   if (m_poLen == 0U && m_buffer.getData() > 0U) {
     if (!m_tx) {
       m_delay = true;
@@ -80,8 +87,8 @@ bool CPOCSAGTX::busy()
 
 uint8_t CPOCSAGTX::writeData(const uint8_t* data, uint8_t length)
 {
-  if (length != POCSAG_FRAME_LENGTH_BYTES)
-    return 4U;
+  //if (length != POCSAG_FRAME_LENGTH_BYTES)
+    //return 4U;
 
   uint16_t space = m_buffer.getSpace();
   if (space < POCSAG_FRAME_LENGTH_BYTES)
@@ -119,4 +126,21 @@ void CPOCSAGTX::setTXDelay(uint8_t delay)
 uint8_t CPOCSAGTX::getSpace() const
 {
   return m_buffer.getSpace() / POCSAG_FRAME_LENGTH_BYTES;
+}
+
+void CPOCSAGTX::setCal(bool start)
+{
+  m_cal = start ? true : false;
+}
+
+void CPOCSAGTX::createCal()
+{
+  // 600 Hz square wave generation
+  for (unsigned int i = 0U; i < POCSAG_FRAME_LENGTH_BYTES; i++) {
+    m_poBuffer[i]   = 0xAAU;
+  }
+
+  m_poLen = POCSAG_FRAME_LENGTH_BYTES;
+
+  m_poPtr = 0U;
 }

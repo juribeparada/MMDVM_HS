@@ -3,6 +3,7 @@
  *   Copyright (C) 2016 by Mathis Schmieder DB9MAT
  *   Copyright (C) 2016 by Colin Durbridge G4EML
  *   Copyright (C) 2016,2017 by Andy Uribe CA6JAU
+ *   Copyright (C) 2019 by Florian Wolters DF2ET
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -120,8 +121,11 @@ void loop()
   if (m_nxdnEnable && m_modemState == STATE_NXDN)
     nxdnTX.process();
 
-  if (m_pocsagEnable && (m_modemState == STATE_POCSAG || pocsagTX.busy()))
+  if (m_pocsagEnable && (m_modemState == STATE_POCSAG || pocsagTX.busy())) {
+    if (m_calState == STATE_POCSAGCAL)
+      pocsagTX.setCal(true);
     pocsagTX.process();
+  }
 
   if (m_calState == STATE_DMRCAL || m_calState == STATE_DMRDMO1K || m_calState == STATE_INTCAL)
     calDMR.process();
