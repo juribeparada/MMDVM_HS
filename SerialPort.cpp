@@ -2,6 +2,7 @@
  *   Copyright (C) 2013,2015,2016,2018 by Jonathan Naylor G4KLX
  *   Copyright (C) 2016 by Colin Durbridge G4EML
  *   Copyright (C) 2016,2017,2018 by Andy Uribe CA6JAU
+ *   Copyright (C) 2019 by Florian Wolters DF2ET
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -234,7 +235,7 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
 
   MMDVM_STATE modemState = MMDVM_STATE(data[3U]);
 
-  if (modemState != STATE_IDLE && modemState != STATE_DSTAR && modemState != STATE_DMR && modemState != STATE_YSF && modemState != STATE_P25 && modemState != STATE_NXDN && modemState != STATE_POCSAG && modemState != STATE_DSTARCAL && modemState != STATE_DMRCAL && modemState != STATE_DMRDMO1K && modemState != STATE_INTCAL && modemState != STATE_RSSICAL)
+  if (modemState != STATE_IDLE && modemState != STATE_DSTAR && modemState != STATE_DMR && modemState != STATE_YSF && modemState != STATE_P25 && modemState != STATE_NXDN && modemState != STATE_POCSAG && modemState != STATE_DSTARCAL && modemState != STATE_DMRCAL && modemState != STATE_DMRDMO1K && modemState != STATE_INTCAL && modemState != STATE_RSSICAL && modemState != STATE_POCSAGCAL)
     return 4U;
   if (modemState == STATE_DSTAR && !dstarEnable)
     return 4U;
@@ -289,6 +290,12 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
       io.updateCal();
     if (modemState == STATE_RSSICAL)
       io.ifConf(STATE_DMR, true);
+  } else if (modemState == STATE_POCSAGCAL) {
+    m_pocsagEnable = true;
+    m_modemState = STATE_POCSAG;
+    m_calState = modemState;
+    if (m_firstCal)
+      io.updateCal();
   }
   else {
     m_modemState = modemState;
@@ -342,7 +349,7 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
   io.printConf();
 #endif
 
-  if (modemState == STATE_DMRCAL || modemState == STATE_DMRDMO1K || modemState == STATE_RSSICAL || modemState == STATE_INTCAL)
+  if (modemState == STATE_DMRCAL || modemState == STATE_DMRDMO1K || modemState == STATE_RSSICAL || modemState == STATE_INTCAL || modemState == STATE_POCSAGCAL)
     m_firstCal = true;
 
   return 0U;
@@ -359,7 +366,7 @@ uint8_t CSerialPort::setMode(const uint8_t* data, uint8_t length)
   if (modemState == m_modemState)
     return 0U;
 
-  if (modemState != STATE_IDLE && modemState != STATE_DSTAR && modemState != STATE_DMR && modemState != STATE_YSF && modemState != STATE_P25 && modemState != STATE_NXDN && modemState != STATE_POCSAG && modemState != STATE_DSTARCAL && modemState != STATE_DMRCAL && modemState != STATE_DMRDMO1K && modemState != STATE_RSSICAL && modemState != STATE_INTCAL)
+  if (modemState != STATE_IDLE && modemState != STATE_DSTAR && modemState != STATE_DMR && modemState != STATE_YSF && modemState != STATE_P25 && modemState != STATE_NXDN && modemState != STATE_POCSAG && modemState != STATE_DSTARCAL && modemState != STATE_DMRCAL && modemState != STATE_DMRDMO1K && modemState != STATE_RSSICAL && modemState != STATE_INTCAL && modemState != STATE_POCSAGCAL)
     return 4U;
   if (modemState == STATE_DSTAR && !m_dstarEnable)
     return 4U;
@@ -377,6 +384,12 @@ uint8_t CSerialPort::setMode(const uint8_t* data, uint8_t length)
   if (modemState == STATE_DMRCAL || modemState == STATE_DMRDMO1K || modemState == STATE_RSSICAL || modemState == STATE_INTCAL) {
     m_dmrEnable = true;
     tmpState = STATE_DMR;
+    m_calState = modemState;
+    if (m_firstCal)
+      io.updateCal();
+  } else if (modemState == STATE_POCSAGCAL) {
+    m_pocsagEnable = true;
+    tmpState = STATE_POCSAG;
     m_calState = modemState;
     if (m_firstCal)
       io.updateCal();
@@ -592,6 +605,8 @@ void CSerialPort::process()
           case MMDVM_CAL_DATA:
             if (m_calState == STATE_DMRCAL || m_calState == STATE_DMRDMO1K) {
               err = calDMR.write(m_buffer + 3U, m_len - 3U);
+            } else if (m_calState == STATE_POCSAGCAL) {
+              err = pocsagTX.writeData(m_buffer + 3U, m_len - 3U);
             } else if (m_calState == STATE_RSSICAL || m_calState == STATE_INTCAL) {
               err = 0U;
             }

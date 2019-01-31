@@ -1,6 +1,7 @@
 /*
  *   Copyright (C) 2015,2016 by Jonathan Naylor G4KLX
  *   Copyright (C) 2016,2017 by Andy Uribe CA6JAU
+ *   Copyright (C) 2019 by Florian Wolters DF2ET
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -48,7 +49,8 @@ enum MMDVM_STATE {
   STATE_CWID      = 97,
   STATE_DMRCAL    = 98,
   STATE_DSTARCAL  = 99,
-  STATE_INTCAL    = 100
+  STATE_INTCAL    = 100,
+  STATE_POCSAGCAL = 101
 };
 
 const uint8_t  MARK_SLOT1 = 0x08U;
