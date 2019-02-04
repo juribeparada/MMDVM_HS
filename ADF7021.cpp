@@ -1007,8 +1007,15 @@ void CIO::updateCal()
   Send_AD7021_control();
 
   ADF7021_REG2  = (uint32_t) 0b10              << 28;  // invert data (and RC alpha = 0.5)
-  ADF7021_REG2 |= (uint32_t) (m_dmrDev / div2) << 19;  // deviation
-  ADF7021_REG2 |= (uint32_t) 0b111             << 4;   // modulation (RC 4FSK)
+
+  if (m_modemState == STATE_DMR) {
+    ADF7021_REG2 |= (uint32_t) (m_dmrDev / div2)    << 19;  // DMR deviation
+    ADF7021_REG2 |= (uint32_t) 0b111                << 4;   // modulation (RC 4FSK)
+  } else if (m_modemState == STATE_POCSAG) {
+    ADF7021_REG2 |= (uint32_t) (m_pocsagDev / div2) << 19;  // POCSAG deviation
+    ADF7021_REG2 |= (uint32_t) 0b000                << 4;   // modulation (2FSK)
+  }
+
   ADF7021_REG2 |= (uint32_t) 0b0010;                   // register 2
   ADF7021_REG2 |= (uint32_t) m_power           << 13;  // power level
   ADF7021_REG2 |= (uint32_t) 0b110001          << 7;   // PA

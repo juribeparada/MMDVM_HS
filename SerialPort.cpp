@@ -294,9 +294,8 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
     m_pocsagEnable = true;
     m_modemState = STATE_POCSAG;
     m_calState = modemState;
-    //if (m_firstCal)
-    //  io.updateCal();
-    io.ifConf(STATE_POCSAG, true);
+    if (m_firstCal)
+      io.updateCal();
   }
   else {
     m_modemState = modemState;
@@ -392,8 +391,8 @@ uint8_t CSerialPort::setMode(const uint8_t* data, uint8_t length)
     m_pocsagEnable = true;
     tmpState = STATE_POCSAG;
     m_calState = modemState;
-    //if (m_firstCal)
-    //  io.updateCal();
+    if (m_firstCal)
+      io.updateCal();
   }
   else {
     tmpState  = modemState;
