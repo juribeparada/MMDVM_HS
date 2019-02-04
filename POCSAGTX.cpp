@@ -135,7 +135,7 @@ uint8_t CPOCSAGTX::setCal(const uint8_t* data, uint8_t length)
 
   m_cal = data[0U] == 1U;
 
-  if (!m_cal)
+  if (m_cal)
     io.ifConf(STATE_POCSAG, true);
 
   return 0U;
