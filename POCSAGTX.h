@@ -29,7 +29,7 @@ public:
 
   void setTXDelay(uint8_t delay);
 
-  void setCal(bool);
+  uint8_t setCal(const uint8_t* data, uint8_t length);
 
   void createCal();
 

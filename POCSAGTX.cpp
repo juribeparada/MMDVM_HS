@@ -87,8 +87,8 @@ bool CPOCSAGTX::busy()
 
 uint8_t CPOCSAGTX::writeData(const uint8_t* data, uint8_t length)
 {
-  //if (length != POCSAG_FRAME_LENGTH_BYTES)
-    //return 4U;
+  if (length != POCSAG_FRAME_LENGTH_BYTES)
+    return 4U;
 
   uint16_t space = m_buffer.getSpace();
   if (space < POCSAG_FRAME_LENGTH_BYTES)
@@ -128,9 +128,17 @@ uint8_t CPOCSAGTX::getSpace() const
   return m_buffer.getSpace() / POCSAG_FRAME_LENGTH_BYTES;
 }
 
-void CPOCSAGTX::setCal(bool start)
+uint8_t CPOCSAGTX::setCal(const uint8_t* data, uint8_t length)
 {
-  m_cal = start ? true : false;
+  if (length != 1U)
+    return 4U;
+
+  m_cal = data[0U] == 1U;
+
+  if (!m_cal)
+    io.ifConf(STATE_POCSAG, true);
+
+  return 0U;
 }
 
 void CPOCSAGTX::createCal()

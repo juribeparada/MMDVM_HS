@@ -294,8 +294,9 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
     m_pocsagEnable = true;
     m_modemState = STATE_POCSAG;
     m_calState = modemState;
-    if (m_firstCal)
-      io.updateCal();
+    //if (m_firstCal)
+    //  io.updateCal();
+    io.ifConf(STATE_POCSAG, true);
   }
   else {
     m_modemState = modemState;
@@ -329,7 +330,7 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
 
   io.setLoDevYSF(ysfLoDev);
 
-  if (!m_firstCal || (modemState != STATE_DMRCAL && modemState != STATE_DMRDMO1K && modemState != STATE_RSSICAL && modemState != STATE_INTCAL)) {
+  if (!m_firstCal || (modemState != STATE_DMRCAL && modemState != STATE_DMRDMO1K && modemState != STATE_RSSICAL && modemState != STATE_INTCAL && modemState != STATE_POCSAGCAL)) {
     if(m_dstarEnable)
       io.ifConf(STATE_DSTAR, true);
     else if(m_dmrEnable)
@@ -391,8 +392,8 @@ uint8_t CSerialPort::setMode(const uint8_t* data, uint8_t length)
     m_pocsagEnable = true;
     tmpState = STATE_POCSAG;
     m_calState = modemState;
-    if (m_firstCal)
-      io.updateCal();
+    //if (m_firstCal)
+    //  io.updateCal();
   }
   else {
     tmpState  = modemState;
@@ -606,7 +607,7 @@ void CSerialPort::process()
             if (m_calState == STATE_DMRCAL || m_calState == STATE_DMRDMO1K) {
               err = calDMR.write(m_buffer + 3U, m_len - 3U);
             } else if (m_calState == STATE_POCSAGCAL) {
-              err = pocsagTX.writeData(m_buffer + 3U, m_len - 3U);
+              err = pocsagTX.setCal(m_buffer + 3U, m_len - 3U);
             } else if (m_calState == STATE_RSSICAL || m_calState == STATE_INTCAL) {
               err = 0U;
             }
