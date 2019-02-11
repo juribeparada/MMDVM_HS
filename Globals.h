@@ -1,6 +1,6 @@
 /*
  *   Copyright (C) 2015,2016 by Jonathan Naylor G4KLX
- *   Copyright (C) 2016,2017,2018 by Andy Uribe CA6JAU
+ *   Copyright (C) 2016,2017,2018,2019 by Andy Uribe CA6JAU
  *   Copyright (C) 2019 by Florian Wolters DF2ET
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -85,6 +85,7 @@ const uint8_t  MARK_NONE  = 0x00U;
 #include "CalDMR.h"
 #include "Debug.h"
 #include "Utils.h"
+#include "I2CHost.h"
 
 extern MMDVM_STATE m_modemState;
 extern MMDVM_STATE m_calState;
@@ -144,6 +145,10 @@ extern CCalRSSI calRSSI;
 #endif
 
 extern CCWIdTX cwIdTX;
+
+#if defined(STM32_I2C_HOST)
+extern CI2CHost i2c;
+#endif
 
 #endif
 

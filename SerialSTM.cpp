@@ -1,6 +1,6 @@
 /*
  *   Copyright (C) 2016 by Jim McLaughlin KI6ZUM
- *   Copyright (C) 2016,2017 by Andy Uribe CA6JAU
+ *   Copyright (C) 2016,2017,2018,2019 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 
 #include "Globals.h"
 #include "SerialPort.h"
+#include "I2CHost.h"
 
 #if defined(STM32_USB_HOST)
 #include <usb_serial.h>
@@ -32,9 +33,9 @@
 Pin definitions:
 
 - Host communication:
-USART1 - TXD PA9  - RXD PA10
-or
-USB VCOM
+1) USART1 - TXD PA9  - RXD PA10
+2) USB VCOM
+3) I2C - SCL PB10 - SDA PB11
 
 - Serial repeater
 USART2 - TXD PA2  - RXD PA3 
@@ -441,6 +442,8 @@ void CSerialPort::beginInt(uint8_t n, int speed)
       InitUSART1(speed);
     #elif defined(STM32_USB_HOST)
       usbserial.begin();
+    #elif defined(STM32_I2C_HOST)
+      i2c.Init();
     #endif
       break;
     case 3U:
@@ -452,7 +455,7 @@ void CSerialPort::beginInt(uint8_t n, int speed)
       break;
     default:
       break;
-  }   
+  }
 }
 
 int CSerialPort::availableInt(uint8_t n)
@@ -463,6 +466,8 @@ int CSerialPort::availableInt(uint8_t n)
       return AvailUSART1();
     #elif defined(STM32_USB_HOST)
       return usbserial.available();
+    #elif defined(STM32_I2C_HOST)
+      return i2c.AvailI2C();
     #endif
     case 3U: 
     #if defined(SERIAL_REPEATER)
@@ -483,6 +488,8 @@ uint8_t CSerialPort::readInt(uint8_t n)
       return ReadUSART1();
     #elif defined(STM32_USB_HOST)
       return usbserial.read();
+    #elif defined(STM32_I2C_HOST)
+      return i2c.ReadI2C();
     #endif
     case 3U:
     #if defined(SERIAL_REPEATER)
@@ -501,12 +508,14 @@ void CSerialPort::writeInt(uint8_t n, const uint8_t* data, uint16_t length, bool
     case 1U:
     #if defined(STM32_USART1_HOST)
       WriteUSART1(data, length);
-    if (flush)
-      TXSerialFlush1();
+      if (flush)
+        TXSerialFlush1();
     #elif defined(STM32_USB_HOST)
       usbserial.write(data, length);
       if (flush)
         usbserial.flush();
+    #elif defined(STM32_I2C_HOST)
+      i2c.WriteI2C(data, length);
     #endif
       break;
     case 3U:

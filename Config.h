@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2017,2018 by Andy Uribe CA6JAU
+ *   Copyright (C) 2017,2018,2019 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -58,6 +58,10 @@
 // Host communication selection:
 // #define STM32_USART1_HOST
 #define STM32_USB_HOST
+// #define STM32_I2C_HOST
+
+// I2C host address:
+#define I2C_ADDR 0x22
 
 // Enable mode detection:
 #define ENABLE_SCAN_MODE

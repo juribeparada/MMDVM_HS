@@ -86,6 +86,10 @@ CCWIdTX    cwIdTX;
 CSerialPort serial;
 CIO io;
 
+#if defined(STM32_I2C_HOST)
+CI2CHost i2c;
+#endif
+
 void setup()
 {
   serial.start();
