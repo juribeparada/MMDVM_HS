@@ -17,10 +17,10 @@
 #   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 # Configure latest version
-FW_VERSION="v1.4.14"
+FW_VERSION="v1.4.16"
 
 # Change USB-serial port name ONLY in macOS
-MAC_DEV_USB_SER="/dev/cu.usbmodem1441"
+MAC_DEV_USB_SER="/dev/cu.usbmodem14401"
 	
 # Download latest firmware for ZUMspot Libre Kit
 curl -OL https://github.com/juribeparada/MMDVM_HS/releases/download/$FW_VERSION/zumspot_duplex_fw.bin
