@@ -412,10 +412,12 @@ stlink-nobl:
 
 stlink-bl:
 	$(ST_FLASH) write $(F1_LIB_PATH)/utils/bootloader/generic_boot20_pc13_long_rst.bin 0x8000000
+	sleep 3
 	$(ST_FLASH) write bin/$(BINBIN_F1BL) 0x8002000
 
 stlink-bl-old:
 	$(ST_FLASH) write $(F1_LIB_PATH)/utils/bootloader/generic_boot20_pc13.bin 0x8000000
+	sleep 3
 	$(ST_FLASH) write bin/$(BINBIN_F1BL) 0x8002000
 
 serial:
@@ -426,10 +428,12 @@ serial-nobl:
 
 serial-bl:
 	$(STM32FLASH) -v -w $(F1_LIB_PATH)/utils/bootloader/generic_boot20_pc13_long_rst.bin -g 0x0 $(devser)
+	sleep 3
 	$(STM32FLASH) -v -w bin/$(BINBIN_F1BL) -g 0x0 -S 0x08002000 $(devser)
 
 serial-bl-old:
 	$(STM32FLASH) -v -w $(F1_LIB_PATH)/utils/bootloader/generic_boot20_pc13.bin -g 0x0 $(devser)
+	sleep 3
 	$(STM32FLASH) -v -w bin/$(BINBIN_F1BL) -g 0x0 -S 0x08002000 $(devser)
 
 nano-hotspot:
