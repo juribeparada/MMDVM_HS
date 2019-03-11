@@ -35,7 +35,7 @@
 #define BOARD_INFO      "MMDVM_HS_Dual_Hat"
 #elif defined(NANO_HOTSPOT)
 #define BOARD_INFO      "Nano_hotSPOT"
-#elif defined(NANO_DV_REV10)
+#elif defined(NANO_DV_REV11)
 #define BOARD_INFO      "Nano_DV"
 #else
 #define BOARD_INFO      "MMDVM_HS"
