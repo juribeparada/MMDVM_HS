@@ -30,6 +30,10 @@ public:
 
   void process();
 
+#if defined(SERIAL_REPEATER) || defined(SERIAL_REPEATER_USART1)
+  void writeSerialRpt(const uint8_t* data, uint8_t length);
+#endif
+
   void writeDStarHeader(const uint8_t* header, uint8_t length);
   void writeDStarData(const uint8_t* data, uint8_t length);
   void writeDStarLost();
@@ -65,6 +69,10 @@ private:
   uint8_t m_buffer[256U];
   uint8_t m_ptr;
   uint8_t m_len;
+  uint8_t m_serial_buffer[128U];
+  uint8_t m_serial_ptr;
+  uint8_t m_serial_len;
+
   bool    m_debug;
   bool    m_firstCal;
 

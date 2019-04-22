@@ -262,11 +262,12 @@ Install the necessary software tools:
     sudo apt-get update
     sudo apt-get install gcc-arm-none-eabi gdb-arm-none-eabi libstdc++-arm-none-eabi-newlib libnewlib-arm-none-eabi
     
-    cd ~
-    git clone https://git.code.sf.net/p/stm32flash/code stm32flash
-    cd stm32flash
-    make
-    sudo make install
+Note: The Pi-Star image contains an executable for stm32flash. The next five steps can be skipped!
+#    cd ~
+#    git clone https://git.code.sf.net/p/stm32flash/code stm32flash
+#    cd stm32flash
+#    make
+#    sudo make install
 
 Download the firmware sources:
 

@@ -82,6 +82,9 @@ CSerialPort::CSerialPort() :
 m_buffer(),
 m_ptr(0U),
 m_len(0U),
+m_serial_buffer(),
+m_serial_ptr(0U),
+m_serial_len(0U),
 m_debug(false),
 m_firstCal(false)
 {
@@ -136,7 +139,7 @@ void CSerialPort::getStatus()
     reply[3U] |= 0x10U;
   if (m_pocsagEnable)
     reply[3U] |= 0x20U;
- 
+
   reply[4U]  = uint8_t(m_modemState);
 
   reply[5U]  = m_tx  ? 0x01U : 0x00U;
@@ -253,7 +256,7 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
   uint8_t colorCode = data[6U];
   if (colorCode > 15U)
     return 4U;
-    
+
 #if defined(DUPLEX)
   uint8_t dmrDelay = data[7U];
 #endif
@@ -317,7 +320,7 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
   nxdnTX.setTXDelay(txDelay);
   pocsagTX.setTXDelay(txDelay);
   dmrDMOTX.setTXDelay(txDelay);
-  
+
 #if defined(DUPLEX)
   dmrTX.setColorCode(colorCode);
   dmrRX.setColorCode(colorCode);
@@ -536,7 +539,7 @@ void CSerialPort::start()
   beginInt(1U, 115200);
 
 #if defined(SERIAL_REPEATER) || defined(SERIAL_REPEATER_USART1)
-  beginInt(3U, 9600);
+  beginInt(3U, SERIAL_REPEATER_BAUD);
 #endif
 }
 
@@ -859,11 +862,61 @@ void CSerialPort::process()
   }
 
 #if defined(SERIAL_REPEATER) || defined(SERIAL_REPEATER_USART1)
-  // Drain any incoming serial data
+  // Check for any incoming serial data from a device/screen on UART2
+  //  !!Notice!! on powerup the Nextion screen dumps FF FF FF 88 FF FF FF to the serial port.
   while (availableInt(3U))
-    readInt(3U);
+    {
+	uint8_t ch = readInt(3U);
+    // read UART2
+
+    m_serial_buffer[m_serial_ptr] = ch;
+    m_serial_ptr++;
+    // fill the buffer one char at a time
+
+    if (m_serial_len > 128)
+      m_serial_len = 0U;
+      // if length is > 128 reset it
+    else
+      m_serial_len++;
+      // increase length
+    }
+
+    if ((m_serial_buffer[m_serial_len - 3] == 0xFF) && (m_serial_buffer[m_serial_len - 2] == 0xFF) && (m_serial_buffer[m_serial_len - 1] == 0xFF))
+      {
+      serial.writeSerialRpt(m_serial_buffer, m_serial_len);
+      //  if the last 3 bytes are FF's then the screen is done sending data so send the m_serial_buffer to serial.writeSerialRpt()
+
+      m_serial_ptr = 0U;
+	  m_serial_len = 0U;
+      //  set ptr and reset length of buffer data since last message was valid and get ready for new data
+
+      }
+
 #endif
 }
+
+#if defined(SERIAL_REPEATER) || defined(SERIAL_REPEATER_USART1)
+void CSerialPort::writeSerialRpt(const uint8_t* data, uint8_t length)
+{
+  if (m_modemState != STATE_IDLE)
+    return;
+
+  uint8_t reply[131U];
+
+  reply[0U] = MMDVM_FRAME_START;
+  reply[1U] = 0U;
+  reply[2U] = MMDVM_SERIAL;
+
+  uint8_t count = 3U;
+  for (uint8_t i = 0U; i < length; i++, count++)
+    reply[count] = data[i];
+
+  reply[1U] = count;
+
+  writeInt(1U, reply, count);
+}
+#endif
+
 
 void CSerialPort::writeDStarHeader(const uint8_t* header, uint8_t length)
 {
@@ -1187,7 +1240,7 @@ void CSerialPort::writeDebugI(const char* text, int32_t n1)
   for (uint8_t i = 0U; text[i] != '\0'; i++, count++)
     reply[count] = text[i];
 
-  reply[count++] = ' '; 
+  reply[count++] = ' ';
 
   i2str(&reply[count], 130U - count, n1);
 
