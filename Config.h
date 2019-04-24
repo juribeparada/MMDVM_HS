@@ -71,6 +71,7 @@
 
 // Enable Nextion LCD serial port repeater on USART2 (ZUMspot Libre Kit and ZUMspot RPi):
 #define SERIAL_REPEATER
+#define SERIAL_REPEATER_BAUD 9600
 
 // Enable Nextion LCD serial port repeater on USART1 (Do not use with STM32_USART1_HOST enabled):
 // #define SERIAL_REPEATER_USART1

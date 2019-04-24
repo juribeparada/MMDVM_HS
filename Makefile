@@ -421,46 +421,46 @@ stlink-bl-old:
 	$(ST_FLASH) write bin/$(BINBIN_F1BL) 0x8002000
 
 serial:
-	$(STM32FLASH) -b 115200 -v -w bin/$(BINBIN_F1) -g 0x0 $(devser)
+	$(STM32FLASH) -v -w bin/$(BINBIN_F1) -g 0x0 $(devser)
 
 serial-nobl:
-	$(STM32FLASH) -b 115200 -v -w bin/$(BINBIN_F1NOBL) -g 0x0 $(devser)
+	$(STM32FLASH) -v -w bin/$(BINBIN_F1NOBL) -g 0x0 $(devser)
 
 serial-bl:
-	$(STM32FLASH) -b 115200 -v -w $(F1_LIB_PATH)/utils/bootloader/generic_boot20_pc13_long_rst.bin -g 0x0 $(devser)
+	$(STM32FLASH) -v -w $(F1_LIB_PATH)/utils/bootloader/generic_boot20_pc13_long_rst.bin -g 0x0 $(devser)
 	sleep 3
-	$(STM32FLASH) -b 115200 -v -w bin/$(BINBIN_F1BL) -g 0x0 -S 0x08002000 $(devser)
+	$(STM32FLASH) -v -w bin/$(BINBIN_F1BL) -g 0x0 -S 0x08002000 $(devser)
 
 serial-bl-old:
-	$(STM32FLASH) -b 115200 -v -w $(F1_LIB_PATH)/utils/bootloader/generic_boot20_pc13.bin -g 0x0 $(devser)
+	$(STM32FLASH) -v -w $(F1_LIB_PATH)/utils/bootloader/generic_boot20_pc13.bin -g 0x0 $(devser)
 	sleep 3
-	$(STM32FLASH) -b 115200 -v -w bin/$(BINBIN_F1BL) -g 0x0 -S 0x08002000 $(devser)
+	$(STM32FLASH) -v -w bin/$(BINBIN_F1BL) -g 0x0 -S 0x08002000 $(devser)
 
 nano-hotspot:
 ifneq ($(wildcard /usr/local/bin/stm32flash),)
-	/usr/local/bin/stm32flash -b 115200 -v -w bin/$(BINBIN_F1) -g 0x0 -R -i 200,-3,3:-200,3 /dev/ttyAMA0
+	/usr/local/bin/stm32flash -v -w bin/$(BINBIN_F1) -g 0x0 -R -i 200,-3,3:-200,3 /dev/ttyAMA0
 endif
 
 ifneq ($(wildcard /usr/bin/stm32flash),)
-	/usr/bin/stm32flash -b 115200 -v -w bin/$(BINBIN_F1) -g 0x0 -R -i 200,-3,3:-200,3 /dev/ttyAMA0
+	/usr/bin/stm32flash -v -w bin/$(BINBIN_F1) -g 0x0 -R -i 200,-3,3:-200,3 /dev/ttyAMA0
 endif
 
 nano-dv:
 ifneq ($(wildcard /usr/local/bin/stm32flash),)
-	/usr/local/bin/stm32flash -b 115200 -v -w bin/$(BINBIN_F1) -g 0x0 -R -i 66,-67,67:-66,67 /dev/ttyAMA0
+	/usr/local/bin/stm32flash -v -w bin/$(BINBIN_F1) -g 0x0 -R -i 66,-67,67:-66,67 /dev/ttyAMA0
 endif
 
 ifneq ($(wildcard /usr/bin/stm32flash),)
-	/usr/bin/stm32flash -b 115200 -v -w bin/$(BINBIN_F1) -g 0x0 -R -i 66,-67,67:-66,67 /dev/ttyAMA0
+	/usr/bin/stm32flash -v -w bin/$(BINBIN_F1) -g 0x0 -R -i 66,-67,67:-66,67 /dev/ttyAMA0
 endif
 
 zumspot-pi:
 ifneq ($(wildcard /usr/local/bin/stm32flash),)
-	/usr/local/bin/stm32flash -b 115200 -v -w bin/$(BINBIN_F1) -g 0x0 -R -i 20,-21,21:-20,21 /dev/ttyAMA0
+	/usr/local/bin/stm32flash -v -w bin/$(BINBIN_F1) -g 0x0 -R -i 20,-21,21:-20,21 /dev/ttyAMA0
 endif
 
 ifneq ($(wildcard /usr/bin/stm32flash),)
-	/usr/bin/stm32flash -b 115200 -v -w bin/$(BINBIN_F1) -g 0x0 -R -i 20,-21,21:-20,21 /dev/ttyAMA0
+	/usr/bin/stm32flash -v -w bin/$(BINBIN_F1) -g 0x0 -R -i 20,-21,21:-20,21 /dev/ttyAMA0
 endif
 
 mmdvm_hs_hat: zumspot-pi
