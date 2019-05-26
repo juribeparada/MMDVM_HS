@@ -1,8 +1,8 @@
 /*
  *   Copyright (C) 2016 by Jim McLaughlin KI6ZUM
  *   Copyright (C) 2016,2017,2018 by Andy Uribe CA6JAU
- *   Copyright (C) 2017 by Danilo DB4PLE 
-  
+ *   Copyright (C) 2017 by Danilo DB4PLE
+
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2 of the License, or
@@ -115,12 +115,21 @@
 #define PIN_RXD              GPIO_Pin_4
 #define PORT_RXD             GPIOB
 
+#define PIN_RXD2             GPIO_Pin_4
+#define PORT_RXD2            GPIOA
+
 // TXD used in SPI Data mode of ADF7021
 // TXD is TxRxCLK of ADF7021, standard TX/RX data interface
 #define PIN_TXD              GPIO_Pin_3
 #define PORT_TXD             GPIOB
 #define PIN_TXD_INT          GPIO_PinSource3
 #define PORT_TXD_INT         GPIO_PortSourceGPIOB
+
+// TXD2 is TxRxCLK of the second ADF7021, standard TX/RX data interface
+#define PIN_TXD2             GPIO_Pin_8
+#define PORT_TXD2            GPIOA
+#define PIN_TXD2_INT         GPIO_PinSource8
+#define PORT_TXD2_INT        GPIO_PortSourceGPIOA
 
 // CLKOUT used in SPI Data mode of ADF7021
 #define PIN_CLKOUT           GPIO_Pin_15
@@ -131,8 +140,8 @@
 #define PIN_LED              GPIO_Pin_13
 #define PORT_LED             GPIOC
 
-#define PIN_DEB              GPIO_Pin_9
-#define PORT_DEB             GPIOB
+#define PIN_DEB              GPIO_Pin_7
+#define PORT_DEB             GPIOA
 
 #define PIN_DSTAR_LED        GPIO_Pin_12
 #define PORT_DSTAR_LED       GPIOB
@@ -280,9 +289,9 @@ extern "C" {
 
 #if defined(DUPLEX)
   void EXTI9_5_IRQHandler(void) {
-    if(EXTI_GetITStatus(EXTI_Line5)!=RESET) {
+    if(EXTI_GetITStatus(EXTI_Line8)!=RESET) {
       io.interrupt2();
-    EXTI_ClearITPendingBit(EXTI_Line5);
+    EXTI_ClearITPendingBit(EXTI_Line8);
     }
   }
 #endif
@@ -301,7 +310,7 @@ void CIO::Init()
 #endif
 
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC | RCC_APB2Periph_AFIO, ENABLE);
-  
+
 #if defined(PI_HAT_7021_REV_02)
   GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable, ENABLE);
 #elif defined(ZUMSPOT_ADF7021) || defined(LIBRE_KIT_ADF7021) || defined(MMDVM_HS_HAT_REV12) || defined(MMDVM_HS_DUAL_HAT_REV10) || defined(NANO_HOTSPOT) || defined(NANO_DV_REV11)
@@ -343,7 +352,7 @@ void CIO::Init()
   GPIO_InitStruct.GPIO_Pin   = PIN_SDATA;
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
   GPIO_Init(PORT_SDATA, &GPIO_InitStruct);
-  
+
   // Pin SREAD
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStruct.GPIO_Pin   = PIN_SREAD;
@@ -355,14 +364,14 @@ void CIO::Init()
   GPIO_InitStruct.GPIO_Pin   = PIN_SLE;
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
   GPIO_Init(PORT_SLE, &GPIO_InitStruct);
-  
+
 #if defined(DUPLEX)
   // Pin SLE2
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStruct.GPIO_Pin   = PIN_SLE2;
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
   GPIO_Init(PORT_SLE2, &GPIO_InitStruct);
-  
+
   // Pin RXD2
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStruct.GPIO_Pin   = PIN_RXD2;
@@ -393,6 +402,7 @@ void CIO::Init()
 #endif
   GPIO_Init(PORT_TXD, &GPIO_InitStruct);
 #if defined(DUPLEX)
+  GPIO_InitStruct.GPIO_Pin   = PIN_TXD2;
   GPIO_Init(PORT_TXD2, &GPIO_InitStruct);
 #endif
 
@@ -403,7 +413,7 @@ void CIO::Init()
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
   GPIO_Init(PORT_CLKOUT, &GPIO_InitStruct);
 #endif
- 
+
   // Pin LED
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStruct.GPIO_Pin   = PIN_LED;
@@ -416,37 +426,37 @@ void CIO::Init()
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
   GPIO_Init(PORT_DEB, &GPIO_InitStruct);
 
-  // D-Star LED 
+  // D-Star LED
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStruct.GPIO_Pin   = PIN_DSTAR_LED;
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
   GPIO_Init(PORT_DSTAR_LED, &GPIO_InitStruct);
 
-  // DMR LED 
+  // DMR LED
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStruct.GPIO_Pin   = PIN_DMR_LED;
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
   GPIO_Init(PORT_DMR_LED, &GPIO_InitStruct);
 
-  // YSF LED 
+  // YSF LED
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStruct.GPIO_Pin   = PIN_YSF_LED;
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
   GPIO_Init(PORT_YSF_LED, &GPIO_InitStruct);
 
-  // P25 LED 
+  // P25 LED
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStruct.GPIO_Pin   = PIN_P25_LED;
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
   GPIO_Init(PORT_P25_LED, &GPIO_InitStruct);
 
-  // NXDN LED 
+  // NXDN LED
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStruct.GPIO_Pin   = PIN_NXDN_LED;
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
   GPIO_Init(PORT_NXDN_LED, &GPIO_InitStruct);
 
-  // POCSAG LED 
+  // POCSAG LED
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStruct.GPIO_Pin   = PIN_POCSAG_LED;
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
@@ -458,7 +468,7 @@ void CIO::Init()
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
   GPIO_Init(PORT_PTT_LED, &GPIO_InitStruct);
 
-  // COS LED 
+  // COS LED
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStruct.GPIO_Pin   = PIN_COS_LED;
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
@@ -496,7 +506,7 @@ void CIO::Init()
   // Connect EXTI5 Line
   GPIO_EXTILineConfig(PORT_TXD2_INT, PIN_TXD2_INT);
   // Configure EXT5 line
-  EXTI_InitStructure2.EXTI_Line = EXTI_Line5;
+  EXTI_InitStructure2.EXTI_Line = EXTI_Line8;
 #endif
 
 #endif
@@ -505,7 +515,7 @@ void CIO::Init()
   EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising_Falling;
   EXTI_InitStructure.EXTI_LineCmd = ENABLE;
   EXTI_Init(&EXTI_InitStructure);
-  
+
 #if defined(DUPLEX)
   EXTI_InitStructure2.EXTI_Mode = EXTI_Mode_Interrupt;
   EXTI_InitStructure2.EXTI_Trigger = EXTI_Trigger_Rising;
@@ -517,7 +527,7 @@ void CIO::Init()
 void CIO::startInt()
 {
   NVIC_InitTypeDef NVIC_InitStructure;
-  
+
 #if defined(DUPLEX)
   NVIC_InitTypeDef NVIC_InitStructure2;
 #endif
@@ -546,7 +556,7 @@ void CIO::startInt()
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 15;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
-  
+
 #if defined(DUPLEX)
   NVIC_InitStructure2.NVIC_IRQChannelPreemptionPriority = 1;
   NVIC_InitStructure2.NVIC_IRQChannelSubPriority = 15;
@@ -557,18 +567,18 @@ void CIO::startInt()
 
 #if defined(BIDIR_DATA_PIN)
 // RXD pin is bidirectional in standard interfaces
-void CIO::Data_dir_out(bool dir) 
+void CIO::Data_dir_out(bool dir)
 {
   GPIO_InitTypeDef GPIO_InitStruct;
 
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStruct.GPIO_Pin   = PIN_RXD;
-  
+
   if(dir)
     GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
   else
     GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
-  
+
   GPIO_Init(PORT_RXD, &GPIO_InitStruct);
 }
 #endif
