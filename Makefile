@@ -1,4 +1,4 @@
-#  Copyright (C) 2016,2017,2018 by Andy Uribe CA6JAU
+#  Copyright (C) 2016,2017,2018,2019 by Andy Uribe CA6JAU
 #  Copyright (C) 2016 by Jim McLaughlin KI6ZUM
 
 #  This program is free software; you can redistribute it and/or modify
@@ -452,6 +452,15 @@ endif
 
 ifneq ($(wildcard /usr/bin/stm32flash),)
 	/usr/bin/stm32flash -v -w bin/$(BINBIN_F1) -g 0x0 -R -i 66,-67,67:-66,67 /dev/ttyAMA0
+endif
+
+d2rg_mmdvm_hs:
+ifneq ($(wildcard /usr/local/bin/stm32flash),)
+	/usr/local/bin/stm32flash -v -w bin/$(BINBIN_F1) -g 0x0 -R -i 23,-22,22:-23,22 /dev/ttySC0
+endif
+
+ifneq ($(wildcard /usr/bin/stm32flash),)
+	/usr/bin/stm32flash -v -w bin/$(BINBIN_F1) -g 0x0 -R -i 23,-22,22:-23,22 /dev/ttySC0
 endif
 
 zumspot-pi:

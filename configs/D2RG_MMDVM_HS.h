@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2017,2018 by Andy Uribe CA6JAU
+ *   Copyright (C) 2017,2018,2019 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
 // 1) ZUMspot RPi or ZUMspot USB:
 // #define ZUMSPOT_ADF7021
 // 2) Libre Kit board or any homebrew hotspot with modified RF7021SE and Blue Pill STM32F103:
-#define LIBRE_KIT_ADF7021
+// #define LIBRE_KIT_ADF7021
 // 3) MMDVM_HS_Hat revisions 1.1, 1.2 and 1.4 (DB9MAT & DF2ET)
 // #define MMDVM_HS_HAT_REV12
 // 4) MMDVM_HS_Dual_Hat revisions 1.0 (DB9MAT & DF2ET & DO7EN)
@@ -33,13 +33,13 @@
 // 6) NanoDV NPi or USB revisions 1.0 (BG4TGO & BG5HHP)
 // #define NANO_DV_REV10
 // 7) D2RG MMDVM_HS RPi (BG3MDO, VE2GZI, CA6JAU)
-// #define D2RG_MMDVM_HS
+#define D2RG_MMDVM_HS
 
 // Enable ADF7021 support:
 #define ENABLE_ADF7021
 
 // Enable full duplex support with dual ADF7021 (valid for homebrew hotspots only):
-#define DUPLEX
+// #define DUPLEX
 
 // TCXO of the ADF7021
 // For 14.7456 MHz:
@@ -69,7 +69,7 @@
 #define ENABLE_SCAN_MODE
 
 // Send RSSI value:
-// #define SEND_RSSI_DATA
+#define SEND_RSSI_DATA
 
 // Enable Nextion LCD serial port repeater on USART2 (ZUMspot Libre Kit and ZUMspot RPi):
 #define SERIAL_REPEATER
@@ -100,7 +100,7 @@
 // #define LONG_USB_RESET
 
 // Enable modem debug messages
-// #define ENABLE_DEBUG
+#define ENABLE_DEBUG
 
 // Disable frequency bands check
 // #define DISABLE_FREQ_CHECK

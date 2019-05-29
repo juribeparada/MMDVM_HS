@@ -1,6 +1,6 @@
 /*
  *   Copyright (C) 2016 by Jim McLaughlin KI6ZUM
- *   Copyright (C) 2016,2017,2018 by Andy Uribe CA6JAU
+ *   Copyright (C) 2016,2017,2018,2019 by Andy Uribe CA6JAU
  *   Copyright (C) 2017 by Danilo DB4PLE 
   
  *   This program is free software; you can redistribute it and/or modify
@@ -162,7 +162,7 @@
 #define PIN_COS_LED          GPIO_Pin_15
 #define PORT_COS_LED         GPIOB
 
-#elif defined(LIBRE_KIT_ADF7021) || defined(MMDVM_HS_HAT_REV12) || defined(MMDVM_HS_DUAL_HAT_REV10) || defined(NANO_HOTSPOT) || defined(NANO_DV_REV11)
+#elif defined(LIBRE_KIT_ADF7021) || defined(MMDVM_HS_HAT_REV12) || defined(MMDVM_HS_DUAL_HAT_REV10) || defined(NANO_HOTSPOT) || defined(NANO_DV_REV11) || defined(D2RG_MMDVM_HS)
 
 #define PIN_SCLK             GPIO_Pin_5
 #define PORT_SCLK            GPIOB
@@ -238,7 +238,7 @@
 #define PORT_COS_LED         GPIOB
 
 #else
-#error "Either PI_HAT_7021_REV_02, ZUMSPOT_ADF7021, LIBRE_KIT_ADF7021, MMDVM_HS_HAT_REV12, MMDVM_HS_DUAL_HAT_REV10, NANO_HOTSPOT or NANO_DV_REV11 need to be defined"
+#error "Either PI_HAT_7021_REV_02, ZUMSPOT_ADF7021, LIBRE_KIT_ADF7021, MMDVM_HS_HAT_REV12, MMDVM_HS_DUAL_HAT_REV10, NANO_HOTSPOT, NANO_DV_REV11 or D2RG_MMDVM_HS need to be defined"
 #endif
 
 extern "C" {
@@ -260,7 +260,7 @@ extern "C" {
   }
 #endif
 
-#elif defined(ZUMSPOT_ADF7021) || defined(LIBRE_KIT_ADF7021) || defined(MMDVM_HS_HAT_REV12) || defined(MMDVM_HS_DUAL_HAT_REV10) || defined(NANO_HOTSPOT) || defined(NANO_DV_REV11)
+#elif defined(ZUMSPOT_ADF7021) || defined(LIBRE_KIT_ADF7021) || defined(MMDVM_HS_HAT_REV12) || defined(MMDVM_HS_DUAL_HAT_REV10) || defined(NANO_HOTSPOT) || defined(NANO_DV_REV11) || defined(D2RG_MMDVM_HS)
 
 #if defined(BIDIR_DATA_PIN)
   void EXTI3_IRQHandler(void) {
@@ -304,7 +304,7 @@ void CIO::Init()
   
 #if defined(PI_HAT_7021_REV_02)
   GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable, ENABLE);
-#elif defined(ZUMSPOT_ADF7021) || defined(LIBRE_KIT_ADF7021) || defined(MMDVM_HS_HAT_REV12) || defined(MMDVM_HS_DUAL_HAT_REV10) || defined(NANO_HOTSPOT) || defined(NANO_DV_REV11)
+#elif defined(ZUMSPOT_ADF7021) || defined(LIBRE_KIT_ADF7021) || defined(MMDVM_HS_HAT_REV12) || defined(MMDVM_HS_DUAL_HAT_REV10) || defined(NANO_HOTSPOT) || defined(NANO_DV_REV11) || defined(D2RG_MMDVM_HS)
   GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);
 #endif
 
@@ -478,7 +478,7 @@ void CIO::Init()
   EXTI_InitStructure.EXTI_Line = EXTI_Line14;
 #endif
 
-#elif defined(ZUMSPOT_ADF7021) || defined(LIBRE_KIT_ADF7021) || defined(MMDVM_HS_HAT_REV12) || defined(MMDVM_HS_DUAL_HAT_REV10) || defined(NANO_HOTSPOT) || defined(NANO_DV_REV11)
+#elif defined(ZUMSPOT_ADF7021) || defined(LIBRE_KIT_ADF7021) || defined(MMDVM_HS_HAT_REV12) || defined(MMDVM_HS_DUAL_HAT_REV10) || defined(NANO_HOTSPOT) || defined(NANO_DV_REV11) || defined(D2RG_MMDVM_HS)
 
 #if defined(BIDIR_DATA_PIN)
   // Connect EXTI3 Line
@@ -526,7 +526,7 @@ void CIO::startInt()
 
   NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn;
 
-#elif defined(ZUMSPOT_ADF7021) || defined(LIBRE_KIT_ADF7021) || defined(MMDVM_HS_HAT_REV12) || defined(MMDVM_HS_DUAL_HAT_REV10) || defined(NANO_HOTSPOT) || defined(NANO_DV_REV11)
+#elif defined(ZUMSPOT_ADF7021) || defined(LIBRE_KIT_ADF7021) || defined(MMDVM_HS_HAT_REV12) || defined(MMDVM_HS_DUAL_HAT_REV10) || defined(NANO_HOTSPOT) || defined(NANO_DV_REV11) || defined(D2RG_MMDVM_HS)
 
 #if defined(BIDIR_DATA_PIN)
   // Enable and set EXTI3 Interrupt
