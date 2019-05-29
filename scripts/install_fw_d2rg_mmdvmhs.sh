@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#   Copyright (C) 2017,2018 by Andy Uribe CA6JAU
+#   Copyright (C) 2017,2018,2019 by Andy Uribe CA6JAU
 
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -22,8 +22,8 @@ FW_VERSION="v1.4.17"
 # Change USB-serial port name ONLY in macOS
 MAC_DEV_USB_SER="/dev/cu.usbmodem14401"
 	
-# Download latest firmware for Generic Simplex GPIO
-curl -OL https://github.com/juribeparada/MMDVM_HS/releases/download/$FW_VERSION/generic_gpio_fw.bin
+# Download latest firmware for MMDVM_HS_Hat
+curl -OL https://github.com/juribeparada/MMDVM_HS/releases/download/$FW_VERSION/d2rg_mmdvm_hs.bin
 
 # Download STM32F10X_Lib (only for binary tools)
 if [ ! -d "./STM32F10X_Lib/utils" ]; then
@@ -73,5 +73,5 @@ fi
 sudo killall MMDVMHost >/dev/null 2>&1
 
 # Upload the firmware
-eval sudo $STM32FLASH -v -w generic_gpio_fw.bin -g 0x0 -R -i 20,-21,21:-20,21 /dev/ttyAMA0
+eval sudo $STM32FLASH -v -w d2rg_mmdvm_hs.bin -g 0x0 -R -i 23,-22,22:-23,22 /dev/ttySC0
 

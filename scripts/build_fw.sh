@@ -86,6 +86,12 @@ make bl
 mv ~/MMDVM_HS/bin/mmdvm_f1bl.bin ~/MMDVM_HS/bin/nanodv_usb_fw.bin
 make clean
 
+# Building D2RG MMDVM_HS
+cp ~/MMDVM_HS/configs/D2RG_MMDVM_HS.h ~/MMDVM_HS/Config.h
+make
+mv ~/MMDVM_HS/bin/mmdvm_f1.bin ~/MMDVM_HS/bin/d2rg_mmdvm_hs.bin
+make clean
+
 # Building Generic Simplex GPIO
 cp ~/MMDVM_HS/configs/generic_gpio.h ~/MMDVM_HS/Config.h
 make
