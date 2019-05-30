@@ -22,7 +22,7 @@ FW_VERSION="v1.4.17"
 # Change USB-serial port name ONLY in macOS
 MAC_DEV_USB_SER="/dev/cu.usbmodem14401"
 	
-# Download latest firmware for MMDVM_HS_Hat
+# Download latest firmware for D2RG MMDVM_HS
 curl -OL https://github.com/juribeparada/MMDVM_HS/releases/download/$FW_VERSION/d2rg_mmdvm_hs.bin
 
 # Download STM32F10X_Lib (only for binary tools)
