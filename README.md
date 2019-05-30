@@ -125,6 +125,7 @@ Download the script (*.sh) that matches with your ZUMspot/MMDVM_HS board:
 - install_fw_nanohs.sh: only for Nano hotSPOT board (BI7JTA)
 - install_fw_nanodv_npi.sh: only for NanoDV NPi board 1.0 (BG4TGO & BG5HHP)
 - install_fw_nanodv_usb.sh: only for NanoDV USB board 1.0 (BG4TGO & BG5HHP)
+- install_fw_d2rg_mmdvmhs.sh: only for D2RG MMDVM_HS board (BG3MDO, VE2GZI, CA6JAU)
 - install_fw_hsdualhat.sh: only for MMDVM_HS_Dual_Hat board (DB9MAT & DF2ET & DO7EN)
 - install_fw_librekit.sh: only for ZUMspot Libre Kit board (KI6ZUM & VE2GZI) or generic MMDVM_HS board with USB interface
 - install_fw_usb.sh: only for ZUMspot USB dongle (KI6ZUM & VE2GZI)

@@ -479,9 +479,15 @@ Please check here for detailed instructions:
 
 - make bl: it builds a firmware with USB bootloader support.
 
-- make zumspot-pi: upload the firmware to a ZUMspot RPi version (using internal RPi serial port) 
+- make zumspot-pi: upload the firmware to a ZUMspot RPi version (using internal RPi serial port)
 
-- make mmdvm_hs_hat: upload the firmware to MMDVM_HS_Hat board (using internal RPi serial port) 
+- make mmdvm_hs_hat: upload the firmware to MMDVM_HS_Hat board (using internal RPi serial port)
+
+- make nano-hotspot: upload the firmware to Nano hotSPOT board (using internal serial port)
+
+- make nano-dv: upload the firmware to NanoDV board (using internal serial port)
+
+- make d2rg_mmdvm_hs: upload the firmware to D2RG MMDVM_HS board (using internal serial port)
 
 - make dfu [devser=/dev/ttyXXX]: upload firmware using USB bootloader. "devser" is optional, and it corresponds to the USB serial port device name. This option permits to perform a reset to enter to booloader mode (DFU). If you don't use "devser", you have to press the reset button of the ZUMspot just before using this command.
 
