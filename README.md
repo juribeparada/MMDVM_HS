@@ -180,6 +180,10 @@ Some detailed examples as follows:
 
 Please visit Mathis Schmieder GitHub [here](https://github.com/mathisschmieder/MMDVM_HS_Hat/blob/master/README.md) for detailed instructions.
 
+### D2RG MMDVM_HS board
+
+This hotspot needs Raspbian support for SPI-UART converter included in this board. If you don't see /dev/ttySC0, please visit Yuan BG3MDO GitHub [here](https://github.com/bg3mdo/D2RG_MMDVM_HS_ambe_uart_service) for driver installation instructions.
+
 ### ZUMspot Libre Kit (under Linux Raspbian)
 
 If you are using Pi-Star, expand filesystem (if you haven't done before):
