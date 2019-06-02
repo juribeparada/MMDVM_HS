@@ -18,9 +18,6 @@
 
 # Configure latest version
 FW_VERSION="v1.4.17"
-
-# Change USB-serial port name ONLY in macOS
-MAC_DEV_USB_SER="/dev/cu.usbmodem14401"
 	
 # Download latest firmware for D2RG MMDVM_HS
 curl -OL https://github.com/juribeparada/MMDVM_HS/releases/download/$FW_VERSION/d2rg_mmdvm_hs.bin
@@ -32,7 +29,6 @@ fi
 
 # Configure vars depending on OS
 if [ $(uname -s) == "Linux" ]; then
-	DEV_USB_SER="/dev/ttyACM0"
 	if [ $(uname -m) == "x86_64" ]; then
 		echo "Linux 64-bit detected"
 		DFU_RST="./STM32F10X_Lib/utils/linux64/upload-reset"
@@ -62,7 +58,6 @@ fi
 
 if [ $(uname -s) == "Darwin" ]; then
 	echo "macOS detected"
-	DEV_USB_SER=$MAC_DEV_USB_SER
 	DFU_RST="./STM32F10X_Lib/utils/macosx/upload-reset"
 	DFU_UTIL="./STM32F10X_Lib/utils/macosx/dfu-util"
 	ST_FLASH="./STM32F10X_Lib/utils/macosx/st-flash"
@@ -73,5 +68,6 @@ fi
 sudo killall MMDVMHost >/dev/null 2>&1
 
 # Upload the firmware
+# Note: /dev/ttySC0 should be enabled, see: https://github.com/bg3mdo/D2RG_MMDVM_HS_ambe_uart_service
 eval sudo $STM32FLASH -v -w d2rg_mmdvm_hs.bin -g 0x0 -R -i 23,-22,22:-23,22 /dev/ttySC0
 
