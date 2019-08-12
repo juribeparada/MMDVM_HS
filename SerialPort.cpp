@@ -901,19 +901,16 @@ void CSerialPort::process()
 #if defined(SERIAL_REPEATER) || defined(SERIAL_REPEATER_USART1)
 void CSerialPort::writeSerialRpt(const uint8_t* data, uint8_t length)
 {
-  if (length == 0 || length > 127)
+  if (length == 0)
     return;
 
-  uint8_t reply[131U];
+  uint8_t head[3];
+  head[0U] = MMDVM_FRAME_START;
+  head[1U] = length + 3;
+  head[2U] = MMDVM_SERIAL;
 
-  reply[0U] = MMDVM_FRAME_START;
-  reply[1U] = length + 3;
-  reply[2U] = MMDVM_SERIAL;
-
-  for (uint8_t i = 0U; i < length; i++)
-    reply[i+3] = data[i];
-
-  writeInt(1U, reply, length + 3);
+  writeInt(1U, head, 3U);
+  writeInt(1U, data, length, true);
 }
 #endif
 
