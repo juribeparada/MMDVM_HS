@@ -115,9 +115,6 @@
 #define PIN_RXD              GPIO_Pin_4
 #define PORT_RXD             GPIOB
 
-#define PIN_RXD2             GPIO_Pin_4
-#define PORT_RXD2            GPIOA
-
 // TXD used in SPI Data mode of ADF7021
 // TXD is TxRxCLK of ADF7021, standard TX/RX data interface
 #define PIN_TXD              GPIO_Pin_3
@@ -125,11 +122,16 @@
 #define PIN_TXD_INT          GPIO_PinSource3
 #define PORT_TXD_INT         GPIO_PortSourceGPIOB
 
+#if defined(DUPLEX)
+#define PIN_RXD2             GPIO_Pin_11
+#define PORT_RXD2            GPIOA
+
 // TXD2 is TxRxCLK of the second ADF7021, standard TX/RX data interface
 #define PIN_TXD2             GPIO_Pin_8
 #define PORT_TXD2            GPIOA
 #define PIN_TXD2_INT         GPIO_PinSource8
 #define PORT_TXD2_INT        GPIO_PortSourceGPIOA
+#endif
 
 // CLKOUT used in SPI Data mode of ADF7021
 #define PIN_CLKOUT           GPIO_Pin_15
@@ -140,8 +142,8 @@
 #define PIN_LED              GPIO_Pin_13
 #define PORT_LED             GPIOC
 
-#define PIN_DEB              GPIO_Pin_7
-#define PORT_DEB             GPIOA
+#define PIN_DEB              GPIO_Pin_9
+#define PORT_DEB             GPIOB
 
 #define PIN_DSTAR_LED        GPIO_Pin_12
 #define PORT_DSTAR_LED       GPIOB
@@ -289,10 +291,17 @@ extern "C" {
 
 #if defined(DUPLEX)
   void EXTI9_5_IRQHandler(void) {
+    #if defined(ZUMSPOT_ADF7021)
     if(EXTI_GetITStatus(EXTI_Line8)!=RESET) {
       io.interrupt2();
     EXTI_ClearITPendingBit(EXTI_Line8);
     }
+    #else
+    if(EXTI_GetITStatus(EXTI_Line5)!=RESET) {
+      io.interrupt2();
+    EXTI_ClearITPendingBit(EXTI_Line5);
+    }
+    #endif
   }
 #endif
 
@@ -506,7 +515,11 @@ void CIO::Init()
   // Connect EXTI5 Line
   GPIO_EXTILineConfig(PORT_TXD2_INT, PIN_TXD2_INT);
   // Configure EXT5 line
+  #if defined(ZUMSPOT_ADF7021)
   EXTI_InitStructure2.EXTI_Line = EXTI_Line8;
+  #else
+  EXTI_InitStructure2.EXTI_Line = EXTI_Line5;
+  #endif
 #endif
 
 #endif
