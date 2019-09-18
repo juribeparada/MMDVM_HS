@@ -115,6 +115,15 @@
 #define PIN_RXD              GPIO_Pin_4
 #define PORT_RXD             GPIOB
 
+#define PIN_SGL_DBL          GPIO_Pin_12
+#define PORT_SGL_DBL         GPIOA
+
+#define PIN_DL_DPX           GPIO_Pin_15
+#define PORT_DL_DPX          GPIOC
+
+#define PIN_SET_BAND         GPIO_Pin_15
+#define PORT_SET_BAND        GPIOA
+
 // TXD used in SPI Data mode of ADF7021
 // TXD is TxRxCLK of ADF7021, standard TX/RX data interface
 #define PIN_TXD              GPIO_Pin_3
@@ -326,6 +335,30 @@ void CIO::Init()
   GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);
 #endif
 
+#if defined(ZUMSPOT_ADF7021)
+  // Pin defines if the board has a single ADF7021 or double
+  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStruct.GPIO_Pin   = PIN_SGL_DBL;
+  GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_IPU;
+  GPIO_Init(PORT_SGL_DBL, &GPIO_InitStruct);
+
+  // Pin defines if the board is dual band or duplex
+  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStruct.GPIO_Pin   = PIN_DL_DPX;
+  GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_IPU;
+  GPIO_Init(PORT_DL_DPX, &GPIO_InitStruct);
+
+  // Pin will set UHF or VHF
+  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStruct.GPIO_Pin   = PIN_SET_BAND;
+  GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
+  GPIO_Init(PORT_SET_BAND, &GPIO_InitStruct);
+  // TODO: Remove this line
+  // GPIO_WriteBit(PORT_SET_BAND, PIN_SET_BAND, Bit_RESET);
+
+#endif
+
+#if defined(STM32_USB_HOST)
   // Pin PA11,PA12 = LOW, USB Reset
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStruct.GPIO_Pin   = GPIO_Pin_11 | GPIO_Pin_12;
@@ -333,6 +366,8 @@ void CIO::Init()
   GPIO_Init(GPIOA, &GPIO_InitStruct);
   GPIO_WriteBit(GPIOA, GPIO_Pin_11, Bit_RESET);
   GPIO_WriteBit(GPIOA, GPIO_Pin_12, Bit_RESET);
+
+#endif
 
 #if defined(LONG_USB_RESET)
   // 10 ms delay
@@ -719,6 +754,17 @@ void CIO::COS_pin(bool on)
   GPIO_WriteBit(PORT_COS_LED, PIN_COS_LED, on ? Bit_SET : Bit_RESET);
 }
 
+void CIO::setBandVHF(bool vhf_on) {
+  GPIO_WriteBit(PORT_SET_BAND, PIN_SET_BAND, vhf_on ? Bit_SET : Bit_RESET);
+}
+
+bool CIO::hasSingleADF7021() {
+  return GPIO_ReadInputDataBit(PORT_SGL_DBL, PIN_SGL_DBL) == Bit_SET;
+}
+
+bool CIO::isDualBand() {
+  return GPIO_ReadInputDataBit(PORT_DL_DPX, PIN_DL_DPX) == Bit_SET;
+}
 
 /**
  * Function delay_us() from stm32duino project
