@@ -21,9 +21,9 @@
 
 // Select one board (STM32F103 based boards)
 // 1) ZUMspot RPi or ZUMspot USB:
-// #define ZUMSPOT_ADF7021
+#define ZUMSPOT_ADF7021
 // 2) Libre Kit board or any homebrew hotspot with modified RF7021SE and Blue Pill STM32F103:
-#define LIBRE_KIT_ADF7021
+// #define LIBRE_KIT_ADF7021
 // 3) MMDVM_HS_Hat revisions 1.1, 1.2 and 1.4 (DB9MAT & DF2ET)
 // #define MMDVM_HS_HAT_REV12
 // 4) MMDVM_HS_Dual_Hat revisions 1.0 (DB9MAT & DF2ET & DO7EN)
@@ -50,14 +50,14 @@
 #define AD7021_GAIN_AUTO
 // AGC automatic with high LNA linearity:
 // #define AD7021_GAIN_AUTO_LIN
-// AGC OFF, lowest gain: 
+// AGC OFF, lowest gain:
 // #define AD7021_GAIN_LOW
 // AGC OFF, highest gain:
 // #define AD7021_GAIN_HIGH
 
 // Host communication selection:
-// #define STM32_USART1_HOST
-#define STM32_USB_HOST
+#define STM32_USART1_HOST
+// #define STM32_USB_HOST
 // #define STM32_I2C_HOST
 
 // I2C host address:
@@ -67,7 +67,7 @@
 #define ENABLE_SCAN_MODE
 
 // Send RSSI value:
-// #define SEND_RSSI_DATA
+#define SEND_RSSI_DATA
 
 // Enable Nextion LCD serial port repeater on USART2 (ZUMspot Libre Kit and ZUMspot RPi):
 #define SERIAL_REPEATER
@@ -82,7 +82,7 @@
 // Disable mode LEDs blink during scan mode:
 // #define QUIET_MODE_LEDS
 
-// Engage a constant or descreet Service LED mode once repeater is running 
+// Engage a constant or descreet Service LED mode once repeater is running
 // #define CONSTANT_SRV_LED
 // #define CONSTANT_SRV_LED_INVERTED
 // #define DISCREET_SRV_LED
@@ -95,7 +95,7 @@
 // #define USE_ALTERNATE_POCSAG_LEDS
 
 // Enable for RPi 3B+, USB mode
-#define LONG_USB_RESET
+// #define LONG_USB_RESET
 
 // Enable modem debug messages
 #define ENABLE_DEBUG

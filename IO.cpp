@@ -351,6 +351,12 @@ uint8_t CIO::setFreq(uint32_t frequency_rx, uint32_t frequency_tx, uint8_t rf_po
         // Turn on UHF side
         io.setBandVHF(false);
       }
+    } else if (!io.isDualBand()) {
+      // Duplex board
+      if ((frequency_tx < UHF1_MIN) || (frequency_rx < UHF1_MIN)) {
+        // Reject VHF frequencies
+        return 4U;
+      }
     }
   }
 
