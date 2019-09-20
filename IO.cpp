@@ -1,8 +1,8 @@
 /*
  *   Copyright (C) 2015,2016 by Jonathan Naylor G4KLX
  *   Copyright (C) 2016,2017,2018 by Andy Uribe CA6JAU
- *   Copyright (C) 2017 by Danilo DB4PLE 
- 
+ *   Copyright (C) 2017 by Danilo DB4PLE
+
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2 of the License, or
@@ -105,9 +105,9 @@ void CIO::process()
   uint8_t bit;
   uint32_t scantime;
   uint8_t  control;
-  
+
   m_ledCount++;
-  
+
   if (m_started) {
     // Two seconds timeout
     if (m_watchdog >= 19200U) {
@@ -194,7 +194,7 @@ void CIO::process()
 
   if (m_rxBuffer.getData() >= 1U) {
     m_rxBuffer.get(bit, control);
-    
+
     switch (m_modemState_prev) {
       case STATE_DSTAR:
         dstarRX.databit(bit);
@@ -229,9 +229,9 @@ void CIO::process()
 }
 
 void CIO::start()
-{ 
+{
   m_TotalModes = 0U;
-  
+
   if(m_dstarEnable) {
     m_Modes[m_TotalModes] = STATE_DSTAR;
     m_TotalModes++;
@@ -252,7 +252,7 @@ void CIO::start()
     m_Modes[m_TotalModes] = STATE_NXDN;
     m_TotalModes++;
   }
-  
+
 #if defined(ENABLE_SCAN_MODE)
   if(m_TotalModes > 1U)
     m_scanEnable = true;
@@ -267,9 +267,9 @@ void CIO::start()
 
   if (m_started)
     return;
-    
+
   startInt();
-    
+
   m_started = true;
 }
 
@@ -284,7 +284,7 @@ void CIO::write(uint8_t* data, uint16_t length, const uint8_t* control)
     else
       m_txBuffer.put(data[i], control[i]);
   }
-  
+
   // Switch the transmitter on if needed
   if (!m_tx) {
     setTX();
@@ -336,6 +336,30 @@ uint8_t CIO::setFreq(uint32_t frequency_rx, uint32_t frequency_tx, uint8_t rf_po
   if( ((pocsag_freq_tx >= BAN1_MIN)&&(pocsag_freq_tx <= BAN1_MAX)) || \
   ((pocsag_freq_tx >= BAN2_MIN)&&(pocsag_freq_tx <= BAN2_MAX)) )
     return 4U;
+#endif
+
+// Check if we have a single, dualband or duplex board
+#if defined (ZUMSPOT_ADF7021)
+ if (!(io.hasSingleADF7021())) {
+    // There are two ADF7021s on the board
+    if (io.isDualBand()) {
+      // Dual band
+      if ((frequency_tx <= VHF2_MAX) && (frequency_rx <= VHF2_MAX)) {
+        // Turn on VHF side
+        io.setBandVHF(true);
+      } else if ((frequency_tx >= UHF1_MIN) && (frequency_rx >= UHF1_MIN)) {
+        // Turn on UHF side
+        io.setBandVHF(false);
+      }
+    } else if (!io.isDualBand()) {
+      // Duplex board
+      if ((frequency_tx < UHF1_MIN) || (frequency_rx < UHF1_MIN)) {
+        // Reject VHF frequencies
+        return 4U;
+      }
+    }
+  }
+
 #endif
 
   // Configure frequency
