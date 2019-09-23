@@ -115,6 +115,8 @@ public:
   void      process(void);
   bool      hasTXOverflow(void);
   bool      hasRXOverflow(void);
+  void      checkBand(uint32_t frequency_rx, uint32_t frequency_tx);
+  uint8_t   checkZUMspot(uint32_t frequency_rx, uint32_t frequency_tx);
   uint8_t   setFreq(uint32_t frequency_rx, uint32_t frequency_tx, uint8_t rf_power, uint32_t pocsag_freq_tx);
   void      setPower(uint8_t power);
   void      setMode(MMDVM_STATE modemState);

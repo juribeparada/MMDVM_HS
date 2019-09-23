@@ -307,6 +307,45 @@ bool CIO::hasRXOverflow()
   return m_rxBuffer.hasOverflowed();
 }
 
+void CIO::checkBand(uint32_t frequency_rx, uint32_t frequency_tx) {
+  if (!(io.hasSingleADF7021())) {
+    // There are two ADF7021s on the board
+    if (io.isDualBand()) {
+      // Dual band
+      if ((frequency_tx <= VHF2_MAX) && (frequency_rx <= VHF2_MAX)) {
+        // Turn on VHF side
+        io.setBandVHF(true);
+      } else if ((frequency_tx >= UHF1_MIN) && (frequency_rx >= UHF1_MIN)) {
+        // Turn on UHF side
+        io.setBandVHF(false);
+      }
+    }
+  }
+}
+
+uint8_t CIO::checkZUMspot(uint32_t frequency_rx, uint32_t frequency_tx) {
+  if (!(io.hasSingleADF7021())) {
+    // There are two ADF7021s on the board
+    if (io.isDualBand()) {
+      // Dual band
+      if ((frequency_tx <= VHF2_MAX) && (frequency_rx <= VHF2_MAX)) {
+        // Turn on VHF side
+        io.setBandVHF(true);
+      } else if ((frequency_tx >= UHF1_MIN) && (frequency_rx >= UHF1_MIN)) {
+        // Turn on UHF side
+        io.setBandVHF(false);
+      }
+    } else if (!io.isDualBand()) {
+      // Duplex board
+      if ((frequency_tx < UHF1_MIN) || (frequency_rx < UHF1_MIN)) {
+        // Reject VHF frequencies
+        return 4U;
+      }
+    }
+  }
+  return 0U;
+}
+
 uint8_t CIO::setFreq(uint32_t frequency_rx, uint32_t frequency_tx, uint8_t rf_power, uint32_t pocsag_freq_tx)
 {
   // Configure power level
@@ -340,26 +379,9 @@ uint8_t CIO::setFreq(uint32_t frequency_rx, uint32_t frequency_tx, uint8_t rf_po
 
 // Check if we have a single, dualband or duplex board
 #if defined (ZUMSPOT_ADF7021)
- if (!(io.hasSingleADF7021())) {
-    // There are two ADF7021s on the board
-    if (io.isDualBand()) {
-      // Dual band
-      if ((frequency_tx <= VHF2_MAX) && (frequency_rx <= VHF2_MAX)) {
-        // Turn on VHF side
-        io.setBandVHF(true);
-      } else if ((frequency_tx >= UHF1_MIN) && (frequency_rx >= UHF1_MIN)) {
-        // Turn on UHF side
-        io.setBandVHF(false);
-      }
-    } else if (!io.isDualBand()) {
-      // Duplex board
-      if ((frequency_tx < UHF1_MIN) || (frequency_rx < UHF1_MIN)) {
-        // Reject VHF frequencies
-        return 4U;
-      }
-    }
+  if (checkZUMspot(frequency_rx, frequency_tx) > 0) {
+    return 4U;
   }
-
 #endif
 
   // Configure frequency
