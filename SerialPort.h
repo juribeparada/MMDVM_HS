@@ -70,7 +70,6 @@ private:
   uint8_t m_ptr;
   uint8_t m_len;
   uint8_t m_serial_buffer[128U];
-  uint8_t m_serial_ptr;
   uint8_t m_serial_len;
 
   bool    m_debug;

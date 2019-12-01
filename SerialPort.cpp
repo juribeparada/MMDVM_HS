@@ -85,7 +85,6 @@ m_buffer(),
 m_ptr(0U),
 m_len(0U),
 m_serial_buffer(),
-m_serial_ptr(0U),
 m_serial_len(0U),
 m_debug(false),
 m_firstCal(false)
@@ -871,55 +870,47 @@ void CSerialPort::process()
   // Check for any incoming serial data from a device/screen on UART2
   //  !!Notice!! on powerup the Nextion screen dumps FF FF FF 88 FF FF FF to the serial port.
   while (availableInt(3U))
-    {
-	uint8_t ch = readInt(3U);
+  {
     // read UART2
+    m_serial_buffer[m_serial_len++] = readInt(3U);
 
-    m_serial_buffer[m_serial_ptr] = ch;
-    m_serial_ptr++;
-    // fill the buffer one char at a time
+    if (m_serial_len >=3 && (m_serial_buffer[m_serial_len - 3] == 0xFF) && (m_serial_buffer[m_serial_len - 2] == 0xFF) && (m_serial_buffer[m_serial_len - 1] == 0xFF))
+    {
+      if (m_serial_len > 3)
+        serial.writeSerialRpt(m_serial_buffer, m_serial_len);
 
-    if (m_serial_len > 128)
+      //  if the last 3 bytes are FF's then the screen is done sending data so send the m_serial_buffer to serial.writeSerialRpt()
+      //
+      //  TODO - BG5HHP
+      //   modem serial data repeat should be generic instead of coupling with the nextion protocol.
+      //
       m_serial_len = 0U;
-      // if length is > 128 reset it
-    else
-      m_serial_len++;
-      // increase length
+      continue;
     }
 
-    if ((m_serial_buffer[m_serial_len - 3] == 0xFF) && (m_serial_buffer[m_serial_len - 2] == 0xFF) && (m_serial_buffer[m_serial_len - 1] == 0xFF))
-      {
-      serial.writeSerialRpt(m_serial_buffer, m_serial_len);
-      //  if the last 3 bytes are FF's then the screen is done sending data so send the m_serial_buffer to serial.writeSerialRpt()
-
-      m_serial_ptr = 0U;
-	  m_serial_len = 0U;
-      //  set ptr and reset length of buffer data since last message was valid and get ready for new data
-
-      }
-
+    if (m_serial_len == sizeof(m_serial_buffer))
+    {
+      // buffer overflow
+      m_serial_len = 0U;
+      continue;
+    }
+  }
 #endif
 }
 
 #if defined(SERIAL_REPEATER) || defined(SERIAL_REPEATER_USART1)
 void CSerialPort::writeSerialRpt(const uint8_t* data, uint8_t length)
 {
-  if (m_modemState != STATE_IDLE)
+  if (length == 0)
     return;
 
-  uint8_t reply[131U];
+  uint8_t head[3];
+  head[0U] = MMDVM_FRAME_START;
+  head[1U] = length + 3;
+  head[2U] = MMDVM_SERIAL;
 
-  reply[0U] = MMDVM_FRAME_START;
-  reply[1U] = 0U;
-  reply[2U] = MMDVM_SERIAL;
-
-  uint8_t count = 3U;
-  for (uint8_t i = 0U; i < length; i++, count++)
-    reply[count] = data[i];
-
-  reply[1U] = count;
-
-  writeInt(1U, reply, count);
+  writeInt(1U, head, 3U);
+  writeInt(1U, data, length, true);
 }
 #endif
 
