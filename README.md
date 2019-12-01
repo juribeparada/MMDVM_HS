@@ -119,19 +119,22 @@ This utility includes firmwares binaries and USB drivers for Windows 7/8/10. If 
 
 Download the script (*.sh) that matches with your ZUMspot/MMDVM_HS board:
 
+- install_fw_librekit.sh: only for ZUMspot Libre Kit board (KI6ZUM & VE2GZI) or generic MMDVM_HS board with USB interface
 - install_fw_rpi.sh: only for ZUMspot RPi board (KI6ZUM & VE2GZI)
+- install_fw_usb.sh: only for ZUMspot USB dongle (KI6ZUM)
+- install_fw_duplex.sh: only for ZUMspot Duplex for RPi (KI6ZUM)
+- install_fw_dualband.sh: only for ZUMspot Dualband for RPi (KI6ZUM)
 - install_fw_hshat.sh: only for MMDVM_HS_Hat board (DB9MAT & DF2ET)
 - install_fw_hshat-12mhz.sh: only for MMDVM_HS_Hat board with 12.288 MHz TCXO (DB9MAT & DF2ET)
+- install_fw_hsdualhat.sh: only for MMDVM_HS_Dual_Hat board (DB9MAT & DF2ET & DO7EN)
+- install_fw_hsdualhat-12mhz.sh: only for MMDVM_HS_Dual_Hat board with 12.288 MHz TCXO (DB9MAT & DF2ET & DO7EN)
 - install_fw_nanohs.sh: only for Nano hotSPOT board (BI7JTA)
 - install_fw_nanodv_npi.sh: only for NanoDV NPi board 1.0 (BG4TGO & BG5HHP)
 - install_fw_nanodv_usb.sh: only for NanoDV USB board 1.0 (BG4TGO & BG5HHP)
 - install_fw_d2rg_mmdvmhs.sh: only for D2RG MMDVM_HS board (BG3MDO, VE2GZI, CA6JAU)
-- install_fw_hsdualhat.sh: only for MMDVM_HS_Dual_Hat board (DB9MAT & DF2ET & DO7EN)
-- install_fw_librekit.sh: only for ZUMspot Libre Kit board (KI6ZUM & VE2GZI) or generic MMDVM_HS board with USB interface
-- install_fw_usb.sh: only for ZUMspot USB dongle (KI6ZUM & VE2GZI)
-- install_fw_duplex.sh: only for MMDVM_HS with dual ADF7021 (EA7GIB) or generic dual ADF7021 board with USB interface
 - install_fw_gen_gpio.sh: only for generic MMDVM_HS board (EA7GIB) with GPIO serial interface
 - install_fw_duplex_gpio.sh: only for MMDVM_HS with dual ADF7021 (EA7GIB) or generic dual ADF7021 board with GPIO serial interface
+- install_fw_duplex_usb.sh: only for MMDVM_HS with dual ADF7021 (EA7GIB) or generic dual ADF7021 board with USB interface
 
 For example, download the ZUMspot RPi upgrade script:
 
