@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#   Copyright (C) 2017,2018 by Andy Uribe CA6JAU
+#   Copyright (C) 2017,2018,2019 by Andy Uribe CA6JAU
 
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -22,8 +22,8 @@ FW_VERSION="v1.4.17"
 # Change USB-serial port name ONLY in macOS
 MAC_DEV_USB_SER="/dev/cu.usbmodem14401"
 	
-# Download latest firmware for ZUMspot Libre Kit
-curl -OL https://github.com/juribeparada/MMDVM_HS/releases/download/$FW_VERSION/zumspot_libre_fw.bin
+# Download latest firmware for Generic duplex USB boards
+curl -OL https://github.com/juribeparada/MMDVM_HS/releases/download/$FW_VERSION/generic_duplex_usb_fw.bin
 
 # Download STM32F10X_Lib (only for binary tools)
 if [ ! -d "./STM32F10X_Lib/utils" ]; then
@@ -76,8 +76,8 @@ sudo killall MMDVMHost >/dev/null 2>&1
 eval sudo $DFU_RST $DEV_USB_SER 750
 
 # Upload the firmware
-eval sudo $DFU_UTIL -D zumspot_libre_fw.bin -d 1eaf:0003 -a 2 -R -R
+eval sudo $DFU_UTIL -D generic_duplex_usb_fw.bin -d 1eaf:0003 -a 2 -R -R
 
 echo
-echo "Please RESET your ZUMspot Libre Kit !"
+echo "Please RESET your MMDVM_HS board !"
 echo
