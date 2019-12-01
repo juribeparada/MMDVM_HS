@@ -444,20 +444,20 @@ void CSerialPort::beginInt(uint8_t n, int speed)
   uint32_t *id0 =  (uint32_t *) (0x1FFF7A10);
   uint32_t *id1 =  (uint32_t *) (0x1FFF7A10 + 0x04);
   uint32_t *id2 =  (uint32_t *) (0x1FFF7A10 + 0x08);
-  ::sprintf(UDID, "%08X%08X%08X", *id0,*id1,*id2);
+  ::sprintf(UDID, "%08X%08X%08X", *(unsigned int *)id0, *(unsigned int *)id1, *(unsigned int *)id2);
 
 #elif defined(STM32F7XX)
   uint32_t *id0 =  (uint32_t *) (0x1FF0F420);
   uint32_t *id1 =  (uint32_t *) (0x1FF0F420 + 0x04);
   uint32_t *id2 =  (uint32_t *) (0x1FF0F420 + 0x08);
-  ::sprintf(UDID, "%08X%08X%08X", *id0,*id1,*id2);
+  ::sprintf(UDID, "%08X%08X%08X", *(unsigned int *)id0, *(unsigned int *)id1, *(unsigned int *)id2);
 
 #elif defined(STM32F10X_MD)
   uint16_t *id00 =  (uint16_t *) (0x1FFFF7E8);
   uint16_t *id01 =  (uint16_t *) (0x1FFFF7E8 + 0x02);
   uint32_t *id1 =  (uint32_t *) (0x1FFFF7E8 + 0x04);
   uint32_t *id2 =  (uint32_t *) (0x1FFFF7E8 + 0x08);
-  ::sprintf(UDID, "%04X%04X%08X%08X", *id00,*id01,*id1,*id2);
+  ::sprintf(UDID, "%04X%04X%08X%08X", *id00, *id01, *(unsigned int *)id1, *(unsigned int *)id2);
 #endif
 
   switch (n) {
