@@ -1,8 +1,8 @@
 /*
  *   Copyright (C) 2016 by Jim McLaughlin KI6ZUM
  *   Copyright (C) 2016,2017,2018,2019 by Andy Uribe CA6JAU
- *   Copyright (C) 2017 by Danilo DB4PLE 
- * 
+ *   Copyright (C) 2017 by Danilo DB4PLE
+ *
  *   Some of the code is based on work of Guus Van Dooren PE1PLM:
  *   https://github.com/ki6zum/gmsk-dstar/blob/master/firmware/dvmega/dvmega.ino
  *
@@ -216,6 +216,10 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
     m_frequency_rx   = m_pocsag_freq_tx;
   }
 
+  #if defined (ZUMSPOT_ADF7021)
+  io.checkBand(m_frequency_rx, m_frequency_tx);
+  #endif
+
   // Toggle CE pin for ADF7021 reset
   if(reset) {
     CE_pin(LOW);
@@ -321,7 +325,7 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
     case STATE_CWID:
       // CW ID base configuration: DMR
       // Dev: +1 symb (variable), symb rate = 4800
-    
+
       ADF7021_REG3 = ADF7021_REG3_DMR;
       ADF7021_REG10 = ADF7021_REG10_DMR;
 
@@ -510,7 +514,7 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
   // DEMOD (4)
   AD7021_control_word = ADF7021_REG4;
   Send_AD7021_control();
-  
+
   // IF fine cal (6)
   AD7021_control_word = ADF7021_REG6;
   Send_AD7021_control();
@@ -518,7 +522,7 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
   // IF coarse cal (5)
   AD7021_control_word = ADF7021_REG5;
   Send_AD7021_control();
-  
+
   // Delay for filter calibration
   delay_IFcal();
 
@@ -528,7 +532,7 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
   // MODULATION (2)
   ADF7021_REG2 |= (uint32_t) 0b0010;               // register 2
   ADF7021_REG2 |= (uint32_t) m_power       << 13;  // power level
-  ADF7021_REG2 |= (uint32_t) 0b110001      << 7;   // PA  
+  ADF7021_REG2 |= (uint32_t) 0b110001      << 7;   // PA
   AD7021_control_word = ADF7021_REG2;
   Send_AD7021_control();
 
@@ -569,7 +573,7 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
   Send_AD7021_control();
 
 #if defined(TEST_TX)
-  PTT_pin(HIGH); 
+  PTT_pin(HIGH);
   AD7021_control_word = ADF7021_TX_REG0;
   Send_AD7021_control();
   // TEST MODE (TX carrier only) (15)
@@ -751,7 +755,7 @@ void CIO::ifConf2(MMDVM_STATE modemState)
   // MODULATION (2)
   ADF7021_REG2 |= (uint32_t) 0b0010;                  // register 2
   ADF7021_REG2 |= (uint32_t) (m_power & 0x3F) << 13;  // power level
-  ADF7021_REG2 |= (uint32_t) 0b110001         << 7;   // PA  
+  ADF7021_REG2 |= (uint32_t) 0b110001         << 7;   // PA
   AD7021_control_word = ADF7021_REG2;
   Send_AD7021_control2();
 
@@ -801,7 +805,7 @@ void CIO::interrupt()
   // is used to trigger the interrupt !!!!
   // TODO: figure out why sending the control word seems to issue interrupts
   // possibly this is a design problem of the RF7021 board or too long wires
-  // on the breadboard build 
+  // on the breadboard build
   // but normally this will not hurt too much
   if (clk == last_clk) {
     return;
@@ -828,14 +832,14 @@ void CIO::interrupt()
 #endif
 
     // wait a brief period before raising SLE
-    if (totx_request == true) { 
+    if (totx_request == true) {
       asm volatile("nop          \n\t"
                    "nop          \n\t"
                    "nop          \n\t"
                    );
 
-      // SLE Pulse, should be moved out of here into class method 
-      // according to datasheet in 4FSK we have to deliver this before 1/4 tbit == 26uS 
+      // SLE Pulse, should be moved out of here into class method
+      // according to datasheet in 4FSK we have to deliver this before 1/4 tbit == 26uS
       SLE_pin(HIGH);
       asm volatile("nop          \n\t"
                    "nop          \n\t"
@@ -861,12 +865,12 @@ void CIO::interrupt()
     m_rxBuffer.put(bit, m_control);
   }
 
-  if (torx_request == true && even == ADF7021_EVEN_BIT && m_tx && clk == 0U) { 
+  if (torx_request == true && even == ADF7021_EVEN_BIT && m_tx && clk == 0U) {
       // that is absolutely crucial in 4FSK, see datasheet:
-      // enable sle after 1/4 tBit == 26uS when sending MSB (even == false) and clock is low 
+      // enable sle after 1/4 tBit == 26uS when sending MSB (even == false) and clock is low
       delay_us(26U);
 
-      // SLE Pulse, should be moved out of here into class method 
+      // SLE Pulse, should be moved out of here into class method
       SLE_pin(HIGH);
       asm volatile("nop          \n\t"
                    "nop          \n\t"
@@ -913,11 +917,11 @@ void CIO::interrupt2()
 #endif
 
 void CIO::setTX()
-{ 
+{
   // PTT pin on (doing it earlier helps to measure timing impact)
-  PTT_pin(HIGH); 
+  PTT_pin(HIGH);
 
-  // Send register 0 for TX operation, but do not activate yet. 
+  // Send register 0 for TX operation, but do not activate yet.
   // This is done in the interrupt at the correct time
   AD7021_control_word = ADF7021_TX_REG0;
   Send_AD7021_control(false);
@@ -931,15 +935,15 @@ void CIO::setTX()
 }
 
 void CIO::setRX(bool doSle)
-{ 
+{
   // PTT pin off (doing it earlier helps to measure timing impact)
   PTT_pin(LOW);
 
-  // Send register 0 for RX operation, but do not activate yet. 
+  // Send register 0 for RX operation, but do not activate yet.
   // This is done in the interrupt at the correct time
   AD7021_control_word = ADF7021_RX_REG0;
   Send_AD7021_control(doSle);
-  
+
 #if defined(BIDIR_DATA_PIN)
   Data_dir_out(false);  // Data pin input mode
 #endif

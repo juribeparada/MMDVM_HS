@@ -115,12 +115,32 @@
 #define PIN_RXD              GPIO_Pin_4
 #define PORT_RXD             GPIOB
 
+#define PIN_SGL_DBL          GPIO_Pin_12
+#define PORT_SGL_DBL         GPIOA
+
+#define PIN_DL_DPX           GPIO_Pin_15
+#define PORT_DL_DPX          GPIOC
+
+#define PIN_SET_BAND         GPIO_Pin_15
+#define PORT_SET_BAND        GPIOA
+
 // TXD used in SPI Data mode of ADF7021
 // TXD is TxRxCLK of ADF7021, standard TX/RX data interface
 #define PIN_TXD              GPIO_Pin_3
 #define PORT_TXD             GPIOB
 #define PIN_TXD_INT          GPIO_PinSource3
 #define PORT_TXD_INT         GPIO_PortSourceGPIOB
+
+#if defined(DUPLEX)
+#define PIN_RXD2             GPIO_Pin_11
+#define PORT_RXD2            GPIOA
+
+// TXD2 is TxRxCLK of the second ADF7021, standard TX/RX data interface
+#define PIN_TXD2             GPIO_Pin_8
+#define PORT_TXD2            GPIOA
+#define PIN_TXD2_INT         GPIO_PinSource8
+#define PORT_TXD2_INT        GPIO_PortSourceGPIOA
+#endif
 
 // CLKOUT used in SPI Data mode of ADF7021
 #define PIN_CLKOUT           GPIO_Pin_15
@@ -280,10 +300,17 @@ extern "C" {
 
 #if defined(DUPLEX)
   void EXTI9_5_IRQHandler(void) {
+    #if defined(ZUMSPOT_ADF7021)
+    if(EXTI_GetITStatus(EXTI_Line8)!=RESET) {
+      io.interrupt2();
+    EXTI_ClearITPendingBit(EXTI_Line8);
+    }
+    #else
     if(EXTI_GetITStatus(EXTI_Line5)!=RESET) {
       io.interrupt2();
     EXTI_ClearITPendingBit(EXTI_Line5);
     }
+    #endif
   }
 #endif
 
@@ -301,13 +328,37 @@ void CIO::Init()
 #endif
 
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC | RCC_APB2Periph_AFIO, ENABLE);
-  
+
 #if defined(PI_HAT_7021_REV_02)
   GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable, ENABLE);
 #elif defined(ZUMSPOT_ADF7021) || defined(LIBRE_KIT_ADF7021) || defined(MMDVM_HS_HAT_REV12) || defined(MMDVM_HS_DUAL_HAT_REV10) || defined(NANO_HOTSPOT) || defined(NANO_DV_REV11) || defined(D2RG_MMDVM_HS)
   GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);
 #endif
 
+#if defined(ZUMSPOT_ADF7021)
+  // Pin defines if the board has a single ADF7021 or double
+  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStruct.GPIO_Pin   = PIN_SGL_DBL;
+  GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_IPU;
+  GPIO_Init(PORT_SGL_DBL, &GPIO_InitStruct);
+
+  // Pin defines if the board is dual band or duplex
+  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStruct.GPIO_Pin   = PIN_DL_DPX;
+  GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_IPU;
+  GPIO_Init(PORT_DL_DPX, &GPIO_InitStruct);
+
+  // Pin will set UHF or VHF
+  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStruct.GPIO_Pin   = PIN_SET_BAND;
+  GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
+  GPIO_Init(PORT_SET_BAND, &GPIO_InitStruct);
+  // TODO: Remove this line
+  // GPIO_WriteBit(PORT_SET_BAND, PIN_SET_BAND, Bit_RESET);
+
+#endif
+
+#if defined(STM32_USB_HOST)
   // Pin PA11,PA12 = LOW, USB Reset
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStruct.GPIO_Pin   = GPIO_Pin_11 | GPIO_Pin_12;
@@ -315,6 +366,8 @@ void CIO::Init()
   GPIO_Init(GPIOA, &GPIO_InitStruct);
   GPIO_WriteBit(GPIOA, GPIO_Pin_11, Bit_RESET);
   GPIO_WriteBit(GPIOA, GPIO_Pin_12, Bit_RESET);
+
+#endif
 
 #if defined(LONG_USB_RESET)
   // 10 ms delay
@@ -343,7 +396,7 @@ void CIO::Init()
   GPIO_InitStruct.GPIO_Pin   = PIN_SDATA;
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
   GPIO_Init(PORT_SDATA, &GPIO_InitStruct);
-  
+
   // Pin SREAD
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStruct.GPIO_Pin   = PIN_SREAD;
@@ -355,14 +408,14 @@ void CIO::Init()
   GPIO_InitStruct.GPIO_Pin   = PIN_SLE;
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
   GPIO_Init(PORT_SLE, &GPIO_InitStruct);
-  
+
 #if defined(DUPLEX)
   // Pin SLE2
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStruct.GPIO_Pin   = PIN_SLE2;
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
   GPIO_Init(PORT_SLE2, &GPIO_InitStruct);
-  
+
   // Pin RXD2
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStruct.GPIO_Pin   = PIN_RXD2;
@@ -393,6 +446,7 @@ void CIO::Init()
 #endif
   GPIO_Init(PORT_TXD, &GPIO_InitStruct);
 #if defined(DUPLEX)
+  GPIO_InitStruct.GPIO_Pin   = PIN_TXD2;
   GPIO_Init(PORT_TXD2, &GPIO_InitStruct);
 #endif
 
@@ -403,7 +457,7 @@ void CIO::Init()
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
   GPIO_Init(PORT_CLKOUT, &GPIO_InitStruct);
 #endif
- 
+
   // Pin LED
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStruct.GPIO_Pin   = PIN_LED;
@@ -416,37 +470,37 @@ void CIO::Init()
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
   GPIO_Init(PORT_DEB, &GPIO_InitStruct);
 
-  // D-Star LED 
+  // D-Star LED
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStruct.GPIO_Pin   = PIN_DSTAR_LED;
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
   GPIO_Init(PORT_DSTAR_LED, &GPIO_InitStruct);
 
-  // DMR LED 
+  // DMR LED
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStruct.GPIO_Pin   = PIN_DMR_LED;
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
   GPIO_Init(PORT_DMR_LED, &GPIO_InitStruct);
 
-  // YSF LED 
+  // YSF LED
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStruct.GPIO_Pin   = PIN_YSF_LED;
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
   GPIO_Init(PORT_YSF_LED, &GPIO_InitStruct);
 
-  // P25 LED 
+  // P25 LED
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStruct.GPIO_Pin   = PIN_P25_LED;
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
   GPIO_Init(PORT_P25_LED, &GPIO_InitStruct);
 
-  // NXDN LED 
+  // NXDN LED
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStruct.GPIO_Pin   = PIN_NXDN_LED;
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
   GPIO_Init(PORT_NXDN_LED, &GPIO_InitStruct);
 
-  // POCSAG LED 
+  // POCSAG LED
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStruct.GPIO_Pin   = PIN_POCSAG_LED;
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
@@ -458,7 +512,7 @@ void CIO::Init()
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
   GPIO_Init(PORT_PTT_LED, &GPIO_InitStruct);
 
-  // COS LED 
+  // COS LED
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStruct.GPIO_Pin   = PIN_COS_LED;
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
@@ -496,7 +550,11 @@ void CIO::Init()
   // Connect EXTI5 Line
   GPIO_EXTILineConfig(PORT_TXD2_INT, PIN_TXD2_INT);
   // Configure EXT5 line
+  #if defined(ZUMSPOT_ADF7021)
+  EXTI_InitStructure2.EXTI_Line = EXTI_Line8;
+  #else
   EXTI_InitStructure2.EXTI_Line = EXTI_Line5;
+  #endif
 #endif
 
 #endif
@@ -505,7 +563,7 @@ void CIO::Init()
   EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising_Falling;
   EXTI_InitStructure.EXTI_LineCmd = ENABLE;
   EXTI_Init(&EXTI_InitStructure);
-  
+
 #if defined(DUPLEX)
   EXTI_InitStructure2.EXTI_Mode = EXTI_Mode_Interrupt;
   EXTI_InitStructure2.EXTI_Trigger = EXTI_Trigger_Rising;
@@ -517,7 +575,7 @@ void CIO::Init()
 void CIO::startInt()
 {
   NVIC_InitTypeDef NVIC_InitStructure;
-  
+
 #if defined(DUPLEX)
   NVIC_InitTypeDef NVIC_InitStructure2;
 #endif
@@ -546,7 +604,7 @@ void CIO::startInt()
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 15;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
-  
+
 #if defined(DUPLEX)
   NVIC_InitStructure2.NVIC_IRQChannelPreemptionPriority = 1;
   NVIC_InitStructure2.NVIC_IRQChannelSubPriority = 15;
@@ -557,18 +615,18 @@ void CIO::startInt()
 
 #if defined(BIDIR_DATA_PIN)
 // RXD pin is bidirectional in standard interfaces
-void CIO::Data_dir_out(bool dir) 
+void CIO::Data_dir_out(bool dir)
 {
   GPIO_InitTypeDef GPIO_InitStruct;
 
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStruct.GPIO_Pin   = PIN_RXD;
-  
+
   if(dir)
     GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
   else
     GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
-  
+
   GPIO_Init(PORT_RXD, &GPIO_InitStruct);
 }
 #endif
@@ -696,6 +754,17 @@ void CIO::COS_pin(bool on)
   GPIO_WriteBit(PORT_COS_LED, PIN_COS_LED, on ? Bit_SET : Bit_RESET);
 }
 
+void CIO::setBandVHF(bool vhf_on) {
+  GPIO_WriteBit(PORT_SET_BAND, PIN_SET_BAND, vhf_on ? Bit_SET : Bit_RESET);
+}
+
+bool CIO::hasSingleADF7021() {
+  return GPIO_ReadInputDataBit(PORT_SGL_DBL, PIN_SGL_DBL) == Bit_SET;
+}
+
+bool CIO::isDualBand() {
+  return GPIO_ReadInputDataBit(PORT_DL_DPX, PIN_DL_DPX) == Bit_SET;
+}
 
 /**
  * Function delay_us() from stm32duino project

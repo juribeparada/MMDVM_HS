@@ -1,8 +1,8 @@
 /*
  *   Copyright (C) 2015,2016 by Jonathan Naylor G4KLX
  *   Copyright (C) 2016,2017,2018 by Andy Uribe CA6JAU
- *   Copyright (C) 2017 by Danilo DB4PLE 
- 
+ *   Copyright (C) 2017 by Danilo DB4PLE
+
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2 of the License, or
@@ -115,6 +115,8 @@ public:
   void      process(void);
   bool      hasTXOverflow(void);
   bool      hasRXOverflow(void);
+  void      checkBand(uint32_t frequency_rx, uint32_t frequency_tx);
+  uint8_t   checkZUMspot(uint32_t frequency_rx, uint32_t frequency_tx);
   uint8_t   setFreq(uint32_t frequency_rx, uint32_t frequency_tx, uint8_t rf_power, uint32_t pocsag_freq_tx);
   void      setPower(uint8_t power);
   void      setMode(MMDVM_STATE modemState);
@@ -124,6 +126,9 @@ public:
   uint32_t  getWatchdog(void);
   void      getIntCounter(uint16_t &int1, uint16_t &int2);
   void      selfTest(void);
+  void      setBandVHF(bool vhf_on);
+  bool      hasSingleADF7021(void);
+  bool      isDualBand(void);
 
   // RF interface API
   void      setTX(void);
@@ -164,7 +169,7 @@ private:
   uint16_t           m_RX_F_divider;
   uint8_t            m_TX_N_divider;
   uint16_t           m_TX_F_divider;
-  
+
   bool               m_started;
   CBitRB             m_rxBuffer;
   CBitRB             m_txBuffer;
