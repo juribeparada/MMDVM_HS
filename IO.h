@@ -115,8 +115,6 @@ public:
   void      process(void);
   bool      hasTXOverflow(void);
   bool      hasRXOverflow(void);
-  void      checkBand(uint32_t frequency_rx, uint32_t frequency_tx);
-  uint8_t   checkZUMspot(uint32_t frequency_rx, uint32_t frequency_tx);
   uint8_t   setFreq(uint32_t frequency_rx, uint32_t frequency_tx, uint8_t rf_power, uint32_t pocsag_freq_tx);
   void      setPower(uint8_t power);
   void      setMode(MMDVM_STATE modemState);
@@ -126,9 +124,13 @@ public:
   uint32_t  getWatchdog(void);
   void      getIntCounter(uint16_t &int1, uint16_t &int2);
   void      selfTest(void);
+#if defined(ZUMSPOT_ADF7021)
+  void      checkBand(uint32_t frequency_rx, uint32_t frequency_tx);
+  uint8_t   checkZUMspot(uint32_t frequency_rx, uint32_t frequency_tx);
   void      setBandVHF(bool vhf_on);
   bool      hasSingleADF7021(void);
   bool      isDualBand(void);
+#endif
 
   // RF interface API
   void      setTX(void);

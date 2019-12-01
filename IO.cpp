@@ -307,6 +307,7 @@ bool CIO::hasRXOverflow()
   return m_rxBuffer.hasOverflowed();
 }
 
+#if defined(ZUMSPOT_ADF7021)
 void CIO::checkBand(uint32_t frequency_rx, uint32_t frequency_tx) {
   if (!(io.hasSingleADF7021())) {
     // There are two ADF7021s on the board
@@ -345,6 +346,7 @@ uint8_t CIO::checkZUMspot(uint32_t frequency_rx, uint32_t frequency_tx) {
   }
   return 0U;
 }
+#endif
 
 uint8_t CIO::setFreq(uint32_t frequency_rx, uint32_t frequency_tx, uint8_t rf_power, uint32_t pocsag_freq_tx)
 {

@@ -754,6 +754,7 @@ void CIO::COS_pin(bool on)
   GPIO_WriteBit(PORT_COS_LED, PIN_COS_LED, on ? Bit_SET : Bit_RESET);
 }
 
+#if defined(ZUMSPOT_ADF7021)
 void CIO::setBandVHF(bool vhf_on) {
   GPIO_WriteBit(PORT_SET_BAND, PIN_SET_BAND, vhf_on ? Bit_SET : Bit_RESET);
 }
@@ -765,6 +766,7 @@ bool CIO::hasSingleADF7021() {
 bool CIO::isDualBand() {
   return GPIO_ReadInputDataBit(PORT_DL_DPX, PIN_DL_DPX) == Bit_SET;
 }
+#endif
 
 /**
  * Function delay_us() from stm32duino project
