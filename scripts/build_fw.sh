@@ -41,7 +41,7 @@ make clean
 # Building ZUMspot Duplex
 cp ~/MMDVM_HS/configs/ZUMspot_duplex.h ~/MMDVM_HS/Config.h
 make
-mv ~/MMDVM_HS/bin/mmdvm_f1bl.bin ~/MMDVM_HS/bin/zumspot_duplex_fw.bin
+mv ~/MMDVM_HS/bin/mmdvm_f1.bin ~/MMDVM_HS/bin/zumspot_duplex_fw.bin
 make clean
 
 # Building ZUMspot Dualband
