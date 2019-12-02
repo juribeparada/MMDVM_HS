@@ -78,7 +78,9 @@ const uint8_t MMDVM_DEBUG5       = 0xF5U;
 
 const uint8_t PROTOCOL_VERSION   = 1U;
 
+#if defined(ENABLE_UDID)
 char UDID[] = "00000000000000000000000000000000";
+#endif
 
 CSerialPort::CSerialPort() :
 m_buffer(),
@@ -211,9 +213,11 @@ void CSerialPort::getVersion()
   for (uint8_t i = 0U; HARDWARE[i] != 0x00U; i++, count++)
     reply[count] = HARDWARE[i];
 
+#if defined(ENABLE_UDID)
   reply[count++] = '\0';
   for (uint8_t i = 0U; UDID[i] != 0x00U; i++, count++)
     reply[count] = UDID[i];
+#endif
 
   reply[1U] = count;
 

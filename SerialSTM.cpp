@@ -433,13 +433,16 @@ void WriteUSART2(const uint8_t* data, uint16_t length)
 #endif
 
 /////////////////////////////////////////////////////////////////
+#if defined(ENABLE_UDID)
 extern char UDID[];
 extern "C" {
   #include <stdio.h>
 }
+#endif
 
 void CSerialPort::beginInt(uint8_t n, int speed)
 {
+#if defined(ENABLE_UDID)
 #if defined(STM32F4XX)
   uint32_t *id0 =  (uint32_t *) (0x1FFF7A10);
   uint32_t *id1 =  (uint32_t *) (0x1FFF7A10 + 0x04);
@@ -458,6 +461,7 @@ void CSerialPort::beginInt(uint8_t n, int speed)
   uint32_t *id1 =  (uint32_t *) (0x1FFFF7E8 + 0x04);
   uint32_t *id2 =  (uint32_t *) (0x1FFFF7E8 + 0x08);
   ::sprintf(UDID, "%04X%04X%08X%08X", *id00, *id01, *(unsigned int *)id1, *(unsigned int *)id2);
+#endif
 #endif
 
   switch (n) {

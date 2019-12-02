@@ -108,4 +108,7 @@
 // Disable frequency restrictions (satellite, ISS, etc)
 // #define DISABLE_FREQ_BAN
 
+// Enable UDID feature
+#define ENABLE_UDID
+
 #endif
