@@ -151,6 +151,10 @@ stop your MMDVMHost process and run (you will need the root password):
 
 and wait to complete the upgrading process.
 
+You could optionally install a beta firmware for testing:
+
+    ./install_fw_rpi.sh beta
+
 ## Build from the sources
 
 You could use example files from MMDVM_HS/configs folder and overwrite the Config.h file, in order to compile a firmware with default settings. There are a specific config file for each ZUMspot or any MMDVM_HS compatible boards. In general, there are two possible compilation ways:
