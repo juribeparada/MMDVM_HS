@@ -23,9 +23,9 @@
 #include "ADF7021.h"
 
 #define VER_MAJOR       "1"
-#define VER_MINOR       "4"
-#define VER_REV         "17"
-#define VERSION_DATE    "20190529"
+#define VER_MINOR       "5"
+#define VER_REV         "1b"
+#define VERSION_DATE    "20191201"
 
 #if defined(ZUMSPOT_ADF7021)
 #define BOARD_INFO      "ZUMspot"
