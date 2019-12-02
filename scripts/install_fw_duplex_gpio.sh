@@ -18,9 +18,24 @@
 
 # Configure latest version
 FW_VERSION="v1.4.17"
+
+# Configure beta version
+FW_VERSION_BETA="v1.5.1b"
+
+# Firmware filename
+FW_FILENAME="generic_duplex_gpio_fw.bin"
 	
+# Download latest firmware
+if [ $1 = "beta" ]; then
+	echo "Downloading beta firmware..."
+	curl -OL https://github.com/juribeparada/MMDVM_HS/releases/download/$FW_VERSION_BETA/$FW_FILENAME
+else
+	echo "Downloading latest firmware (stable)..."
+	curl -OL https://github.com/juribeparada/MMDVM_HS/releases/download/$FW_VERSION/$FW_FILENAME
+fi
+
 # Download latest firmware for Generic Duplex GPIO
-curl -OL https://github.com/juribeparada/MMDVM_HS/releases/download/$FW_VERSION/generic_duplex_gpio_fw.bin
+curl -OL https://github.com/juribeparada/MMDVM_HS/releases/download/$FW_VERSION/
 
 # Download STM32F10X_Lib (only for binary tools)
 if [ ! -d "./STM32F10X_Lib/utils" ]; then
@@ -68,5 +83,5 @@ fi
 sudo killall MMDVMHost >/dev/null 2>&1
 
 # Upload the firmware
-eval sudo $STM32FLASH -v -w generic_duplex_gpio_fw.bin -g 0x0 -R -i 20,-21,21:-20,21 /dev/ttyAMA0
+eval sudo $STM32FLASH -v -w $FW_FILENAME -g 0x0 -R -i 20,-21,21:-20,21 /dev/ttyAMA0
 

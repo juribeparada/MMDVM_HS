@@ -19,8 +19,20 @@
 # Configure latest version
 FW_VERSION="v1.4.17"
 	
-# Download latest firmware for D2RG MMDVM_HS
-curl -OL https://github.com/juribeparada/MMDVM_HS/releases/download/$FW_VERSION/d2rg_mmdvm_hs.bin
+# Configure beta version
+FW_VERSION_BETA="v1.5.1b"
+
+# Firmware filename
+FW_FILENAME="d2rg_mmdvm_hs.bin"
+	
+# Download latest firmware
+if [ $1 = "beta" ]; then
+	echo "Downloading beta firmware..."
+	curl -OL https://github.com/juribeparada/MMDVM_HS/releases/download/$FW_VERSION_BETA/$FW_FILENAME
+else
+	echo "Downloading latest firmware (stable)..."
+	curl -OL https://github.com/juribeparada/MMDVM_HS/releases/download/$FW_VERSION/$FW_FILENAME
+fi
 
 # Download STM32F10X_Lib (only for binary tools)
 if [ ! -d "./STM32F10X_Lib/utils" ]; then
@@ -69,5 +81,5 @@ sudo killall MMDVMHost >/dev/null 2>&1
 
 # Upload the firmware
 # Note: /dev/ttySC0 should be enabled, see: https://github.com/bg3mdo/D2RG_MMDVM_HS_ambe_uart_service
-eval sudo $STM32FLASH -v -w d2rg_mmdvm_hs.bin -g 0x0 -R -i 23,-22,22:-23,22 /dev/ttySC0
+eval sudo $STM32FLASH -v -w $FW_FILENAME -g 0x0 -R -i 23,-22,22:-23,22 /dev/ttySC0
 

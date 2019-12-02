@@ -21,9 +21,21 @@ FW_VERSION="v1.4.17"
 
 # Change USB-serial port name ONLY in macOS
 MAC_DEV_USB_SER="/dev/cu.usbmodem14401"
+
+# Configure beta version
+FW_VERSION_BETA="v1.5.1b"
+
+# Firmware filename
+FW_FILENAME="zumspot_usb_fw.bin"
 	
-# Download latest firmware for ZUMspot USB
-curl -OL https://github.com/juribeparada/MMDVM_HS/releases/download/$FW_VERSION/zumspot_usb_fw.bin
+# Download latest firmware
+if [ $1 = "beta" ]; then
+	echo "Downloading beta firmware..."
+	curl -OL https://github.com/juribeparada/MMDVM_HS/releases/download/$FW_VERSION_BETA/$FW_FILENAME
+else
+	echo "Downloading latest firmware (stable)..."
+	curl -OL https://github.com/juribeparada/MMDVM_HS/releases/download/$FW_VERSION/$FW_FILENAME
+fi
 
 # Download STM32F10X_Lib (only for binary tools)
 if [ ! -d "./STM32F10X_Lib/utils" ]; then
@@ -76,7 +88,7 @@ sudo killall MMDVMHost >/dev/null 2>&1
 eval sudo $DFU_RST $DEV_USB_SER 750
 
 # Upload the firmware
-eval sudo $DFU_UTIL -D zumspot_usb_fw.bin -d 1eaf:0003 -a 2 -R -R
+eval sudo $DFU_UTIL -D $FW_FILENAME -d 1eaf:0003 -a 2 -R -R
 
 echo
 echo "Please RESET your ZUMspot !"
