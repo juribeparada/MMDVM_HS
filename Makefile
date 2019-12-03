@@ -476,6 +476,19 @@ mmdvm_hs_hat: zumspot-pi
 
 mmdvm_hs_dual_hat: zumspot-pi
 
+hotpot-opipc_opipcplus:
+ifneq ($(wildcard /usr/local/bin/stm32flash),)
+	/usr/local/bin/stm32flash -v -w bin/$(BINBIN_F1) -g 0x0 -R -i 198,-199,199:-198,199 /dev/ttyS3
+endif
+
+ifneq ($(wildcard /usr/bin/stm32flash),)
+	/usr/bin/stm32flash -v -w bin/$(BINBIN_F1) -g 0x0 -R -i 198,-199,199:-198,199 /dev/ttyS3
+endif
+
+mmdvm_hs_hat_opi: hotpot-opipc_opipcplus
+
+mmdvm_hs_dual_hat_opi: hotpot-opipc_opipcplus
+
 dfu:
 ifdef devser
 	$(DFU_RST) $(devser) 750
