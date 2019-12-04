@@ -319,7 +319,7 @@ Upload the firmware to ZUMspot RPi board:
 
     sudo make zumspot-pi
 
-### MMDVM_HS_Dual_Hat\MMDVM_HS_Hat gpio fw update on OrangePI PC/PC Plus
+### MMDVM_HS_Dual_Hat\MMDVM_HS_Hat gpio firmware update on OrangePI PC/PC2/PC Plus
 
 Install the necessary software tools:
 
@@ -334,11 +334,12 @@ Download the sources:
     git submodule init
     git submodule update
 
-Install the tools for building fw
+Install the tools for building firmware
+
     cd MMDVM_HS/scripts
     ./install_buildtools.sh
     
-Copy /MMDVM_HS/configs/MMDVM_HS_Dual_Hat.h or /MMDVM_HS/configs/MMDVM_HS_Hat.h (MMDVM_HS_Hat-12mhz.h) to /MMDVM_HS/Config.h and build the firmware:
+Copy MMDVM_HS/configs/MMDVM_HS_Dual_Hat.h or MMDVM_HS/configs/MMDVM_HS_Hat.h (MMDVM_HS_Hat-12mhz.h) to MMDVM_HS/Config.h and build the firmware:
 
     make
 
@@ -347,10 +348,12 @@ Stop the MMDVMHost services:
     sudo systemctl stop mmdvmhost.timer
     sudo systemctl stop mmdvmhost.service
 
-Upload the firmware to mmdvm_hs_dual_hat (mmdvm_hs_hat) on OrangePi PC\PC Plus:
+Upload the firmware to mmdvm_hs_dual_hat (mmdvm_hs_hat) on OrangePi PC\PC2\PC Plus:
 
     sudo make mmdvm_hs_dual_hat_opi (sudo make mmdvm_hs_hat_opi)
-or 
+
+or
+
     sudo /usr/local/bin/stm32flash -v -w bin/mmdvm_f1.bin -g 0x0 -R -i 198,-199,199:-198,199 /dev/ttyS3
     
     
