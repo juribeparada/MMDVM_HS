@@ -25,7 +25,7 @@
 const uint8_t SYNC_BIT_START_ERRS = 2U;
 const uint8_t SYNC_BIT_RUN_ERRS   = 4U;
 
-const unsigned int MAX_SYNC_FRAMES = 4U + 1U;
+const unsigned int MAX_SYNC_FRAMES = 1U + 1U;
 
 const uint8_t BIT_MASK_TABLE[] = {0x80U, 0x40U, 0x20U, 0x10U, 0x08U, 0x04U, 0x02U, 0x01U};
 
