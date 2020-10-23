@@ -87,7 +87,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_DEV_P25          22U
 #endif
 #define ADF7021_DEV_NXDN         13U
-#define ADF7021_DEV_M17          23U		// XXX FIXME
+#define ADF7021_DEV_M17          28U		// XXX FIXME
 #define ADF7021_DEV_POCSAG       160U
 
 // TX/RX CLOCK register (REG 03)
@@ -117,7 +117,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_DISC_BW_YSF_H    516U // K=28
 #define ADF7021_DISC_BW_P25      394U // K=32
 #define ADF7021_DISC_BW_NXDN     295U // K=32
-#define ADF7021_DISC_BW_M17      393U // XXX FIXME
+#define ADF7021_DISC_BW_M17      459U // XXX FIXME
 #define ADF7021_DISC_BW_POCSAG   406U // K=22
 
 // Post demodulator bandwith (REG 04)
@@ -126,7 +126,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_POST_BW_YSF      20U
 #define ADF7021_POST_BW_P25      6U
 #define ADF7021_POST_BW_NXDN     7U
-#define ADF7021_POST_BW_M17      7U	// XXX FIXME
+#define ADF7021_POST_BW_M17      20U	// XXX FIXME
 #define ADF7021_POST_BW_POCSAG   1U
 
 // IF filter (REG 05)
@@ -198,7 +198,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_DEV_P25          13U
 #endif
 #define ADF7021_DEV_NXDN         8U
-#define ADF7021_DEV_M17          14U		// XXX FIXME
+#define ADF7021_DEV_M17          17U		// XXX FIXME
 #define ADF7021_DEV_POCSAG       96U
 
 // TX/RX CLOCK register (REG 03)
@@ -237,7 +237,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_POST_BW_YSF      20U
 #define ADF7021_POST_BW_P25      6U
 #define ADF7021_POST_BW_NXDN     8U
-#define ADF7021_POST_BW_M17      7U	// XXX FIXME
+#define ADF7021_POST_BW_M17      20U	// XXX FIXME
 #define ADF7021_POST_BW_POCSAG   1U
 
 // IF filter (REG 05)

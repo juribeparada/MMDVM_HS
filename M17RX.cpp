@@ -65,7 +65,7 @@ void CM17RX::processNone(bool bit)
     m_bitBuffer |= 0x01U;
 
   // Fuzzy matching of the data sync bit sequence
-  if (countBits32(m_bitBuffer ^ M17_SYNC_BITS) <= MAX_SYNC_BIT_START_ERRS) {
+  if (countBits16(m_bitBuffer ^ M17_SYNC_BITS) <= MAX_SYNC_BIT_START_ERRS) {
     DEBUG1("M17RX: sync found in None");
     for (uint8_t i = 0U; i < M17_SYNC_BYTES_LENGTH; i++)
       m_buffer[i] = M17_SYNC_BYTES[i];
@@ -94,7 +94,7 @@ void CM17RX::processData(bool bit)
   // Only search for a sync in the right place +-2 symbols
   if (m_bufferPtr >= (M17_SYNC_LENGTH_BITS - 2U) && m_bufferPtr <= (M17_SYNC_LENGTH_BITS + 2U)) {
     // Fuzzy matching of the data sync bit sequence
-    if (countBits32(m_bitBuffer ^ M17_SYNC_BITS) <= MAX_SYNC_BIT_RUN_ERRS) {
+    if (countBits16(m_bitBuffer ^ M17_SYNC_BITS) <= MAX_SYNC_BIT_RUN_ERRS) {
       DEBUG2("M17RX: found sync in Data, pos", m_bufferPtr - M17_SYNC_LENGTH_BITS);
       m_lostCount = MAX_SYNC_FRAMES;
       m_bufferPtr = M17_SYNC_LENGTH_BITS;

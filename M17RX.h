@@ -37,7 +37,7 @@ public:
 
 private:
   M17RX_STATE m_state;
-  uint32_t    m_bitBuffer;
+  uint16_t    m_bitBuffer;
   uint8_t     m_outBuffer[M17_FRAME_LENGTH_BYTES + 3U];
   uint8_t*    m_buffer;
   uint16_t    m_bufferPtr;
