@@ -1,4 +1,5 @@
 /*
+ *   Copyright (C) 2020 by Jonathan Naylor G4KLX
  *   Copyright (C) 2016 by Jim McLaughlin KI6ZUM
  *   Copyright (C) 2016,2017,2018,2019 by Andy Uribe CA6JAU
  *   Copyright (C) 2017 by Danilo DB4PLE 
@@ -82,6 +83,10 @@
 
 #define PIN_NXDN_LED         GPIO_Pin_8
 #define PORT_NXDN_LED        GPIOA
+
+// XXX  FIXME
+#define PIN_M17_LED          GPIO_Pin_8
+#define PORT_M17_LED         GPIOA
 
 #define PIN_POCSAG_LED       GPIO_Pin_5
 #define PORT_POCSAG_LED      GPIOA
@@ -173,6 +178,14 @@
 #endif
 #define PORT_NXDN_LED        GPIOA
 
+// XXX FIXME
+#if defined(STM32_USB_HOST)
+#define PIN_M17_LED          GPIO_Pin_1
+#else
+#define PIN_M17_LED          GPIO_Pin_7
+#endif
+#define PORT_M17_LED         GPIOA
+
 #define PIN_POCSAG_LED       GPIO_Pin_5
 #define PORT_POCSAG_LED      GPIOA
 
@@ -247,6 +260,10 @@
 
 #define PIN_NXDN_LED         GPIO_Pin_8
 #define PORT_NXDN_LED        GPIOA
+
+// XXX FIXME
+#define PIN_M17_LED          GPIO_Pin_8
+#define PORT_M17_LED         GPIOA
 
 #define PIN_POCSAG_LED       GPIO_Pin_7
 #define PORT_POCSAG_LED      GPIOA
@@ -731,6 +748,16 @@ void CIO::NXDN_pin(bool on)
   GPIO_WriteBit(PORT_P25_LED, PIN_P25_LED, on ? Bit_SET : Bit_RESET);
 #else
   GPIO_WriteBit(PORT_NXDN_LED, PIN_NXDN_LED, on ? Bit_SET : Bit_RESET);
+#endif
+}
+
+void CIO::M17_pin(bool on)
+{
+#if defined(USE_ALTERNATE_M17_LEDS)
+  GPIO_WriteBit(PORT_DSTAR_LED, PIN_DSTAR_LED, on ? Bit_SET : Bit_RESET);
+  GPIO_WriteBit(PORT_P25_LED, PIN_P25_LED, on ? Bit_SET : Bit_RESET);
+#else
+  GPIO_WriteBit(PORT_M17_LED, PIN_M17_LED, on ? Bit_SET : Bit_RESET);
 #endif
 }
 
