@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2015,2016 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2015,2016,2020 by Jonathan Naylor G4KLX
  *   Copyright (C) 2016,2017,2018 by Andy Uribe CA6JAU
  *   Copyright (C) 2017 by Danilo DB4PLE
 
@@ -98,6 +98,7 @@ public:
   void      YSF_pin(bool on);
   void      P25_pin(bool on);
   void      NXDN_pin(bool on);
+  void      M17_pin(bool on);
   void      POCSAG_pin(bool on);
   void      COS_pin(bool on);
   void      interrupt(void);
@@ -141,7 +142,7 @@ public:
 #endif
   void      start(void);
   void      startInt(void);
-  void      setDeviations(uint8_t dstarTXLevel, uint8_t dmrTXLevel, uint8_t ysfTXLevel, uint8_t p25TXLevel, uint8_t nxdnTXLevel, uint8_t pocsagTXLevel, bool ysfLoDev);
+  void      setDeviations(uint8_t dstarTXLevel, uint8_t dmrTXLevel, uint8_t ysfTXLevel, uint8_t p25TXLevel, uint8_t nxdnTXLevel, uint8_t m17TXLevel, uint8_t pocsagTXLevel, bool ysfLoDev);
   void      updateCal(void);
 
 #if defined(SEND_RSSI_DATA)
@@ -162,6 +163,7 @@ public:
   uint16_t  devYSF(void);
   uint16_t  devP25(void);
   uint16_t  devNXDN(void);
+  uint16_t  devM17(void);
   uint16_t  devPOCSAG(void);
   void      printConf();
 #endif
@@ -181,7 +183,7 @@ private:
   uint32_t           m_scanPauseCnt;
   uint8_t            m_scanPos;
   uint8_t            m_TotalModes;
-  MMDVM_STATE        m_Modes[5];
+  MMDVM_STATE        m_Modes[6];
   bool               m_ledValue;
   volatile uint32_t  m_watchdog;
   volatile uint16_t  m_int1counter;

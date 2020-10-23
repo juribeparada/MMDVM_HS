@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2015,2016 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2015,2016,2020 by Jonathan Naylor G4KLX
  *   Copyright (C) 2016 by Mathis Schmieder DB9MAT
  *   Copyright (C) 2016 by Colin Durbridge G4EML
  *   Copyright (C) 2016,2017,2018,2019 by Andy Uribe CA6JAU
@@ -43,6 +43,7 @@ bool m_dmrEnable    = true;
 bool m_ysfEnable    = true;
 bool m_p25Enable    = true;
 bool m_nxdnEnable   = true;
+bool m_m17Enable    = true;
 bool m_pocsagEnable = true;
 
 bool m_duplex = false;
@@ -69,6 +70,9 @@ CYSFTX     ysfTX;
 
 CP25RX     p25RX;
 CP25TX     p25TX;
+
+CM17RX     m17RX;
+CM17TX     m17TX;
 
 CNXDNRX    nxdnRX;
 CNXDNTX    nxdnTX;
@@ -124,6 +128,9 @@ void loop()
 
   if (m_nxdnEnable && m_modemState == STATE_NXDN)
     nxdnTX.process();
+
+  if (m_m17Enable && m_modemState == STATE_M17)
+    m17TX.process();
 
   if (m_pocsagEnable && (m_modemState == STATE_POCSAG || pocsagTX.busy()))
     pocsagTX.process();

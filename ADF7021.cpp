@@ -1,4 +1,5 @@
 /*
+ *   Copyright (C) 2020 by Jonathan Naylor G4KLX
  *   Copyright (C) 2016 by Jim McLaughlin KI6ZUM
  *   Copyright (C) 2016,2017,2018,2019 by Andy Uribe CA6JAU
  *   Copyright (C) 2017 by Danilo DB4PLE
@@ -48,6 +49,7 @@ uint16_t           m_dmrDev;
 uint16_t           m_ysfDev;
 uint16_t           m_p25Dev;
 uint16_t           m_nxdnDev;
+uint16_t           m_m17Dev;
 uint16_t           m_pocsagDev;
 
 static void Send_AD7021_control_shift()
@@ -272,6 +274,9 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
       break;
     case STATE_NXDN:
       AFC_OFFSET = AFC_OFFSET_NXDN;
+      break;
+    case STATE_M17:
+      AFC_OFFSET = AFC_OFFSET_M17;
       break;
     default:
       break;
@@ -499,6 +504,33 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
 #endif
       break;
 
+    case STATE_M17:
+      // Dev: +1 symb 600 Hz, symb rate = 4800
+
+      ADF7021_REG3 = ADF7021_REG3_M17;
+      ADF7021_REG10 = ADF7021_REG10_M17;
+
+      // K=32
+      ADF7021_REG4  = (uint32_t) 0b0100                    << 0;   // register 4
+      ADF7021_REG4 |= (uint32_t) 0b011                     << 4;   // mode, 4FSK
+      ADF7021_REG4 |= (uint32_t) 0b0                       << 7;
+      ADF7021_REG4 |= (uint32_t) 0b11                      << 8;
+      ADF7021_REG4 |= (uint32_t) ADF7021_DISC_BW_M17       << 10;  // Disc BW
+      ADF7021_REG4 |= (uint32_t) ADF7021_POST_BW_M17       << 20;  // Post dem BW
+      ADF7021_REG4 |= (uint32_t) 0b00                      << 30;  // IF filter (12.5 kHz)
+
+      ADF7021_REG13 = (uint32_t) 0b1101                    << 0;   // register 13
+      ADF7021_REG13 |= (uint32_t) ADF7021_SLICER_TH_M17    << 4;   // slicer threshold
+
+      ADF7021_REG2 = (uint32_t) 0b10                       << 28;  // invert data (and RC alpha = 0.5)
+      ADF7021_REG2 |= (uint32_t) (m_m17Dev / div2)         << 19;  // deviation
+#if defined(ADF7021_DISABLE_RC_4FSK)
+      ADF7021_REG2 |= (uint32_t) 0b011                     << 4;   // modulation (4FSK)
+#else
+      ADF7021_REG2 |= (uint32_t) 0b111                     << 4;   // modulation (RC 4FSK)
+#endif
+      break;
+
     default:
       break;
   }
@@ -718,6 +750,29 @@ void CIO::ifConf2(MMDVM_STATE modemState)
 
       ADF7021_REG2 = (uint32_t) 0b10                       << 28;  // invert data (and RC alpha = 0.5)
       ADF7021_REG2 |= (uint32_t) (m_nxdnDev / div2) << 19;  // deviation
+      ADF7021_REG2 |= (uint32_t) 0b111                     << 4;   // modulation (RC 4FSK)
+      break;
+
+    case STATE_M17:
+      // Dev: +1 symb 600 Hz, symb rate = 4800
+
+      ADF7021_REG3 = ADF7021_REG3_M17;
+      ADF7021_REG10 = ADF7021_REG10_M17;
+
+      // K=32
+      ADF7021_REG4  = (uint32_t) 0b0100                    << 0;   // register 4
+      ADF7021_REG4 |= (uint32_t) 0b011                     << 4;   // mode, 4FSK
+      ADF7021_REG4 |= (uint32_t) 0b0                       << 7;
+      ADF7021_REG4 |= (uint32_t) 0b11                      << 8;
+      ADF7021_REG4 |= (uint32_t) ADF7021_DISC_BW_M17       << 10;  // Disc BW
+      ADF7021_REG4 |= (uint32_t) ADF7021_POST_BW_M17       << 20;  // Post dem BW
+      ADF7021_REG4 |= (uint32_t) 0b00                      << 30;  // IF filter (12.5 kHz)
+
+      ADF7021_REG13 = (uint32_t) 0b1101                    << 0;   // register 13
+      ADF7021_REG13 |= (uint32_t) ADF7021_SLICER_TH_M17    << 4;   // slicer threshold
+
+      ADF7021_REG2 = (uint32_t) 0b10                       << 28;  // invert data (and RC alpha = 0.5)
+      ADF7021_REG2 |= (uint32_t) (m_m17Dev / div2)  << 19;  // deviation
       ADF7021_REG2 |= (uint32_t) 0b111                     << 4;   // modulation (RC 4FSK)
       break;
 
@@ -959,7 +1014,7 @@ void CIO::setPower(uint8_t power)
   m_power = power >> 2;
 }
 
-void CIO::setDeviations(uint8_t dstarTXLevel, uint8_t dmrTXLevel, uint8_t ysfTXLevel, uint8_t p25TXLevel, uint8_t nxdnTXLevel, uint8_t pocsagTXLevel, bool ysfLoDev)
+void CIO::setDeviations(uint8_t dstarTXLevel, uint8_t dmrTXLevel, uint8_t ysfTXLevel, uint8_t p25TXLevel, uint8_t nxdnTXLevel, uint8_t m17TXLevel, uint8_t pocsagTXLevel, bool ysfLoDev)
 {
   m_dstarDev = uint16_t((ADF7021_DEV_DSTAR * uint16_t(dstarTXLevel)) / 128U);
   m_dmrDev = uint16_t((ADF7021_DEV_DMR * uint16_t(dmrTXLevel)) / 128U);
@@ -971,6 +1026,7 @@ void CIO::setDeviations(uint8_t dstarTXLevel, uint8_t dmrTXLevel, uint8_t ysfTXL
 
   m_p25Dev = uint16_t((ADF7021_DEV_P25 * uint16_t(p25TXLevel)) / 128U);
   m_nxdnDev = uint16_t((ADF7021_DEV_NXDN * uint16_t(nxdnTXLevel)) / 128U);
+  m_m17Dev = uint16_t((ADF7021_DEV_M17 * uint16_t(m17TXLevel)) / 128U);
   m_pocsagDev = uint16_t((ADF7021_DEV_POCSAG * uint16_t(pocsagTXLevel)) / 128U);
 }
 
@@ -1090,6 +1146,11 @@ uint16_t CIO::devNXDN()
   return (uint16_t)((ADF7021_PFD * m_nxdnDev) / (f_div * 65536));
 }
 
+uint16_t CIO::devM17()
+{
+  return (uint16_t)((ADF7021_PFD * m_m17Dev) / (f_div * 65536));
+}
+
 uint16_t CIO::devPOCSAG()
 {
   return (uint16_t)((ADF7021_PFD * m_pocsagDev) / (f_div * 65536));
@@ -1106,6 +1167,7 @@ void CIO::printConf()
   DEBUG2("YSF +1 sym dev (Hz):", devYSF());
   DEBUG2("P25 +1 sym dev (Hz):", devP25());
   DEBUG2("NXDN +1 sym dev (Hz):", devNXDN());
+  DEBUG2("M17 +1 sym dev (Hz):", devM17());
   DEBUG2("POCSAG dev (Hz):", devPOCSAG());
 }
 
