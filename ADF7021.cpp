@@ -424,7 +424,7 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
       break;
 
     case STATE_YSF:
-      // Dev: +1 symb 900 Hz, symb rate = 4800
+      // Dev: +1 symb 2700/900 Hz, symb rate = 4800
 
       ADF7021_REG3 = (m_LoDevYSF ? ADF7021_REG3_YSF_L : ADF7021_REG3_YSF_H);
       ADF7021_REG10 = ADF7021_REG10_YSF;
@@ -685,7 +685,7 @@ void CIO::ifConf2(MMDVM_STATE modemState)
       break;
 
     case STATE_YSF:
-      // Dev: +1 symb 900 Hz, symb rate = 4800
+      // Dev: +1 symb 2700/900 Hz, symb rate = 4800
 
       ADF7021_REG3 = (m_LoDevYSF ? ADF7021_REG3_YSF_L : ADF7021_REG3_YSF_H);
       ADF7021_REG10 = ADF7021_REG10_YSF;
