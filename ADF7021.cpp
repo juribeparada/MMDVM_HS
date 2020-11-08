@@ -1,6 +1,6 @@
 /*
  *   Copyright (C) 2016 by Jim McLaughlin KI6ZUM
- *   Copyright (C) 2016,2017,2018,2019 by Andy Uribe CA6JAU
+ *   Copyright (C) 2016,2017,2018,2019,2020 by Andy Uribe CA6JAU
  *   Copyright (C) 2017 by Danilo DB4PLE
  *
  *   Some of the code is based on work of Guus Van Dooren PE1PLM:
@@ -216,7 +216,7 @@ void CIO::ifConf(MMDVM_STATE modemState, bool reset)
     m_frequency_rx   = m_pocsag_freq_tx;
   }
 
-  #if defined (ZUMSPOT_ADF7021)
+  #if defined (ZUMSPOT_ADF7021) || defined(SKYBRIDGE_HS)
   io.checkBand(m_frequency_rx, m_frequency_tx);
   #endif
 

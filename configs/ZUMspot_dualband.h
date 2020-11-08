@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2017,2018,2019 by Andy Uribe CA6JAU
+ *   Copyright (C) 2017,2018,2019,2020 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -32,6 +32,10 @@
 // #define NANO_HOTSPOT
 // 6) NanoDV NPi or USB revisions 1.0 (BG4TGO & BG5HHP)
 // #define NANO_DV_REV10
+// 7) D2RG MMDVM_HS RPi (BG3MDO, VE2GZI, CA6JAU)
+// #define D2RG_MMDVM_HS
+// 8) BridgeCom SkyBridge HotSpot
+// #define SKYBRIDGE_HS
 
 // Enable ADF7021 support:
 #define ENABLE_ADF7021

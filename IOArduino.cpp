@@ -1,6 +1,6 @@
 /*
  *   Copyright (C) 2015,2016 by Jonathan Naylor G4KLX
- *   Copyright (C) 2016,2017,2018 by Andy Uribe CA6JAU
+ *   Copyright (C) 2016,2017,2018,2019,2020 by Andy Uribe CA6JAU
  *   Copyright (C) 2017 by Danilo DB4PLE 
  
  *   This program is free software; you can redistribute it and/or modify
@@ -28,7 +28,7 @@
 
 // STM32F1 pin definitions, using STM32duino
 
-#if defined(ZUMSPOT_ADF7021)
+#if defined(ZUMSPOT_ADF7021) || defined(SKYBRIDGE_HS)
 
 #define PIN_SCLK       PB5
 #define PIN_SREAD      PB6
@@ -81,7 +81,7 @@
 #define PIN_COS_LED    PB15
 
 #else
-#error "Either ZUMSPOT_ADF7021, LIBRE_KIT_ADF7021, MMDVM_HS_HAT_REV12, MMDVM_HS_DUAL_HAT_REV10, NANO_HOTSPOT or NANO_DV_REV10 need to be defined"
+#error "Either ZUMSPOT_ADF7021, LIBRE_KIT_ADF7021, MMDVM_HS_HAT_REV12, MMDVM_HS_DUAL_HAT_REV10, NANO_HOTSPOT, NANO_DV_REV10 or SKYBRIDGE_HS need to be defined"
 #endif
 
 #elif defined(__MK20DX256__) || defined(__MK64FX512__) || defined(__MK66FX1M0__)
@@ -156,7 +156,7 @@ void CIO::Init()
 {
 #if defined (__STM32F1__)
 
-#if defined(ZUMSPOT_ADF7021) || defined(LIBRE_KIT_ADF7021) || defined(MMDVM_HS_HAT_REV12) || defined(MMDVM_HS_DUAL_HAT_REV10) || defined(NANO_HOTSPOT) || defined(NANO_DV_REV10)
+#if defined(ZUMSPOT_ADF7021) || defined(LIBRE_KIT_ADF7021) || defined(MMDVM_HS_HAT_REV12) || defined(MMDVM_HS_DUAL_HAT_REV10) || defined(NANO_HOTSPOT) || defined(NANO_DV_REV10) || defined(SKYBRIDGE_HS)
   afio_cfg_debug_ports(AFIO_DEBUG_SW_ONLY);
 #endif
 

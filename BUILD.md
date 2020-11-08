@@ -489,6 +489,8 @@ Please check here for detailed instructions:
 
 - make d2rg_mmdvm_hs: upload the firmware to D2RG MMDVM_HS board (using internal serial port)
 
+- make skybridge: upload the firmware to SkyBridge HotSpot board (using internal serial port)
+
 - make dfu [devser=/dev/ttyXXX]: upload firmware using USB bootloader. "devser" is optional, and it corresponds to the USB serial port device name. This option permits to perform a reset to enter to booloader mode (DFU). If you don't use "devser", you have to press the reset button of the ZUMspot just before using this command.
 
 - make serial devser=/dev/ttyXXX: upload standard firmware using serial port bootloader method.
