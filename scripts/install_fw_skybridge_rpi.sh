@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#   Copyright (C) 2017,2018,2019 by Andy Uribe CA6JAU
+#   Copyright (C) 2017,2018,2019,2020 by Andy Uribe CA6JAU
 
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -19,14 +19,11 @@
 # Configure latest version
 FW_VERSION="v1.5.2"
 
-# Change USB-serial port name ONLY in macOS
-MAC_DEV_USB_SER="/dev/cu.usbmodem14401"
-
 # Configure beta version
 FW_VERSION_BETA="v1.5.1b"
 
 # Firmware filename
-FW_FILENAME="generic_duplex_usb_fw.bin"
+FW_FILENAME="skybridge_rpi_fw.bin"
 	
 # Download latest firmware
 if [ $1 = "beta" ]; then
@@ -44,7 +41,6 @@ fi
 
 # Configure vars depending on OS
 if [ $(uname -s) == "Linux" ]; then
-	DEV_USB_SER="/dev/ttyACM0"
 	if [ $(uname -m) == "x86_64" ]; then
 		echo "Linux 64-bit detected"
 		DFU_RST="./STM32F10X_Lib/utils/linux64/upload-reset"
@@ -74,7 +70,6 @@ fi
 
 if [ $(uname -s) == "Darwin" ]; then
 	echo "macOS detected"
-	DEV_USB_SER=$MAC_DEV_USB_SER
 	DFU_RST="./STM32F10X_Lib/utils/macosx/upload-reset"
 	DFU_UTIL="./STM32F10X_Lib/utils/macosx/dfu-util"
 	ST_FLASH="./STM32F10X_Lib/utils/macosx/st-flash"
@@ -84,12 +79,6 @@ fi
 # Stop MMDVMHost process to free serial port
 sudo killall MMDVMHost >/dev/null 2>&1
 
-# Reset ZUMspot to enter bootloader mode
-eval sudo $DFU_RST $DEV_USB_SER 750
-
 # Upload the firmware
-eval sudo $DFU_UTIL -D $FW_FILENAME -d 1eaf:0003 -a 2 -R -R
+eval sudo $STM32FLASH -v -w $FW_FILENAME -g 0x0 -R -i 20,-21,21:-20,21 /dev/ttyAMA0
 
-echo
-echo "Please RESET your MMDVM_HS board !"
-echo

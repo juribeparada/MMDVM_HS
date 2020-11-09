@@ -1,7 +1,7 @@
 /*
  *   Copyright (C) 2020 by Jonathan Naylor G4KLX
  *   Copyright (C) 2016 by Jim McLaughlin KI6ZUM
- *   Copyright (C) 2016,2017,2018,2019 by Andy Uribe CA6JAU
+ *   Copyright (C) 2016,2017,2018,2019,2020 by Andy Uribe CA6JAU
  *   Copyright (C) 2017 by Danilo DB4PLE 
   
  *   This program is free software; you can redistribute it and/or modify
@@ -97,7 +97,7 @@
 #define PIN_COS_LED          GPIO_Pin_13
 #define PORT_COS_LED         GPIOB
 
-#elif defined(ZUMSPOT_ADF7021)
+#elif defined(ZUMSPOT_ADF7021) || defined(SKYBRIDGE_HS)
 
 #define PIN_SCLK             GPIO_Pin_5
 #define PORT_SCLK            GPIOB
@@ -275,7 +275,7 @@
 #define PORT_COS_LED         GPIOB
 
 #else
-#error "Either PI_HAT_7021_REV_02, ZUMSPOT_ADF7021, LIBRE_KIT_ADF7021, MMDVM_HS_HAT_REV12, MMDVM_HS_DUAL_HAT_REV10, NANO_HOTSPOT, NANO_DV_REV11 or D2RG_MMDVM_HS need to be defined"
+#error "Either PI_HAT_7021_REV_02, ZUMSPOT_ADF7021, LIBRE_KIT_ADF7021, MMDVM_HS_HAT_REV12, MMDVM_HS_DUAL_HAT_REV10, NANO_HOTSPOT, NANO_DV_REV11, D2RG_MMDVM_HS or SKYBRIDGE_HS need to be defined"
 #endif
 
 extern "C" {
@@ -297,7 +297,7 @@ extern "C" {
   }
 #endif
 
-#elif defined(ZUMSPOT_ADF7021) || defined(LIBRE_KIT_ADF7021) || defined(MMDVM_HS_HAT_REV12) || defined(MMDVM_HS_DUAL_HAT_REV10) || defined(NANO_HOTSPOT) || defined(NANO_DV_REV11) || defined(D2RG_MMDVM_HS)
+#elif defined(ZUMSPOT_ADF7021) || defined(LIBRE_KIT_ADF7021) || defined(MMDVM_HS_HAT_REV12) || defined(MMDVM_HS_DUAL_HAT_REV10) || defined(NANO_HOTSPOT) || defined(NANO_DV_REV11) || defined(D2RG_MMDVM_HS) || defined(SKYBRIDGE_HS)
 
 #if defined(BIDIR_DATA_PIN)
   void EXTI3_IRQHandler(void) {
@@ -317,7 +317,7 @@ extern "C" {
 
 #if defined(DUPLEX)
   void EXTI9_5_IRQHandler(void) {
-    #if defined(ZUMSPOT_ADF7021)
+    #if defined(ZUMSPOT_ADF7021) || defined(SKYBRIDGE_HS)
     if(EXTI_GetITStatus(EXTI_Line8)!=RESET) {
       io.interrupt2();
     EXTI_ClearITPendingBit(EXTI_Line8);
@@ -348,11 +348,11 @@ void CIO::Init()
 
 #if defined(PI_HAT_7021_REV_02)
   GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable, ENABLE);
-#elif defined(ZUMSPOT_ADF7021) || defined(LIBRE_KIT_ADF7021) || defined(MMDVM_HS_HAT_REV12) || defined(MMDVM_HS_DUAL_HAT_REV10) || defined(NANO_HOTSPOT) || defined(NANO_DV_REV11) || defined(D2RG_MMDVM_HS)
+#elif defined(ZUMSPOT_ADF7021) || defined(LIBRE_KIT_ADF7021) || defined(MMDVM_HS_HAT_REV12) || defined(MMDVM_HS_DUAL_HAT_REV10) || defined(NANO_HOTSPOT) || defined(NANO_DV_REV11) || defined(D2RG_MMDVM_HS) || defined(SKYBRIDGE_HS)
   GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);
 #endif
 
-#if defined(ZUMSPOT_ADF7021)
+#if defined(ZUMSPOT_ADF7021) || defined(SKYBRIDGE_HS)
   // Pin defines if the board has a single ADF7021 or double
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStruct.GPIO_Pin   = PIN_SGL_DBL;
@@ -549,7 +549,7 @@ void CIO::Init()
   EXTI_InitStructure.EXTI_Line = EXTI_Line14;
 #endif
 
-#elif defined(ZUMSPOT_ADF7021) || defined(LIBRE_KIT_ADF7021) || defined(MMDVM_HS_HAT_REV12) || defined(MMDVM_HS_DUAL_HAT_REV10) || defined(NANO_HOTSPOT) || defined(NANO_DV_REV11) || defined(D2RG_MMDVM_HS)
+#elif defined(ZUMSPOT_ADF7021) || defined(LIBRE_KIT_ADF7021) || defined(MMDVM_HS_HAT_REV12) || defined(MMDVM_HS_DUAL_HAT_REV10) || defined(NANO_HOTSPOT) || defined(NANO_DV_REV11) || defined(D2RG_MMDVM_HS) || defined(SKYBRIDGE_HS)
 
 #if defined(BIDIR_DATA_PIN)
   // Connect EXTI3 Line
@@ -567,7 +567,7 @@ void CIO::Init()
   // Connect EXTI5 Line
   GPIO_EXTILineConfig(PORT_TXD2_INT, PIN_TXD2_INT);
   // Configure EXT5 line
-  #if defined(ZUMSPOT_ADF7021)
+  #if defined(ZUMSPOT_ADF7021) || defined(SKYBRIDGE_HS)
   EXTI_InitStructure2.EXTI_Line = EXTI_Line8;
   #else
   EXTI_InitStructure2.EXTI_Line = EXTI_Line5;
@@ -601,7 +601,7 @@ void CIO::startInt()
 
   NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn;
 
-#elif defined(ZUMSPOT_ADF7021) || defined(LIBRE_KIT_ADF7021) || defined(MMDVM_HS_HAT_REV12) || defined(MMDVM_HS_DUAL_HAT_REV10) || defined(NANO_HOTSPOT) || defined(NANO_DV_REV11) || defined(D2RG_MMDVM_HS)
+#elif defined(ZUMSPOT_ADF7021) || defined(LIBRE_KIT_ADF7021) || defined(MMDVM_HS_HAT_REV12) || defined(MMDVM_HS_DUAL_HAT_REV10) || defined(NANO_HOTSPOT) || defined(NANO_DV_REV11) || defined(D2RG_MMDVM_HS) || defined(SKYBRIDGE_HS)
 
 #if defined(BIDIR_DATA_PIN)
   // Enable and set EXTI3 Interrupt
@@ -781,7 +781,7 @@ void CIO::COS_pin(bool on)
   GPIO_WriteBit(PORT_COS_LED, PIN_COS_LED, on ? Bit_SET : Bit_RESET);
 }
 
-#if defined(ZUMSPOT_ADF7021)
+#if defined(ZUMSPOT_ADF7021) || defined(SKYBRIDGE_HS)
 void CIO::setBandVHF(bool vhf_on) {
   GPIO_WriteBit(PORT_SET_BAND, PIN_SET_BAND, vhf_on ? Bit_SET : Bit_RESET);
 }

@@ -135,6 +135,7 @@ Download the script (*.sh) that matches with your ZUMspot/MMDVM_HS board:
 - install_fw_gen_gpio.sh: only for generic MMDVM_HS board (EA7GIB) with GPIO serial interface
 - install_fw_duplex_gpio.sh: only for MMDVM_HS with dual ADF7021 (EA7GIB) or generic dual ADF7021 board with GPIO serial interface
 - install_fw_duplex_usb.sh: only for MMDVM_HS with dual ADF7021 (EA7GIB) or generic dual ADF7021 board with USB interface
+- install_fw_skybridge_rpi.sh: only for BridgeCom SkyBridge HotSpot
 
 For example, download the ZUMspot RPi upgrade script:
 

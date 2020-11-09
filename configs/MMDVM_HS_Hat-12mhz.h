@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2017,2018,2019 by Andy Uribe CA6JAU, Florian Wolters DF2ET
+ *   Copyright (C) 2017,2018,2019,2020 by Andy Uribe CA6JAU, Florian Wolters DF2ET
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -34,6 +34,8 @@
 // #define NANO_DV_REV10
 // 7) D2RG MMDVM_HS RPi (BG3MDO, VE2GZI, CA6JAU)
 // #define D2RG_MMDVM_HS
+// 8) BridgeCom SkyBridge HotSpot
+// #define SKYBRIDGE_HS
 
 // Enable ADF7021 support:
 #define ENABLE_ADF7021

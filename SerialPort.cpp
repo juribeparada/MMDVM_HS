@@ -330,7 +330,7 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
     DEBUG1("Full duplex not supported with this firmware");
     return 6U;
   }
-#elif defined(DUPLEX) && defined(ZUMSPOT_ADF7021)
+#elif defined(DUPLEX) && (defined(ZUMSPOT_ADF7021) || defined(SKYBRIDGE_HS))
   if (io.isDualBand() && m_duplex && m_calState == STATE_IDLE && modemState != STATE_DSTARCAL) {
     DEBUG1("Full duplex is not supported on this board");
     return 6U;

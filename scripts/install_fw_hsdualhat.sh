@@ -17,7 +17,7 @@
 #   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 # Configure latest version
-FW_VERSION="v1.4.17"
+FW_VERSION="v1.5.2"
 
 # Configure beta version
 FW_VERSION_BETA="v1.5.1b"

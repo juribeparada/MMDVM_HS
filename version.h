@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2017,2018,2019 by Andy Uribe CA6JAU
+ *   Copyright (C) 2017,2018,2019,2020 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
 
 #define VER_MAJOR       "1"
 #define VER_MINOR       "5"
-#define VER_REV         "1b"
+#define VER_REV         "2"
 #define VERSION_DATE    "20201109"
 
 #if defined(ZUMSPOT_ADF7021)
@@ -39,6 +39,8 @@
 #define BOARD_INFO      "Nano_DV"
 #elif defined(D2RG_MMDVM_HS)
 #define BOARD_INFO      "D2RG_MMDVM_HS"
+#elif defined(SKYBRIDGE_HS)
+#define BOARD_INFO      "SkyBridge"
 #else
 #define BOARD_INFO      "MMDVM_HS"
 #endif

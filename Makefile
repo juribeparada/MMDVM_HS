@@ -476,6 +476,8 @@ mmdvm_hs_hat: zumspot-pi
 
 mmdvm_hs_dual_hat: zumspot-pi
 
+skybridge: zumspot-pi
+
 hotpot-opipc_opipcplus:
 ifneq ($(wildcard /usr/local/bin/stm32flash),)
 	/usr/local/bin/stm32flash -v -w bin/$(BINBIN_F1) -g 0x0 -R -i 198,-199,199:-198,199 /dev/ttyS3
