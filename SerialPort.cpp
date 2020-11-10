@@ -250,7 +250,7 @@ uint8_t CSerialPort::setConfig(const uint8_t* data, uint8_t length)
   bool p25Enable    = (data[1U] & 0x08U) == 0x08U;
   bool nxdnEnable   = (data[1U] & 0x10U) == 0x10U;
   bool pocsagEnable = (data[1U] & 0x20U) == 0x20U;
-  bool m17Enable    = (data[1U] & 0x40U) == 0x40U;
+  bool m17Enable    = (data[1U] & 0x80U) == 0x80U;
 
   uint8_t txDelay = data[2U];
   if (txDelay > 50U)
