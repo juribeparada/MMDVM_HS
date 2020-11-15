@@ -1,4 +1,5 @@
 /*
+ *   Copyright (C) 2020 by Jonathan Naylor G4KLX
  *   Copyright (C) 2016 by Jim McLaughlin KI6ZUM
  *   Copyright (C) 2016,2017,2018 by Andy Uribe CA6JAU
  *   Copyright (C) 2017 by Danilo DB4PLE 
@@ -52,7 +53,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 // Support for ADF7021-N version: 
 // #define ADF7021_N_VER
 
-// Enable AFC support for DMR, YSF and P25 (experimental):
+// Enable AFC support for DMR, YSF, P25, and M17 (experimental):
 // (AFC is already enabled by default in D-Star)
 // #define ADF7021_ENABLE_4FSK_AFC
 
@@ -65,7 +66,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 // R = 4
 // DEMOD_CLK = 2.4576 MHz (DSTAR)
 // DEMOD_CLK = 4.9152 MHz (DMR, YSF_L, P25)
-// DEMOD_CLK = 7.3728 MHz (YSF_H)
+// DEMOD_CLK = 7.3728 MHz (YSF_H, M17)
 // DEMOD CLK = 3.6864 MHz (NXDN)
 // DEMOD_CLK = 7.3728 MHz (POCSAG)
 #define ADF7021_PFD              3686400.0
@@ -87,6 +88,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_DEV_P25          22U
 #endif
 #define ADF7021_DEV_NXDN         13U
+#define ADF7021_DEV_M17          28U
 #define ADF7021_DEV_POCSAG       160U
 
 // TX/RX CLOCK register (REG 03)
@@ -97,12 +99,14 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_REG3_YSF_H       0x2A4C0493
 #define ADF7021_REG3_P25         0x2A4C04D3
 #define ADF7021_REG3_NXDN        0x2A4C04D3
+#define ADF7021_REG3_M17         0x2A4C04D3
 #else
 #define ADF7021_REG3_DMR         0x2A4C80D3
 #define ADF7021_REG3_YSF_L       0x2A4C80D3
 #define ADF7021_REG3_YSF_H       0x2A4CC093
 #define ADF7021_REG3_P25         0x2A4C80D3
 #define ADF7021_REG3_NXDN        0x2A4CC113
+#define ADF7021_REG3_M17         0x2A4C80D3	// XXX FIXME
 #endif
 #define ADF7021_REG3_POCSAG      0x2A4F0093
 
@@ -114,6 +118,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_DISC_BW_YSF_H    516U // K=28
 #define ADF7021_DISC_BW_P25      394U // K=32
 #define ADF7021_DISC_BW_NXDN     295U // K=32
+#define ADF7021_DISC_BW_M17      393U // K=32 XXX FIXME
 #define ADF7021_DISC_BW_POCSAG   406U // K=22
 
 // Post demodulator bandwith (REG 04)
@@ -122,6 +127,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_POST_BW_YSF      20U
 #define ADF7021_POST_BW_P25      6U
 #define ADF7021_POST_BW_NXDN     7U
+#define ADF7021_POST_BW_M17      20U	// XXX FIXME
 #define ADF7021_POST_BW_POCSAG   1U
 
 // IF filter (REG 05)
@@ -139,26 +145,31 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_REG10_YSF        0x01FE473A
 #define ADF7021_REG10_P25        0x01FE473A
 #define ADF7021_REG10_NXDN       0x01FE473A
+#define ADF7021_REG10_M17        0x01FE473A
 #if defined(ADF7021_AFC_POS)
 #define AFC_OFFSET_DMR           -250
 #define AFC_OFFSET_YSF           -250
 #define AFC_OFFSET_P25           -250
 #define AFC_OFFSET_NXDN          -250
+#define AFC_OFFSET_M17           -250
 #else
 #define AFC_OFFSET_DMR           250
 #define AFC_OFFSET_YSF           250
 #define AFC_OFFSET_P25           250
 #define AFC_OFFSET_NXDN          250
+#define AFC_OFFSET_M17           250
 #endif
 #else
 #define ADF7021_REG10_DMR        0x049E472A
 #define ADF7021_REG10_YSF        0x049E472A
 #define ADF7021_REG10_P25        0x049E472A
 #define ADF7021_REG10_NXDN       0x049E472A
+#define ADF7021_REG10_M17        0x049E472A
 #define AFC_OFFSET_DMR           0
 #define AFC_OFFSET_YSF           0
 #define AFC_OFFSET_P25           0
 #define AFC_OFFSET_NXDN          0
+#define AFC_OFFSET_M17           0
 #endif
 
 /****** Support for 12.2880 MHz TCXO ******/
@@ -166,7 +177,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 
 // R = 2
 // DEMOD_CLK = 2.4576 MHz (DSTAR)
-// DEMOD_CLK = 6.1440 MHz (DMR, YSF_H, YSF_L, P25)
+// DEMOD_CLK = 6.1440 MHz (DMR, YSF_H, YSF_L, P25, M17)
 // DEMOD_CLK = 3.0720 MHz (NXDN)
 // DEMOD_CLK = 6.1440 MHz (POCSAG)
 #define ADF7021_PFD              6144000.0
@@ -188,6 +199,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_DEV_P25          13U
 #endif
 #define ADF7021_DEV_NXDN         8U
+#define ADF7021_DEV_M17          17U
 #define ADF7021_DEV_POCSAG       96U
 
 // TX/RX CLOCK register (REG 03)
@@ -198,12 +210,14 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_REG3_YSF_H       0x29EC0493
 #define ADF7021_REG3_P25         0x29EC0493
 #define ADF7021_REG3_NXDN        0x29EC0493
+#define ADF7021_REG3_M17         0x29EC0493
 #else
 #define ADF7021_REG3_DMR         0x29ECA093
 #define ADF7021_REG3_YSF_L       0x29ECA093
 #define ADF7021_REG3_YSF_H       0x29ECA093
 #define ADF7021_REG3_P25         0x29ECA093
 #define ADF7021_REG3_NXDN        0x29ECA113
+#define ADF7021_REG3_M17         0x29ECA093
 #endif
 #define ADF7021_REG3_POCSAG      0x29EE8093
 
@@ -215,6 +229,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_DISC_BW_YSF_H    430U // K=28
 #define ADF7021_DISC_BW_P25      493U // K=32
 #define ADF7021_DISC_BW_NXDN     246U // K=32
+#define ADF7021_DISC_BW_M17      491U // K=32 XXX FIXME
 #define ADF7021_DISC_BW_POCSAG   338U // K=22
 
 // Post demodulator bandwith (REG 04)
@@ -223,6 +238,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_POST_BW_YSF      20U
 #define ADF7021_POST_BW_P25      6U
 #define ADF7021_POST_BW_NXDN     8U
+#define ADF7021_POST_BW_M17      20U	// XXX FIXME
 #define ADF7021_POST_BW_POCSAG   1U
 
 // IF filter (REG 05)
@@ -240,26 +256,31 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_REG10_YSF        0x01FE557A
 #define ADF7021_REG10_P25        0x01FE557A
 #define ADF7021_REG10_NXDN       0x01FE557A
+#define ADF7021_REG10_M17        0x01FE557A
 #if defined(ADF7021_AFC_POS)
 #define AFC_OFFSET_DMR           -250
 #define AFC_OFFSET_YSF           -250
 #define AFC_OFFSET_P25           -250
 #define AFC_OFFSET_NXDN          -250
+#define AFC_OFFSET_M17           -250
 #else
 #define AFC_OFFSET_DMR           250
 #define AFC_OFFSET_YSF           250
 #define AFC_OFFSET_P25           250
 #define AFC_OFFSET_NXDN          250
+#define AFC_OFFSET_M17           250
 #endif
 #else
 #define ADF7021_REG10_DMR        0x049E556A
 #define ADF7021_REG10_YSF        0x049E556A
 #define ADF7021_REG10_P25        0x049E556A
 #define ADF7021_REG10_NXDN       0x049E556A
+#define ADF7021_REG10_M17        0x049E556A
 #define AFC_OFFSET_DMR           0
 #define AFC_OFFSET_YSF           0
 #define AFC_OFFSET_P25           0
 #define AFC_OFFSET_NXDN          0
+#define AFC_OFFSET_M17           0
 #endif
 
 #endif
@@ -273,6 +294,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_SLICER_TH_YSF_H  69U
 #define ADF7021_SLICER_TH_P25    43U
 #define ADF7021_SLICER_TH_NXDN   26U
+#define ADF7021_SLICER_TH_M17    26U		// XXX FIXME
 
 #else
 
@@ -282,6 +304,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_SLICER_TH_YSF_H  75U
 #define ADF7021_SLICER_TH_P25    47U
 #define ADF7021_SLICER_TH_NXDN   26U
+#define ADF7021_SLICER_TH_M17    26U		// XXX FIXME
 
 #endif
 

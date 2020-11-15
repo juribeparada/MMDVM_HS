@@ -1,6 +1,5 @@
 /*
- *   Copyright (C) 2015,2016,2020 by Jonathan Naylor G4KLX
- *   Copyright (C) 2017 by Andy Uribe CA6JAU
+ *   Copyright (C) 2015,2016,2017,2020 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,32 +16,35 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#if !defined(UTILS_H)
-#define  UTILS_H
+#if !defined(M17TX_H)
+#define  M17TX_H
 
 #include "Config.h"
 
-#if defined(STM32F10X_MD)
-#include "stm32f10x.h"
-#elif defined(STM32F4XX)
-#include "stm32f4xx.h"
-#elif defined(STM32F7XX)
-#include "stm32f7xx.h"
-#else
-#include <Arduino.h>
-#endif
+#include "SerialRB.h"
 
-uint8_t countBits8(uint8_t bits);
+class CM17TX {
+public:
+  CM17TX();
 
-uint8_t countBits16(uint16_t bits);
+  uint8_t writeData(const uint8_t* data, uint8_t length);
 
-uint8_t countBits32(uint32_t bits);
+  void process();
 
-uint8_t countBits64(uint64_t bits);
+  void setTXDelay(uint8_t delay);
 
-#if defined(ENABLE_DEBUG)
-uint8_t *i2str(uint8_t *dest, uint32_t n, int32_t x);
-#endif
+  uint8_t getSpace() const;
+
+private:
+  CSerialRB m_buffer;
+  uint8_t   m_poBuffer[1200U];
+  uint16_t  m_poLen;
+  uint16_t  m_poPtr;
+  uint16_t  m_txDelay;
+  bool      m_delay;
+
+  void writeByte(uint8_t c);
+};
 
 #endif
 
