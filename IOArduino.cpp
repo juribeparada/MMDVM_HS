@@ -37,9 +37,9 @@
 #define PIN_SLE2       PA6
 #define PIN_CE         PC14
 #define PIN_RXD        PB4
-#define PIN_RXD2       PA4
+#define PIN_RXD2       PA11
 #define PIN_TXD        PB3
-#define PIN_TXD2       PA5
+#define PIN_TXD2       PA8
 #define PIN_CLKOUT     PA15
 #define PIN_LED        PC13
 #define PIN_DEB        PB9
