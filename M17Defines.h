@@ -26,10 +26,13 @@ const unsigned int M17_FRAME_LENGTH_BYTES   = M17_FRAME_LENGTH_BITS / 8U;
 
 const unsigned int M17_SYNC_LENGTH_BITS    = 16U;
 
-const uint8_t M17_SYNC_BYTES[]      = {0x32U, 0x43U};
+const uint8_t M17_HEADER_SYNC_BYTES[]      = {0x5DU, 0xDDU};
+const uint8_t M17_DATA_SYNC_BYTES[]        = {0xDDU, 0xDDU};
+
 const uint8_t M17_SYNC_BYTES_LENGTH = 2U;
 
-const uint16_t M17_SYNC_BITS      = 0x3243U;
+const uint16_t M17_HEADER_SYNC_BITS = 0x5DDDU;
+const uint16_t M17_DATA_SYNC_BITS   = 0xDDDDU;
 
 #endif
 

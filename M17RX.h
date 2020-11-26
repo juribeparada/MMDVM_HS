@@ -24,6 +24,7 @@
 
 enum M17RX_STATE {
   M17RXS_NONE,
+  M17RXS_HEADER,
   M17RXS_DATA
 };
 
@@ -44,7 +45,9 @@ private:
   uint16_t    m_lostCount;
 
   void processNone(bool bit);
+  void processHeader(bool bit);
   void processData(bool bit);
+  void writeRSSIHeader(uint8_t* data);
   void writeRSSIData(uint8_t* data);
 };
 

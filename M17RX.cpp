@@ -52,10 +52,17 @@ void CM17RX::reset()
 
 void CM17RX::databit(bool bit)
 {
-  if (m_state == M17RXS_NONE)
-    processNone(bit);
-  else
-    processData(bit);
+  switch (m_state)  {
+    case M17RXS_NONE:
+      processNone(bit);
+      break;
+    case M17RXS_HEADER:
+      processHeader(bit);
+      break;
+    default:
+      processData(bit);
+      break;
+  }
 }
 
 void CM17RX::processNone(bool bit)
@@ -64,11 +71,24 @@ void CM17RX::processNone(bool bit)
   if (bit)
     m_bitBuffer |= 0x01U;
 
-  // Fuzzy matching of the data sync bit sequence
-  if (countBits16(m_bitBuffer ^ M17_SYNC_BITS) <= MAX_SYNC_BIT_START_ERRS) {
-    DEBUG1("M17RX: sync found in None");
+  // Fuzzy matching of the header sync bit sequence
+  if (countBits16(m_bitBuffer ^ M17_HEADER_SYNC_BITS) <= MAX_SYNC_BIT_START_ERRS) {
+    DEBUG1("M17RX: header sync found in None");
     for (uint8_t i = 0U; i < M17_SYNC_BYTES_LENGTH; i++)
-      m_buffer[i] = M17_SYNC_BYTES[i];
+      m_buffer[i] = M17_HEADER_SYNC_BYTES[i];
+
+    m_lostCount = MAX_SYNC_FRAMES;
+    m_bufferPtr = M17_SYNC_LENGTH_BITS;
+    m_state     = M17RXS_HEADER;
+
+    io.setDecode(true);
+  }
+
+  // Fuzzy matching of the data sync bit sequence
+  if (countBits16(m_bitBuffer ^ M17_DATA_SYNC_BITS) <= MAX_SYNC_BIT_START_ERRS) {
+    DEBUG1("M17RX: data sync found in None");
+    for (uint8_t i = 0U; i < M17_SYNC_BYTES_LENGTH; i++)
+      m_buffer[i] = M17_DATA_SYNC_BYTES[i];
 
     m_lostCount = MAX_SYNC_FRAMES;
     m_bufferPtr = M17_SYNC_LENGTH_BITS;
@@ -76,7 +96,43 @@ void CM17RX::processNone(bool bit)
 
     io.setDecode(true);
   }
+}
 
+void CM17RX::processHeader(bool bit)
+{
+  m_bitBuffer <<= 1;
+  if (bit)
+    m_bitBuffer |= 0x01U;
+
+  WRITE_BIT1(m_buffer, m_bufferPtr, bit);
+
+  m_bufferPtr++;
+  if (m_bufferPtr > M17_FRAME_LENGTH_BITS)
+    reset();
+
+  // Only search for a sync in the right place +-2 symbols
+  if (m_bufferPtr >= (M17_SYNC_LENGTH_BITS - 2U) && m_bufferPtr <= (M17_SYNC_LENGTH_BITS + 2U)) {
+    // Fuzzy matching of the data sync bit sequence
+    if (countBits16(m_bitBuffer ^ M17_HEADER_SYNC_BITS) <= MAX_SYNC_BIT_RUN_ERRS) {
+      DEBUG2("M17RX: found header sync in Data, pos", m_bufferPtr - M17_SYNC_LENGTH_BITS);
+      m_lostCount = MAX_SYNC_FRAMES;
+      m_bufferPtr = M17_SYNC_LENGTH_BITS;
+    }
+  }
+
+  // Send a data frame to the host if the required number of bits have been received
+  if (m_bufferPtr == M17_FRAME_LENGTH_BITS) {
+    m_lostCount--;
+
+    // Write data to host
+    m_outBuffer[0U] = 0x01U;
+    writeRSSIHeader(m_outBuffer);
+
+    // Start the next frame
+    ::memset(m_outBuffer, 0x00U, M17_FRAME_LENGTH_BYTES + 3U);
+    m_state     = M17RXS_DATA;
+    m_bufferPtr = 0U;
+  }
 }
 
 void CM17RX::processData(bool bit)
@@ -94,8 +150,8 @@ void CM17RX::processData(bool bit)
   // Only search for a sync in the right place +-2 symbols
   if (m_bufferPtr >= (M17_SYNC_LENGTH_BITS - 2U) && m_bufferPtr <= (M17_SYNC_LENGTH_BITS + 2U)) {
     // Fuzzy matching of the data sync bit sequence
-    if (countBits16(m_bitBuffer ^ M17_SYNC_BITS) <= MAX_SYNC_BIT_RUN_ERRS) {
-      DEBUG2("M17RX: found sync in Data, pos", m_bufferPtr - M17_SYNC_LENGTH_BITS);
+    if (countBits16(m_bitBuffer ^ M17_DATA_SYNC_BITS) <= MAX_SYNC_BIT_RUN_ERRS) {
+      DEBUG2("M17RX: found data sync in Data, pos", m_bufferPtr - M17_SYNC_LENGTH_BITS);
       m_lostCount = MAX_SYNC_FRAMES;
       m_bufferPtr = M17_SYNC_LENGTH_BITS;
     }
@@ -120,6 +176,20 @@ void CM17RX::processData(bool bit)
       m_bufferPtr = 0U;
     }
   }
+}
+
+void CM17RX::writeRSSIHeader(uint8_t* data)
+{
+#if defined(SEND_RSSI_DATA)
+  uint16_t rssi = io.readRSSI();
+
+  data[49U] = (rssi >> 8) & 0xFFU;
+  data[50U] = (rssi >> 0) & 0xFFU;
+
+  serial.writeM17Header(data, M17_FRAME_LENGTH_BYTES + 3U);
+#else
+  serial.writeM17Header(data, M17_FRAME_LENGTH_BYTES + 1U);
+#endif
 }
 
 void CM17RX::writeRSSIData(uint8_t* data)

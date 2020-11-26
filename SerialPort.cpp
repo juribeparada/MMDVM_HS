@@ -60,8 +60,9 @@ const uint8_t MMDVM_P25_LOST     = 0x32U;
 const uint8_t MMDVM_NXDN_DATA    = 0x40U;
 const uint8_t MMDVM_NXDN_LOST    = 0x41U;
 
-const uint8_t MMDVM_M17_DATA     = 0x45U;
-const uint8_t MMDVM_M17_LOST     = 0x46U;
+const uint8_t MMDVM_M17_HEADER   = 0x45U;
+const uint8_t MMDVM_M17_DATA     = 0x46U;
+const uint8_t MMDVM_M17_LOST     = 0x47U;
 
 const uint8_t MMDVM_POCSAG_DATA  = 0x50U;
 
@@ -864,6 +865,20 @@ void CSerialPort::process()
             }
             break;
 
+          case MMDVM_M17_HEADER:
+            if (m_m17Enable) {
+              if (m_modemState == STATE_IDLE || m_modemState == STATE_M17)
+                err = m17TX.writeData(m_buffer + 3U, m_len - 3U);
+            }
+            if (err == 0U) {
+              if (m_modemState == STATE_IDLE)
+                setMode(STATE_M17);
+            } else {
+              DEBUG2("Received invalid M17 header", err);
+              sendNAK(err);
+            }
+            break;
+
           case MMDVM_M17_DATA:
             if (m_m17Enable) {
               if (m_modemState == STATE_IDLE || m_modemState == STATE_M17)
@@ -1231,6 +1246,29 @@ void CSerialPort::writeNXDNLost()
   reply[2U] = MMDVM_NXDN_LOST;
 
   writeInt(1U, reply, 3);
+}
+
+void CSerialPort::writeM17Header(const uint8_t* data, uint8_t length)
+{
+  if (m_modemState != STATE_M17 && m_modemState != STATE_IDLE)
+    return;
+
+  if (!m_m17Enable)
+    return;
+
+  uint8_t reply[130U];
+
+  reply[0U] = MMDVM_FRAME_START;
+  reply[1U] = 0U;
+  reply[2U] = MMDVM_M17_HEADER;
+
+  uint8_t count = 3U;
+  for (uint8_t i = 0U; i < length; i++, count++)
+    reply[count] = data[i];
+
+  reply[1U] = count;
+
+  writeInt(1U, reply, count);
 }
 
 void CSerialPort::writeM17Data(const uint8_t* data, uint8_t length)

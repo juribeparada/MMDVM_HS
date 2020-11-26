@@ -52,6 +52,7 @@ public:
   void writeNXDNData(const uint8_t* data, uint8_t length);
   void writeNXDNLost();
 
+  void writeM17Header(const uint8_t* data, uint8_t length);
   void writeM17Data(const uint8_t* data, uint8_t length);
   void writeM17Lost();
 
