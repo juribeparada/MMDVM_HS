@@ -41,6 +41,7 @@ public:
 private:
   DSRX_STATE   m_rxState;
   uint32_t     m_patternBuffer;
+  uint64_t     m_patternBuffer64;
   uint8_t      m_rxBuffer[DSTAR_BUFFER_LENGTH_BITS / 8U];
   unsigned int m_rxBufferBits;
   unsigned int m_dataBits;
