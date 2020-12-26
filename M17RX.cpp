@@ -72,10 +72,10 @@ void CM17RX::processNone(bool bit)
     m_bitBuffer |= 0x01U;
 
   // Fuzzy matching of the header sync bit sequence
-  if (countBits16(m_bitBuffer ^ M17_HEADER_SYNC_BITS) <= MAX_SYNC_BIT_START_ERRS) {
+  if (countBits16(m_bitBuffer ^ M17_LINK_SETUP_SYNC_BITS) <= MAX_SYNC_BIT_START_ERRS) {
     DEBUG1("M17RX: header sync found in None");
     for (uint8_t i = 0U; i < M17_SYNC_BYTES_LENGTH; i++)
-      m_buffer[i] = M17_HEADER_SYNC_BYTES[i];
+      m_buffer[i] = M17_LINK_SETUP_SYNC_BYTES[i];
 
     m_lostCount = MAX_SYNC_FRAMES;
     m_bufferPtr = M17_SYNC_LENGTH_BITS;
@@ -85,10 +85,10 @@ void CM17RX::processNone(bool bit)
   }
 
   // Fuzzy matching of the data sync bit sequence
-  if (countBits16(m_bitBuffer ^ M17_DATA_SYNC_BITS) <= MAX_SYNC_BIT_START_ERRS) {
+  if (countBits16(m_bitBuffer ^ M17_STREAM_SYNC_BITS) <= MAX_SYNC_BIT_START_ERRS) {
     DEBUG1("M17RX: data sync found in None");
     for (uint8_t i = 0U; i < M17_SYNC_BYTES_LENGTH; i++)
-      m_buffer[i] = M17_DATA_SYNC_BYTES[i];
+      m_buffer[i] = M17_STREAM_SYNC_BYTES[i];
 
     m_lostCount = MAX_SYNC_FRAMES;
     m_bufferPtr = M17_SYNC_LENGTH_BITS;
@@ -113,7 +113,7 @@ void CM17RX::processHeader(bool bit)
   // Only search for a sync in the right place +-2 symbols
   if (m_bufferPtr >= (M17_SYNC_LENGTH_BITS - 2U) && m_bufferPtr <= (M17_SYNC_LENGTH_BITS + 2U)) {
     // Fuzzy matching of the data sync bit sequence
-    if (countBits16(m_bitBuffer ^ M17_HEADER_SYNC_BITS) <= MAX_SYNC_BIT_RUN_ERRS) {
+    if (countBits16(m_bitBuffer ^ M17_LINK_SETUP_SYNC_BITS) <= MAX_SYNC_BIT_RUN_ERRS) {
       DEBUG2("M17RX: found header sync in Data, pos", m_bufferPtr - M17_SYNC_LENGTH_BITS);
       m_lostCount = MAX_SYNC_FRAMES;
       m_bufferPtr = M17_SYNC_LENGTH_BITS;
@@ -150,7 +150,7 @@ void CM17RX::processData(bool bit)
   // Only search for a sync in the right place +-2 symbols
   if (m_bufferPtr >= (M17_SYNC_LENGTH_BITS - 2U) && m_bufferPtr <= (M17_SYNC_LENGTH_BITS + 2U)) {
     // Fuzzy matching of the data sync bit sequence
-    if (countBits16(m_bitBuffer ^ M17_DATA_SYNC_BITS) <= MAX_SYNC_BIT_RUN_ERRS) {
+    if (countBits16(m_bitBuffer ^ M17_STREAM_SYNC_BITS) <= MAX_SYNC_BIT_RUN_ERRS) {
       DEBUG2("M17RX: found data sync in Data, pos", m_bufferPtr - M17_SYNC_LENGTH_BITS);
       m_lostCount = MAX_SYNC_FRAMES;
       m_bufferPtr = M17_SYNC_LENGTH_BITS;
