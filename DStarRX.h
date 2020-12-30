@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2015,2016 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2015,2016,2020 by Jonathan Naylor G4KLX
  *   Copyright (C) 2016,2017 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -40,8 +40,7 @@ public:
 
 private:
   DSRX_STATE   m_rxState;
-  uint32_t     m_patternBuffer;
-  uint64_t     m_patternBuffer64;
+  uint64_t     m_patternBuffer;
   uint8_t      m_rxBuffer[DSTAR_BUFFER_LENGTH_BITS / 8U];
   unsigned int m_rxBufferBits;
   unsigned int m_dataBits;
