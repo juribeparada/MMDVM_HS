@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2009-2016 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2009-2016,2020 by Jonathan Naylor G4KLX
  *   Copyright (C) 2016,2017,2018 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -25,23 +25,23 @@
 const unsigned int MAX_SYNC_BITS = 100U * DSTAR_DATA_LENGTH_BITS;
 
 // D-Star preamble sequence (only 32 bits of 101010...)
-const uint32_t PREAMBLE_MASK = 0xFFFFFFFFU;
-const uint32_t PREAMBLE_DATA = 0xAAAAAAAAU;
+const uint64_t PREAMBLE_MASK = 0x00000000FFFFFFFFU;
+const uint64_t PREAMBLE_DATA = 0x00000000AAAAAAAAU;
 const uint8_t  PREAMBLE_ERRS = 2U;
 
 // D-Star bit order version of 0x55 0x55 0x6E 0x0A
-const uint32_t FRAME_SYNC_DATA = 0x00557650U;
-const uint32_t FRAME_SYNC_MASK = 0x00FFFFFFU;
+const uint64_t FRAME_SYNC_DATA = 0x0000000000557650U;
+const uint64_t FRAME_SYNC_MASK = 0x0000000000FFFFFFU;
 const uint8_t  FRAME_SYNC_ERRS = 2U;
 
 // D-Star bit order version of 0x55 0x2D 0x16
-const uint32_t DATA_SYNC_DATA = 0x00AAB468U;
-const uint32_t DATA_SYNC_MASK = 0x00FFFFFFU;
+const uint64_t DATA_SYNC_DATA = 0x0000000000AAB468U;
+const uint64_t DATA_SYNC_MASK = 0x0000000000FFFFFFU;
 const uint8_t  DATA_SYNC_ERRS = 3U;
 
 // D-Star bit order version of 0x55 0x55 0xC8 0x7A
-const uint32_t END_SYNC_DATA = 0xAAAA135EU;
-const uint32_t END_SYNC_MASK = 0xFFFFFFFFU;
+const uint64_t END_SYNC_DATA = 0x0000AAAAAAAA135EU;
+const uint64_t END_SYNC_MASK = 0x0000FFFFFFFFFFFFU;
 const uint8_t  END_SYNC_ERRS = 1U;
 
 const uint8_t BIT_MASK_TABLE0[] = {0x7FU, 0xBFU, 0xDFU, 0xEFU, 0xF7U, 0xFBU, 0xFDU, 0xFEU};
@@ -284,7 +284,7 @@ void CDStarRX::processNone(bool bit)
     m_patternBuffer |= 0x01U;
 
   // Fuzzy matching of the preamble sync sequence
-  if (countBits32((m_patternBuffer & PREAMBLE_MASK) ^ PREAMBLE_DATA) <= PREAMBLE_ERRS) {
+  if (countBits64((m_patternBuffer & PREAMBLE_MASK) ^ PREAMBLE_DATA) <= PREAMBLE_ERRS) {
 
     // Extend scan period in D-Star, once preamble is detected
     m_modeTimerCnt = 0;
@@ -295,7 +295,7 @@ void CDStarRX::processNone(bool bit)
   }
 
   // Fuzzy matching of the frame sync sequence
-  if (countBits32((m_patternBuffer & FRAME_SYNC_MASK) ^ FRAME_SYNC_DATA) <= FRAME_SYNC_ERRS) {
+  if (countBits64((m_patternBuffer & FRAME_SYNC_MASK) ^ FRAME_SYNC_DATA) <= FRAME_SYNC_ERRS) {
     DEBUG1("DStarRX: found frame sync in None, fuzzy");
 
     ::memset(m_rxBuffer, 0x00U, DSTAR_FEC_SECTION_LENGTH_BYTES);
@@ -306,7 +306,7 @@ void CDStarRX::processNone(bool bit)
   }
 
   // Exact matching of the data sync bit sequence
-  if (countBits32((m_patternBuffer & DATA_SYNC_MASK) ^ DATA_SYNC_DATA) == 0U) {
+  if (countBits64((m_patternBuffer & DATA_SYNC_MASK) ^ DATA_SYNC_DATA) == 0U) {
     DEBUG1("DStarRX: found data sync in None, exact");
 
     io.setDecode(true);
@@ -370,7 +370,7 @@ void CDStarRX::processData(bool bit)
     reset();
 
   // Fuzzy matching of the end frame sequences
-  if (countBits32((m_patternBuffer & END_SYNC_MASK) ^ END_SYNC_DATA) <= END_SYNC_ERRS) {
+  if (countBits64((m_patternBuffer & END_SYNC_MASK) ^ END_SYNC_DATA) <= END_SYNC_ERRS) {
     DEBUG1("DStarRX: Found end sync in Data");
     io.setDecode(false);
 
@@ -383,7 +383,7 @@ void CDStarRX::processData(bool bit)
   // Fuzzy matching of the data sync bit sequence
   bool syncSeen = false;
   if (m_rxBufferBits >= (DSTAR_DATA_LENGTH_BITS - 3U)) {
-    if (countBits32((m_patternBuffer & DATA_SYNC_MASK) ^ DATA_SYNC_DATA) <= DATA_SYNC_ERRS) {
+    if (countBits64((m_patternBuffer & DATA_SYNC_MASK) ^ DATA_SYNC_DATA) <= DATA_SYNC_ERRS) {
       m_rxBufferBits = DSTAR_DATA_LENGTH_BITS;
       m_dataBits     = MAX_SYNC_BITS;
       syncSeen       = true;
@@ -393,9 +393,9 @@ void CDStarRX::processData(bool bit)
   // Check to see if the sync is arriving late
   if (m_rxBufferBits == DSTAR_DATA_LENGTH_BITS && !syncSeen) {
     for (uint8_t i = 1U; i <= 3U; i++) {
-      uint32_t syncMask = DATA_SYNC_MASK >> i;
-      uint32_t syncData = DATA_SYNC_DATA >> i;
-      if (countBits32((m_patternBuffer & syncMask) ^ syncData) <= DATA_SYNC_ERRS) {
+      uint64_t syncMask = DATA_SYNC_MASK >> i;
+      uint64_t syncData = DATA_SYNC_DATA >> i;
+      if (countBits64((m_patternBuffer & syncMask) ^ syncData) <= DATA_SYNC_ERRS) {
         m_rxBufferBits -= i;
         break;
       }
