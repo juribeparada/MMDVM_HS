@@ -1,6 +1,6 @@
 /*
- *   Copyright (C) 2015,2016,2017,2018,2020 by Jonathan Naylor G4KLX
- *   Copyright (C) 2016,2017,2018 by Andy Uribe CA6JAU
+ *   Copyright (C) 2015-2018,2020,2021 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2016-2018 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -25,7 +25,8 @@
 enum M17RX_STATE {
   M17RXS_NONE,
   M17RXS_HEADER,
-  M17RXS_DATA
+  M17RXS_STREAM,
+  M17RXS_PACKET
 };
 
 class CM17RX {
@@ -46,7 +47,8 @@ private:
 
   void processNone(bool bit);
   void processHeader(bool bit);
-  void processData(bool bit);
+  void processStream(bool bit);
+  void processPacket(bool bit);
   void writeRSSIHeader(uint8_t* data);
   void writeRSSIData(uint8_t* data);
 };
