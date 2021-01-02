@@ -24,7 +24,7 @@
 
 enum M17RX_STATE {
   M17RXS_NONE,
-  M17RXS_HEADER,
+  M17RXS_LINK_SETUP,
   M17RXS_STREAM,
   M17RXS_PACKET
 };
@@ -46,7 +46,7 @@ private:
   uint16_t    m_lostCount;
 
   void processNone(bool bit);
-  void processHeader(bool bit);
+  void processLinkSetup(bool bit);
   void processStream(bool bit);
   void processPacket(bool bit);
   void writeRSSIHeader(uint8_t* data);

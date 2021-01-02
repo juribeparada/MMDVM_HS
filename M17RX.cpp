@@ -25,7 +25,7 @@
 const uint8_t MAX_SYNC_BIT_START_ERRS = 0U;
 const uint8_t MAX_SYNC_BIT_RUN_ERRS   = 2U;
 
-const unsigned int MAX_SYNC_FRAMES = 5U + 1U;
+const unsigned int MAX_SYNC_FRAMES = 3U + 1U;
 
 const uint8_t BIT_MASK_TABLE[] = {0x80U, 0x40U, 0x20U, 0x10U, 0x08U, 0x04U, 0x02U, 0x01U};
 
@@ -53,17 +53,17 @@ void CM17RX::reset()
 void CM17RX::databit(bool bit)
 {
   switch (m_state)  {
-    case M17RXS_NONE:
-      processNone(bit);
+    case M17RXS_LINK_SETUP:
+      processLinkSetup(bit);
       break;
-    case M17RXS_HEADER:
-      processHeader(bit);
+    case M17RXS_STREAM:
+      processStream(bit);
       break;
     case M17RXS_PACKET:
       processPacket(bit);
       break;
     default:
-      processStream(bit);
+      processNone(bit);
       break;
   }
 }
@@ -74,15 +74,15 @@ void CM17RX::processNone(bool bit)
   if (bit)
     m_bitBuffer |= 0x01U;
 
-  // Fuzzy matching of the header sync bit sequence
+  // Fuzzy matching of the link setup sync bit sequence
   if (countBits16(m_bitBuffer ^ M17_LINK_SETUP_SYNC_BITS) <= MAX_SYNC_BIT_START_ERRS) {
-    DEBUG1("M17RX: header sync found in None");
+    DEBUG1("M17RX: link setup sync found in None");
     for (uint8_t i = 0U; i < M17_SYNC_BYTES_LENGTH; i++)
       m_buffer[i] = M17_LINK_SETUP_SYNC_BYTES[i];
 
     m_lostCount = MAX_SYNC_FRAMES;
     m_bufferPtr = M17_SYNC_LENGTH_BITS;
-    m_state     = M17RXS_HEADER;
+    m_state     = M17RXS_LINK_SETUP;
 
     io.setDecode(true);
   }
@@ -114,7 +114,7 @@ void CM17RX::processNone(bool bit)
   }
 }
 
-void CM17RX::processHeader(bool bit)
+void CM17RX::processLinkSetup(bool bit)
 {
   m_bitBuffer <<= 1;
   if (bit)
@@ -126,16 +126,6 @@ void CM17RX::processHeader(bool bit)
   if (m_bufferPtr > M17_FRAME_LENGTH_BITS)
     reset();
 
-  // Only search for a sync in the right place +-2 symbols
-  if (m_bufferPtr >= (M17_SYNC_LENGTH_BITS - 2U) && m_bufferPtr <= (M17_SYNC_LENGTH_BITS + 2U)) {
-    // Fuzzy matching of the data sync bit sequence
-    if (countBits16(m_bitBuffer ^ M17_LINK_SETUP_SYNC_BITS) <= MAX_SYNC_BIT_RUN_ERRS) {
-      DEBUG2("M17RX: found header sync in Data, pos", m_bufferPtr - M17_SYNC_LENGTH_BITS);
-      m_lostCount = MAX_SYNC_FRAMES;
-      m_bufferPtr = M17_SYNC_LENGTH_BITS;
-    }
-  }
-
   // Send a data frame to the host if the required number of bits have been received
   if (m_bufferPtr == M17_FRAME_LENGTH_BITS) {
     m_lostCount--;
@@ -145,9 +135,7 @@ void CM17RX::processHeader(bool bit)
     writeRSSIHeader(m_outBuffer);
 
     // Start the next frame, but we don't know the type
-    ::memset(m_outBuffer, 0x00U, M17_FRAME_LENGTH_BYTES + 3U);
-    m_state     = M17RXS_NONE;
-    m_bufferPtr = 0U;
+    reset();
   }
 }
 
@@ -167,7 +155,7 @@ void CM17RX::processStream(bool bit)
   if (m_bufferPtr >= (M17_SYNC_LENGTH_BITS - 2U) && m_bufferPtr <= (M17_SYNC_LENGTH_BITS + 2U)) {
     // Fuzzy matching of the stream sync bit sequence
     if (countBits16(m_bitBuffer ^ M17_STREAM_SYNC_BITS) <= MAX_SYNC_BIT_RUN_ERRS) {
-      DEBUG2("M17RX: found stream sync in Data, pos", m_bufferPtr - M17_SYNC_LENGTH_BITS);
+      DEBUG2("M17RX: found stream sync, pos", m_bufferPtr - M17_SYNC_LENGTH_BITS);
       m_lostCount = MAX_SYNC_FRAMES;
       m_bufferPtr = M17_SYNC_LENGTH_BITS;
     }
@@ -211,7 +199,7 @@ void CM17RX::processPacket(bool bit)
   if (m_bufferPtr >= (M17_SYNC_LENGTH_BITS - 2U) && m_bufferPtr <= (M17_SYNC_LENGTH_BITS + 2U)) {
     // Fuzzy matching of the packet sync bit sequence
     if (countBits16(m_bitBuffer ^ M17_PACKET_SYNC_BITS) <= MAX_SYNC_BIT_RUN_ERRS) {
-      DEBUG2("M17RX: found packet sync in Data, pos", m_bufferPtr - M17_SYNC_LENGTH_BITS);
+      DEBUG2("M17RX: found packet sync, pos", m_bufferPtr - M17_SYNC_LENGTH_BITS);
       m_lostCount = MAX_SYNC_FRAMES;
       m_bufferPtr = M17_SYNC_LENGTH_BITS;
     }
