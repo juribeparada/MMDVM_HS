@@ -16,6 +16,17 @@
 #   along with this program; if not, write to the Free Software
 #   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+# If we run this on a NanoPi board set the GPIO pins
+if [ -f /etc/pistar-release ]; then
+        hardware=$(grep -i hardware /etc/pistar-release | awk -F "= " '{print $2}')
+        if [[ ${hardware} == "NanoPi" ]]; then
+                echo 3 > /sys/class/gpio/export
+                echo out > /sys/class/gpio/gpio3/direction
+                echo 1 > /sys/class/gpio/gpio3/value
+                echo 3 > /sys/class/gpio/unexport
+        fi
+fi
+
 # Configure latest version
 FW_VERSION="v1.5.2"
 
