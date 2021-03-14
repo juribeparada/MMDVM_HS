@@ -54,13 +54,9 @@ void CM17RX::databit(bool bit)
 {
   switch (m_state)  {
     case M17RXS_LINK_SETUP:
-      processLinkSetup(bit);
-      break;
     case M17RXS_STREAM:
-      processStream(bit);
-      break;
     case M17RXS_PACKET:
-      processPacket(bit);
+      processData(bit);
       break;
     default:
       processNone(bit);
@@ -114,7 +110,7 @@ void CM17RX::processNone(bool bit)
   }
 }
 
-void CM17RX::processLinkSetup(bool bit)
+void CM17RX::processData(bool bit)
 {
   m_bitBuffer <<= 1;
   if (bit)
@@ -126,30 +122,16 @@ void CM17RX::processLinkSetup(bool bit)
   if (m_bufferPtr > M17_FRAME_LENGTH_BITS)
     reset();
 
-  // Send a data frame to the host if the required number of bits have been received
-  if (m_bufferPtr == M17_FRAME_LENGTH_BITS) {
-    m_lostCount--;
-
-    // Write data to host
-    m_outBuffer[0U] = 0x01U;
-    writeRSSIHeader(m_outBuffer);
-
-    // Start the next frame, but we don't know the type
-    reset();
+  // Only search for a link setup sync in the right place +-2 symbols
+  if (m_bufferPtr >= (M17_SYNC_LENGTH_BITS - 2U) && m_bufferPtr <= (M17_SYNC_LENGTH_BITS + 2U)) {
+    // Fuzzy matching of the stream sync bit sequence
+    if (countBits16(m_bitBuffer ^ M17_LINK_SETUP_SYNC_BITS) <= MAX_SYNC_BIT_RUN_ERRS) {
+      DEBUG2("M17RX: found link setup sync, pos", m_bufferPtr - M17_SYNC_LENGTH_BITS);
+      m_lostCount = MAX_SYNC_FRAMES;
+      m_bufferPtr = M17_SYNC_LENGTH_BITS;
+      m_state     = M17RXS_LINK_SETUP;
+    }
   }
-}
-
-void CM17RX::processStream(bool bit)
-{
-  m_bitBuffer <<= 1;
-  if (bit)
-    m_bitBuffer |= 0x01U;
-
-  WRITE_BIT1(m_buffer, m_bufferPtr, bit);
-
-  m_bufferPtr++;
-  if (m_bufferPtr > M17_FRAME_LENGTH_BITS)
-    reset();
 
   // Only search for a stream sync in the right place +-2 symbols
   if (m_bufferPtr >= (M17_SYNC_LENGTH_BITS - 2U) && m_bufferPtr <= (M17_SYNC_LENGTH_BITS + 2U)) {
@@ -158,15 +140,27 @@ void CM17RX::processStream(bool bit)
       DEBUG2("M17RX: found stream sync, pos", m_bufferPtr - M17_SYNC_LENGTH_BITS);
       m_lostCount = MAX_SYNC_FRAMES;
       m_bufferPtr = M17_SYNC_LENGTH_BITS;
+      m_state     = M17RXS_STREAM;
     }
   }
 
-  // Send a stream frame to the host if the required number of bits have been received
+  // Only search for a packet sync in the right place +-2 symbols
+  if (m_bufferPtr >= (M17_SYNC_LENGTH_BITS - 2U) && m_bufferPtr <= (M17_SYNC_LENGTH_BITS + 2U)) {
+    // Fuzzy matching of the stream sync bit sequence
+    if (countBits16(m_bitBuffer ^ M17_STREAM_SYNC_BITS) <= MAX_SYNC_BIT_RUN_ERRS) {
+      DEBUG2("M17RX: found packet sync, pos", m_bufferPtr - M17_SYNC_LENGTH_BITS);
+      m_lostCount = MAX_SYNC_FRAMES;
+      m_bufferPtr = M17_SYNC_LENGTH_BITS;
+      m_state     = M17RXS_PACKET;
+    }
+  }
+
+  // Send a frame to the host if the required number of bits have been received
   if (m_bufferPtr == M17_FRAME_LENGTH_BITS) {
-    // We've not seen a stream sync for too long, signal RXLOST and change to RX_NONE
+    // We've not seen a sync for too long, signal RXLOST and change to RX_NONE
     m_lostCount--;
     if (m_lostCount == 0U) {
-      DEBUG1("M17RX: stream sync timed out, lost lock");
+      DEBUG1("M17RX: sync timed out, lost lock");
       io.setDecode(false);
       serial.writeM17Lost();
       reset();
@@ -174,7 +168,18 @@ void CM17RX::processStream(bool bit)
       // Write data to host
       m_outBuffer[0U]  = 0x00U;	// Stream data
       m_outBuffer[0U] |= m_lostCount == (MAX_SYNC_FRAMES - 1U) ? 0x01U : 0x00U;
-      writeRSSIData(m_outBuffer);
+
+      switch (m_state) {
+        case M17RXS_LINK_SETUP:
+          writeRSSILinkSetup(m_outBuffer);
+          break;
+        case M17RXS_STREAM:
+          writeRSSIStream(m_outBuffer);
+          break;
+        default:
+          writeRSSIPacket(m_outBuffer);
+          break;
+      }
 
       // Start the next frame
       ::memset(m_outBuffer, 0x00U, M17_FRAME_LENGTH_BYTES + 3U);
@@ -183,51 +188,7 @@ void CM17RX::processStream(bool bit)
   }
 }
 
-void CM17RX::processPacket(bool bit)
-{
-  m_bitBuffer <<= 1;
-  if (bit)
-    m_bitBuffer |= 0x01U;
-
-  WRITE_BIT1(m_buffer, m_bufferPtr, bit);
-
-  m_bufferPtr++;
-  if (m_bufferPtr > M17_FRAME_LENGTH_BITS)
-    reset();
-
-  // Only search for a packet sync in the right place +-2 symbols
-  if (m_bufferPtr >= (M17_SYNC_LENGTH_BITS - 2U) && m_bufferPtr <= (M17_SYNC_LENGTH_BITS + 2U)) {
-    // Fuzzy matching of the packet sync bit sequence
-    if (countBits16(m_bitBuffer ^ M17_PACKET_SYNC_BITS) <= MAX_SYNC_BIT_RUN_ERRS) {
-      DEBUG2("M17RX: found packet sync, pos", m_bufferPtr - M17_SYNC_LENGTH_BITS);
-      m_lostCount = MAX_SYNC_FRAMES;
-      m_bufferPtr = M17_SYNC_LENGTH_BITS;
-    }
-  }
-
-  // Send a packet frame to the host if the required number of bits have been received
-  if (m_bufferPtr == M17_FRAME_LENGTH_BITS) {
-    // We've not seen a packet sync for too long, signal RXLOST and change to RX_NONE
-    m_lostCount--;
-    if (m_lostCount == 0U) {
-      DEBUG1("M17RX: packet sync timed out, lost lock");
-      io.setDecode(false);
-      serial.writeM17Lost();
-      reset();
-    } else {
-      // Write data to host
-      m_outBuffer[0U]  = 0x02U;	// Packet data
-      m_outBuffer[0U] |= m_lostCount == (MAX_SYNC_FRAMES - 1U) ? 0x01U : 0x00U;
-      writeRSSIData(m_outBuffer);
-
-      // Start the next frame
-      ::memset(m_outBuffer, 0x00U, M17_FRAME_LENGTH_BYTES + 3U);
-      m_bufferPtr = 0U;
-    }
-  }
-}
-
-void CM17RX::writeRSSIHeader(uint8_t* data)
+void CM17RX::writeRSSILinkSetup(uint8_t* data)
 {
 #if defined(SEND_RSSI_DATA)
   uint16_t rssi = io.readRSSI();
@@ -235,13 +196,13 @@ void CM17RX::writeRSSIHeader(uint8_t* data)
   data[49U] = (rssi >> 8) & 0xFFU;
   data[50U] = (rssi >> 0) & 0xFFU;
 
-  serial.writeM17Header(data, M17_FRAME_LENGTH_BYTES + 3U);
+  serial.writeM17LinkSetup(data, M17_FRAME_LENGTH_BYTES + 3U);
 #else
-  serial.writeM17Header(data, M17_FRAME_LENGTH_BYTES + 1U);
+  serial.writeM17LinkSetup(data, M17_FRAME_LENGTH_BYTES + 1U);
 #endif
 }
 
-void CM17RX::writeRSSIData(uint8_t* data)
+void CM17RX::writeRSSIStream(uint8_t* data)
 {
 #if defined(SEND_RSSI_DATA)
   uint16_t rssi = io.readRSSI();
@@ -249,8 +210,23 @@ void CM17RX::writeRSSIData(uint8_t* data)
   data[49U] = (rssi >> 8) & 0xFFU;
   data[50U] = (rssi >> 0) & 0xFFU;
 
-  serial.writeM17Data(data, M17_FRAME_LENGTH_BYTES + 3U);
+  serial.writeM17Stream(data, M17_FRAME_LENGTH_BYTES + 3U);
 #else
-  serial.writeM17Data(data, M17_FRAME_LENGTH_BYTES + 1U);
+  serial.writeM17Stream(data, M17_FRAME_LENGTH_BYTES + 1U);
 #endif
 }
+
+void CM17RX::writeRSSIPacket(uint8_t* data)
+{
+#if defined(SEND_RSSI_DATA)
+  uint16_t rssi = io.readRSSI();
+
+  data[49U] = (rssi >> 8) & 0xFFU;
+  data[50U] = (rssi >> 0) & 0xFFU;
+
+  serial.writeM17Packet(data, M17_FRAME_LENGTH_BYTES + 3U);
+#else
+  serial.writeM17Packet(data, M17_FRAME_LENGTH_BYTES + 1U);
+#endif
+}
+

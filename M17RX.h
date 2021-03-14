@@ -46,11 +46,11 @@ private:
   uint16_t    m_lostCount;
 
   void processNone(bool bit);
-  void processLinkSetup(bool bit);
-  void processStream(bool bit);
-  void processPacket(bool bit);
-  void writeRSSIHeader(uint8_t* data);
-  void writeRSSIData(uint8_t* data);
+  void processData(bool bit);
+  void writeRSSILinkSetup(uint8_t* data);
+  void writeRSSIStream(uint8_t* data);
+  void writeRSSIPacket(uint8_t* data);
 };
 
 #endif
+

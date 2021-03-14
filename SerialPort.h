@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2015,2016,2018,2020 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2015,2016,2018,2020,2021 by Jonathan Naylor G4KLX
  *   Copyright (C) 2018 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -52,8 +52,9 @@ public:
   void writeNXDNData(const uint8_t* data, uint8_t length);
   void writeNXDNLost();
 
-  void writeM17Header(const uint8_t* data, uint8_t length);
-  void writeM17Data(const uint8_t* data, uint8_t length);
+  void writeM17LinkSetup(const uint8_t* data, uint8_t length);
+  void writeM17Stream(const uint8_t* data, uint8_t length);
+  void writeM17Packet(const uint8_t* data, uint8_t length);
   void writeM17Lost();
 
 #if defined(SEND_RSSI_DATA)
