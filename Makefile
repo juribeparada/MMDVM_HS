@@ -110,10 +110,20 @@ else
 	MDDIRS=mkdir $@
 
 	ifeq ($(shell uname -s),Linux)
+		ST_FLASH_ON_PATH=$(shell which st-flash)
+		ST_FLASH_IS_ON_PATH=$(.SHELLSTATUS)
 		ifeq ($(shell uname -m),x86_64)
 			DFU_RST=./$(F1_LIB_PATH)/utils/linux64/upload-reset
 			DFU_UTIL=./$(F1_LIB_PATH)/utils/linux64/dfu-util
-			ST_FLASH=./$(F1_LIB_PATH)/utils/linux64/st-flash
+			DFU_RST=./$(F1_LIB_PATH)/utils/linux64/upload-reset
+			DFU_UTIL=./$(F1_LIB_PATH)/utils/linux64/dfu-util
+			ifeq ($(ST_FLASH_IS_ON_PATH),0)
+				ST_FLASH=$(ST_FLASH_ON_PATH)
+				ST_FLASH_OPTS=--flash=128k
+			else
+			  ST_FLASH=./$(F1_LIB_PATH)/utils/linux64/st-flash
+				ST_FLASH_OPTS= 
+		  endif
 			STM32FLASH=./$(F1_LIB_PATH)/utils/linux64/stm32flash
 		else ifeq ($(shell uname -m),armv7l)
 			DFU_RST=./$(F1_LIB_PATH)/utils/rpi32/upload-reset
@@ -128,7 +138,13 @@ else
 		else
 			DFU_RST=./$(F1_LIB_PATH)/utils/linux/upload-reset
 			DFU_UTIL=./$(F1_LIB_PATH)/utils/linux/dfu-util
-			ST_FLASH=./$(F1_LIB_PATH)/utils/linux/st-flash
+			ifeq ($(ST_FLASH_IS_ON_PATH),0)
+				ST_FLASH=$(ST_FLASH_ON_PATH)
+				ST_FLASH_OPTS=--flash=128k
+			else
+			  ST_FLASH=./$(F1_LIB_PATH)/utils/linux/st-flash
+				ST_FLASH_OPTS= 
+		  endif
 			STM32FLASH=./$(F1_LIB_PATH)/utils/linux/stm32flash
 		endif
 	endif
@@ -405,20 +421,20 @@ clean:
 	$(RM) GitVersion.h
 
 stlink:
-	$(ST_FLASH) write bin/$(BINBIN_F1) 0x8000000
+	$(ST_FLASH) $(ST_FLASH_OPTS) write bin/$(BINBIN_F1) 0x8000000
 
 stlink-nobl:
-	$(ST_FLASH) write bin/$(BINBIN_F1NOBL) 0x8000000
+	$(ST_FLASH) $(ST_FLASH_OPTS) write bin/$(BINBIN_F1NOBL) 0x8000000
 
 stlink-bl:
-	$(ST_FLASH) write $(F1_LIB_PATH)/utils/bootloader/generic_boot20_pc13_long_rst.bin 0x8000000
+	$(ST_FLASH) $(ST_FLASH_OPTS) write $(F1_LIB_PATH)/utils/bootloader/generic_boot20_pc13_long_rst.bin 0x8000000
 	sleep 3
-	$(ST_FLASH) write bin/$(BINBIN_F1BL) 0x8002000
+	$(ST_FLASH) $(ST_FLASH_OPTS) write bin/$(BINBIN_F1BL) 0x8002000
 
 stlink-bl-old:
-	$(ST_FLASH) write $(F1_LIB_PATH)/utils/bootloader/generic_boot20_pc13.bin 0x8000000
+	$(ST_FLASH) $(ST_FLASH_OPTS) write $(F1_LIB_PATH)/utils/bootloader/generic_boot20_pc13.bin 0x8000000
 	sleep 3
-	$(ST_FLASH) write bin/$(BINBIN_F1BL) 0x8002000
+	$(ST_FLASH) $(ST_FLASH_OPTS) write bin/$(BINBIN_F1BL) 0x8002000
 
 serial:
 	$(STM32FLASH) -v -w bin/$(BINBIN_F1) -g 0x0 $(devser)
