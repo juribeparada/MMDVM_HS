@@ -55,7 +55,6 @@ void CM17RX::databit(bool bit)
   switch (m_state)  {
     case M17RXS_LINK_SETUP:
     case M17RXS_STREAM:
-    case M17RXS_PACKET:
       processData(bit);
       break;
     default:
@@ -95,19 +94,6 @@ void CM17RX::processNone(bool bit)
 
     io.setDecode(true);
   }
-
-  // Fuzzy matching of the packet sync bit sequence
-  if (countBits16(m_bitBuffer ^ M17_PACKET_SYNC_BITS) <= MAX_SYNC_BIT_START_ERRS) {
-    DEBUG1("M17RX: packet sync found in None");
-    for (uint8_t i = 0U; i < M17_SYNC_BYTES_LENGTH; i++)
-      m_buffer[i] = M17_PACKET_SYNC_BYTES[i];
-
-    m_lostCount = MAX_SYNC_FRAMES;
-    m_bufferPtr = M17_SYNC_LENGTH_BITS;
-    m_state     = M17RXS_PACKET;
-
-    io.setDecode(true);
-  }
 }
 
 void CM17RX::processData(bool bit)
@@ -144,17 +130,6 @@ void CM17RX::processData(bool bit)
     }
   }
 
-  // Only search for a packet sync in the right place +-2 symbols
-  if (m_bufferPtr >= (M17_SYNC_LENGTH_BITS - 2U) && m_bufferPtr <= (M17_SYNC_LENGTH_BITS + 2U)) {
-    // Fuzzy matching of the stream sync bit sequence
-    if (countBits16(m_bitBuffer ^ M17_STREAM_SYNC_BITS) <= MAX_SYNC_BIT_RUN_ERRS) {
-      DEBUG2("M17RX: found packet sync, pos", m_bufferPtr - M17_SYNC_LENGTH_BITS);
-      m_lostCount = MAX_SYNC_FRAMES;
-      m_bufferPtr = M17_SYNC_LENGTH_BITS;
-      m_state     = M17RXS_PACKET;
-    }
-  }
-
   // Send a frame to the host if the required number of bits have been received
   if (m_bufferPtr == M17_FRAME_LENGTH_BITS) {
     // We've not seen a sync for too long, signal RXLOST and change to RX_NONE
@@ -177,7 +152,6 @@ void CM17RX::processData(bool bit)
           writeRSSIStream(m_outBuffer);
           break;
         default:
-          writeRSSIPacket(m_outBuffer);
           break;
       }
 
@@ -213,20 +187,6 @@ void CM17RX::writeRSSIStream(uint8_t* data)
   serial.writeM17Stream(data, M17_FRAME_LENGTH_BYTES + 3U);
 #else
   serial.writeM17Stream(data, M17_FRAME_LENGTH_BYTES + 1U);
-#endif
-}
-
-void CM17RX::writeRSSIPacket(uint8_t* data)
-{
-#if defined(SEND_RSSI_DATA)
-  uint16_t rssi = io.readRSSI();
-
-  data[49U] = (rssi >> 8) & 0xFFU;
-  data[50U] = (rssi >> 0) & 0xFFU;
-
-  serial.writeM17Packet(data, M17_FRAME_LENGTH_BYTES + 3U);
-#else
-  serial.writeM17Packet(data, M17_FRAME_LENGTH_BYTES + 1U);
 #endif
 }
 

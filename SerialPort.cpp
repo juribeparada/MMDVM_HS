@@ -1309,29 +1309,6 @@ void CSerialPort::writeM17Stream(const uint8_t* data, uint8_t length)
   writeInt(1U, reply, count);
 }
 
-void CSerialPort::writeM17Packet(const uint8_t* data, uint8_t length)
-{
-  if (m_modemState != STATE_M17 && m_modemState != STATE_IDLE)
-    return;
-
-  if (!m_m17Enable)
-    return;
-
-  uint8_t reply[130U];
-
-  reply[0U] = MMDVM_FRAME_START;
-  reply[1U] = 0U;
-  reply[2U] = MMDVM_M17_PACKET;
-
-  uint8_t count = 3U;
-  for (uint8_t i = 0U; i < length; i++, count++)
-    reply[count] = data[i];
-
-  reply[1U] = count;
-
-  writeInt(1U, reply, count);
-}
-
 void CSerialPort::writeM17Lost()
 {
   if (m_modemState != STATE_M17 && m_modemState != STATE_IDLE)

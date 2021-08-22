@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2016,2017,2018,2020 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2016,2017,2018,2020,2021 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -28,13 +28,11 @@ const unsigned int M17_SYNC_LENGTH_BITS    = 16U;
 
 const uint8_t M17_LINK_SETUP_SYNC_BYTES[] = {0x55U, 0xF7U};
 const uint8_t M17_STREAM_SYNC_BYTES[]     = {0xFFU, 0x5DU};
-const uint8_t M17_PACKET_SYNC_BYTES[]     = {0x75U, 0xFFU};
 
 const uint8_t M17_SYNC_BYTES_LENGTH = 2U;
 
 const uint16_t M17_LINK_SETUP_SYNC_BITS = 0x55F7U;
 const uint16_t M17_STREAM_SYNC_BITS     = 0xFF5DU;
-const uint16_t M17_PACKET_SYNC_BITS     = 0x75FFU;
 
 #endif
 

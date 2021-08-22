@@ -25,8 +25,7 @@
 enum M17RX_STATE {
   M17RXS_NONE,
   M17RXS_LINK_SETUP,
-  M17RXS_STREAM,
-  M17RXS_PACKET
+  M17RXS_STREAM
 };
 
 class CM17RX {
@@ -49,7 +48,6 @@ private:
   void processData(bool bit);
   void writeRSSILinkSetup(uint8_t* data);
   void writeRSSIStream(uint8_t* data);
-  void writeRSSIPacket(uint8_t* data);
 };
 
 #endif
