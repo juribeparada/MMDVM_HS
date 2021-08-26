@@ -54,6 +54,7 @@ public:
 
   void writeM17LinkSetup(const uint8_t* data, uint8_t length);
   void writeM17Stream(const uint8_t* data, uint8_t length);
+  void writeM17EOT();
   void writeM17Lost();
 
 #if defined(SEND_RSSI_DATA)

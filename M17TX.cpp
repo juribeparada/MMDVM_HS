@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2009-2018,2020 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2009-2018,2020,2021 by Jonathan Naylor G4KLX
  *   Copyright (C) 2017 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -82,7 +82,7 @@ void CM17TX::process()
   }
 }
 
-uint8_t CM17TX::writeData(const uint8_t* data, uint8_t length)
+uint8_t CM17TX::writeLinkSetup(const uint8_t* data, uint8_t length)
 {
   if (length != (M17_FRAME_LENGTH_BYTES + 1U))
     return 4U;
@@ -93,6 +93,33 @@ uint8_t CM17TX::writeData(const uint8_t* data, uint8_t length)
 
   for (uint8_t i = 0U; i < M17_FRAME_LENGTH_BYTES; i++)
     m_buffer.put(data[i + 1U]);
+
+  return 0U;
+}
+
+uint8_t CM17TX::writeStream(const uint8_t* data, uint8_t length)
+{
+  if (length != (M17_FRAME_LENGTH_BYTES + 1U))
+    return 4U;
+
+  uint16_t space = m_buffer.getSpace();
+  if (space < M17_FRAME_LENGTH_BYTES)
+    return 5U;
+
+  for (uint8_t i = 0U; i < M17_FRAME_LENGTH_BYTES; i++)
+    m_buffer.put(data[i + 1U]);
+
+  return 0U;
+}
+
+uint8_t CM17TX::writeEOT()
+{
+  uint16_t space = m_buffer.getSpace();
+  if (space < M17_SYNC_LENGTH_BYTES)
+    return 5U;
+
+  for (uint8_t i = 0U; i < M17_SYNC_LENGTH_BYTES; i++)
+    m_buffer.put(M17_EOF_SYNC_BYTES[i]);
 
   return 0U;
 }

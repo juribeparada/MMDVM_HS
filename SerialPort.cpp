@@ -64,6 +64,7 @@ const uint8_t MMDVM_M17_LINK_SETUP = 0x45U;
 const uint8_t MMDVM_M17_STREAM     = 0x46U;
 const uint8_t MMDVM_M17_PACKET     = 0x47U;
 const uint8_t MMDVM_M17_LOST       = 0x48U;
+const uint8_t MMDVM_M17_EOT        = 0x49U;
 
 const uint8_t MMDVM_POCSAG_DATA  = 0x50U;
 
@@ -869,7 +870,7 @@ void CSerialPort::process()
           case MMDVM_M17_LINK_SETUP:
             if (m_m17Enable) {
               if (m_modemState == STATE_IDLE || m_modemState == STATE_M17)
-                err = m17TX.writeData(m_buffer + 3U, m_len - 3U);
+                err = m17TX.writeLinkSetup(m_buffer + 3U, m_len - 3U);
             }
             if (err == 0U) {
               if (m_modemState == STATE_IDLE)
@@ -883,7 +884,7 @@ void CSerialPort::process()
           case MMDVM_M17_STREAM:
             if (m_m17Enable) {
               if (m_modemState == STATE_IDLE || m_modemState == STATE_M17)
-                err = m17TX.writeData(m_buffer + 3U, m_len - 3U);
+                err = m17TX.writeStream(m_buffer + 3U, m_len - 3U);
             }
             if (err == 0U) {
               if (m_modemState == STATE_IDLE)
@@ -894,16 +895,16 @@ void CSerialPort::process()
             }
             break;
 
-          case MMDVM_M17_PACKET:
+          case MMDVM_M17_EOT:
             if (m_m17Enable) {
               if (m_modemState == STATE_IDLE || m_modemState == STATE_M17)
-                err = m17TX.writeData(m_buffer + 3U, m_len - 3U);
+                err = m17TX.writeEOT();
             }
             if (err == 0U) {
               if (m_modemState == STATE_IDLE)
                 setMode(STATE_M17);
             } else {
-              DEBUG2("Received invalid M17 packet data", err);
+              DEBUG2("Received invalid M17 EOT", err);
               sendNAK(err);
             }
             break;
@@ -1307,6 +1308,23 @@ void CSerialPort::writeM17Stream(const uint8_t* data, uint8_t length)
   reply[1U] = count;
 
   writeInt(1U, reply, count);
+}
+
+void CSerialPort::writeM17EOT()
+{
+  if (m_modemState != STATE_M17 && m_modemState != STATE_IDLE)
+    return;
+
+  if (!m_m17Enable)
+    return;
+
+  uint8_t reply[3U];
+
+  reply[0U] = MMDVM_FRAME_START;
+  reply[1U] = 3U;
+  reply[2U] = MMDVM_M17_EOT;
+
+  writeInt(1U, reply, 3);
 }
 
 void CSerialPort::writeM17Lost()
