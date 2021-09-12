@@ -110,6 +110,14 @@ void CM17RX::processData(bool bit)
 
   // Only search for the syncs in the right place +-2 symbols
   if (m_bufferPtr >= (M17_SYNC_LENGTH_BITS - 2U) && m_bufferPtr <= (M17_SYNC_LENGTH_BITS + 2U)) {
+    // Fuzzy matching of the link setup sync bit sequence
+    if (countBits16(m_bitBuffer ^ M17_LINK_SETUP_SYNC_BITS) <= MAX_SYNC_BIT_RUN_ERRS) {
+      DEBUG2("M17RX: found link setup sync, pos", m_bufferPtr - M17_SYNC_LENGTH_BITS);
+      m_lostCount = MAX_SYNC_FRAMES;
+      m_bufferPtr = M17_SYNC_LENGTH_BITS;
+      m_state     = M17RXS_LINK_SETUP;
+    }
+
     // Fuzzy matching of the stream sync bit sequence
     if (countBits16(m_bitBuffer ^ M17_STREAM_SYNC_BITS) <= MAX_SYNC_BIT_RUN_ERRS) {
       DEBUG2("M17RX: found stream sync, pos", m_bufferPtr - M17_SYNC_LENGTH_BITS);
@@ -118,12 +126,13 @@ void CM17RX::processData(bool bit)
       m_state     = M17RXS_STREAM;
     }
 
-    // Fuzzy matching of the eof sync bit sequence
-    if (countBits16(m_bitBuffer ^ M17_EOF_SYNC_BITS) <= MAX_SYNC_BIT_RUN_ERRS) {
-      DEBUG2("M17RX: found eof sync, pos", m_bufferPtr - M17_SYNC_LENGTH_BITS);
+    // Fuzzy matching of the EOT sync bit sequence
+    if (countBits16(m_bitBuffer ^ M17_EOT_SYNC_BITS) <= MAX_SYNC_BIT_RUN_ERRS) {
+      DEBUG2("M17RX: found eot sync, pos", m_bufferPtr - M17_SYNC_LENGTH_BITS);
       io.setDecode(false);
       serial.writeM17EOT();
       reset();
+      return;
     }
   }
 
@@ -138,8 +147,7 @@ void CM17RX::processData(bool bit)
       reset();
     } else {
       // Write data to host
-      m_outBuffer[0U]  = 0x00U;	// Stream data
-      m_outBuffer[0U] |= m_lostCount == (MAX_SYNC_FRAMES - 1U) ? 0x01U : 0x00U;
+      m_outBuffer[0U] = m_lostCount == (MAX_SYNC_FRAMES - 1U) ? 0x01U : 0x00U;
 
       switch (m_state) {
         case M17RXS_LINK_SETUP:
