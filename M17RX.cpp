@@ -69,7 +69,7 @@ void CM17RX::processNone(bool bit)
   if (bit)
     m_bitBuffer |= 0x01U;
 
-  // Fuzzy matching of the link setup sync bit sequence
+  // Exact matching of the link setup sync bit sequence
   if (countBits16(m_bitBuffer ^ M17_LINK_SETUP_SYNC_BITS) <= MAX_SYNC_BIT_START_ERRS) {
     DEBUG1("M17RX: link setup sync found in None");
     for (uint8_t i = 0U; i < M17_SYNC_BYTES_LENGTH; i++)
@@ -80,9 +80,11 @@ void CM17RX::processNone(bool bit)
     m_state     = M17RXS_LINK_SETUP;
 
     io.setDecode(true);
+
+    return;
   }
 
-  // Fuzzy matching of the stream sync bit sequence
+  // Exact matching of the stream sync bit sequence
   if (countBits16(m_bitBuffer ^ M17_STREAM_SYNC_BITS) <= MAX_SYNC_BIT_START_ERRS) {
     DEBUG1("M17RX: stream sync found in None");
     for (uint8_t i = 0U; i < M17_SYNC_BYTES_LENGTH; i++)
@@ -93,6 +95,8 @@ void CM17RX::processNone(bool bit)
     m_state     = M17RXS_STREAM;
 
     io.setDecode(true);
+
+    return;
   }
 }
 
@@ -108,14 +112,15 @@ void CM17RX::processData(bool bit)
   if (m_bufferPtr > M17_FRAME_LENGTH_BITS)
     reset();
 
-  // Only search for the syncs in the right place +-2 symbols
-  if (m_bufferPtr >= (M17_SYNC_LENGTH_BITS - 2U) && m_bufferPtr <= (M17_SYNC_LENGTH_BITS + 2U)) {
+  // Only search for the syncs in the right place +-1 bit
+  if (m_bufferPtr >= (M17_SYNC_LENGTH_BITS - 1U) && m_bufferPtr <= (M17_SYNC_LENGTH_BITS + 1U)) {
     // Fuzzy matching of the link setup sync bit sequence
     if (countBits16(m_bitBuffer ^ M17_LINK_SETUP_SYNC_BITS) <= MAX_SYNC_BIT_RUN_ERRS) {
       DEBUG2("M17RX: found link setup sync, pos", m_bufferPtr - M17_SYNC_LENGTH_BITS);
       m_lostCount = MAX_SYNC_FRAMES;
       m_bufferPtr = M17_SYNC_LENGTH_BITS;
       m_state     = M17RXS_LINK_SETUP;
+      return;
     }
 
     // Fuzzy matching of the stream sync bit sequence
@@ -124,6 +129,7 @@ void CM17RX::processData(bool bit)
       m_lostCount = MAX_SYNC_FRAMES;
       m_bufferPtr = M17_SYNC_LENGTH_BITS;
       m_state     = M17RXS_STREAM;
+      return;
     }
 
     // Fuzzy matching of the EOT sync bit sequence
