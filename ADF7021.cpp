@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2020 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2020,2021 by Jonathan Naylor G4KLX
  *   Copyright (C) 2016 by Jim McLaughlin KI6ZUM
  *   Copyright (C) 2016,2017,2018,2019,2020 by Andy Uribe CA6JAU
  *   Copyright (C) 2017 by Danilo DB4PLE
@@ -754,7 +754,7 @@ void CIO::ifConf2(MMDVM_STATE modemState)
       break;
 
     case STATE_M17:
-      // Dev: +1 symb 2400 Hz, symb rate = 4800
+      // Dev: +1 symb 800 Hz, symb rate = 4800
 
       ADF7021_REG3 = ADF7021_REG3_M17;
       ADF7021_REG10 = ADF7021_REG10_M17;
@@ -766,7 +766,7 @@ void CIO::ifConf2(MMDVM_STATE modemState)
       ADF7021_REG4 |= (uint32_t) 0b11                      << 8;
       ADF7021_REG4 |= (uint32_t) ADF7021_DISC_BW_M17       << 10;  // Disc BW
       ADF7021_REG4 |= (uint32_t) ADF7021_POST_BW_M17       << 20;  // Post dem BW
-      ADF7021_REG4 |= (uint32_t) 0b00                      << 30;  // IF filter (12.5 kHz)
+      ADF7021_REG4 |= (uint32_t) 0b10                      << 30;  // IF filter (25 kHz)
 
       ADF7021_REG13 = (uint32_t) 0b1101                    << 0;   // register 13
       ADF7021_REG13 |= (uint32_t) ADF7021_SLICER_TH_M17    << 4;   // slicer threshold
