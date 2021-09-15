@@ -127,7 +127,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_POST_BW_YSF      20U
 #define ADF7021_POST_BW_P25      6U
 #define ADF7021_POST_BW_NXDN     7U
-#define ADF7021_POST_BW_M17      8U	// Test
+#define ADF7021_POST_BW_M17      7U	// Test
 #define ADF7021_POST_BW_POCSAG   1U
 
 // IF filter (REG 05)
@@ -229,7 +229,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_DISC_BW_YSF_H    430U // K=28
 #define ADF7021_DISC_BW_P25      493U // K=32
 #define ADF7021_DISC_BW_NXDN     246U // K=32
-#define ADF7021_DISC_BW_M17      491U // K=32
+#define ADF7021_DISC_BW_M17      492U // K=32
 #define ADF7021_DISC_BW_POCSAG   338U // K=22
 
 // Post demodulator bandwith (REG 04)
