@@ -870,7 +870,7 @@ void CSerialPort::process()
           case MMDVM_M17_LINK_SETUP:
             if (m_m17Enable) {
               if (m_modemState == STATE_IDLE || m_modemState == STATE_M17)
-                err = m17TX.writeLinkSetup(m_buffer + 3U, m_len - 3U);
+                err = m17TX.writeData(m_buffer + 3U, m_len - 3U);
             }
             if (err == 0U) {
               if (m_modemState == STATE_IDLE)
@@ -884,7 +884,7 @@ void CSerialPort::process()
           case MMDVM_M17_STREAM:
             if (m_m17Enable) {
               if (m_modemState == STATE_IDLE || m_modemState == STATE_M17)
-                err = m17TX.writeStream(m_buffer + 3U, m_len - 3U);
+                err = m17TX.writeData(m_buffer + 3U, m_len - 3U);
             }
             if (err == 0U) {
               if (m_modemState == STATE_IDLE)
@@ -898,7 +898,7 @@ void CSerialPort::process()
           case MMDVM_M17_EOT:
             if (m_m17Enable) {
               if (m_modemState == STATE_IDLE || m_modemState == STATE_M17)
-                err = m17TX.writeEOT();
+                err = m17TX.writeData(m_buffer + 3U, m_len - 3U);
             }
             if (err == 0U) {
               if (m_modemState == STATE_IDLE)
