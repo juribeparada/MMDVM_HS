@@ -1,8 +1,8 @@
 /*
- *   Copyright (C) 2015,2016 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2015,2016,2020 by Jonathan Naylor G4KLX
  *   Copyright (C) 2016,2017,2018,2019,2020 by Andy Uribe CA6JAU
  *   Copyright (C) 2017 by Danilo DB4PLE
-
+ *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2 of the License, or
@@ -51,6 +51,7 @@ m_int2counter(0U)
   YSF_pin(LOW);
   P25_pin(LOW);
   NXDN_pin(LOW);
+  M17_pin(LOW);
   POCSAG_pin(LOW);
   COS_pin(LOW);
   DEB_pin(LOW);
@@ -89,6 +90,7 @@ void CIO::selfTest()
       YSF_pin(ledValue);
       P25_pin(ledValue);
       NXDN_pin(ledValue);
+      M17_pin(ledValue);
       POCSAG_pin(ledValue);
       COS_pin(ledValue);
 
@@ -111,7 +113,7 @@ void CIO::process()
   if (m_started) {
     // Two seconds timeout
     if (m_watchdog >= 19200U) {
-      if (m_modemState == STATE_DSTAR || m_modemState == STATE_DMR || m_modemState == STATE_YSF || m_modemState == STATE_P25 || m_modemState == STATE_NXDN) {
+      if (m_modemState == STATE_DSTAR || m_modemState == STATE_DMR || m_modemState == STATE_YSF || m_modemState == STATE_P25 || m_modemState == STATE_NXDN || m_modemState == STATE_M17) {
         m_modemState = STATE_IDLE;
         setMode(m_modemState);
       }
@@ -178,6 +180,8 @@ void CIO::process()
     scantime = SCAN_TIME;
   else if(m_modemState_prev == STATE_NXDN)
     scantime = SCAN_TIME;
+  else if(m_modemState_prev == STATE_M17)
+    scantime = SCAN_TIME;
   else
     scantime = SCAN_TIME;
 
@@ -221,6 +225,9 @@ void CIO::process()
       case STATE_NXDN:
         nxdnRX.databit(bit);
         break;
+      case STATE_M17:
+        m17RX.databit(bit);
+        break;
       default:
         break;
     }
@@ -250,6 +257,10 @@ void CIO::start()
   }
   if(m_nxdnEnable) {
     m_Modes[m_TotalModes] = STATE_NXDN;
+    m_TotalModes++;
+  }
+  if(m_m17Enable) {
+    m_Modes[m_TotalModes] = STATE_M17;
     m_TotalModes++;
   }
 
@@ -412,6 +423,14 @@ void CIO::setMode(MMDVM_STATE modemState)
 #if defined(USE_ALTERNATE_NXDN_LEDS)
   }
 #endif
+#if defined(USE_ALTERNATE_M17_LEDS)
+  if (modemState != STATE_M17) {
+#endif
+    YSF_pin(modemState    == STATE_DSTAR);
+    P25_pin(modemState    == STATE_P25);
+#if defined(USE_ALTERNATE_M17_LEDS)
+  }
+#endif
 #if defined(USE_ALTERNATE_NXDN_LEDS)
   if (modemState != STATE_YSF && modemState != STATE_P25) {
 #endif
@@ -424,6 +443,13 @@ void CIO::setMode(MMDVM_STATE modemState)
 #endif
     POCSAG_pin(modemState == STATE_POCSAG);
 #if defined(USE_ALTERNATE_POCSAG_LEDS)
+  }
+#endif
+#if defined(USE_ALTERNATE_M17_LEDS)
+  if (modemState != STATE_DSTAR && modemState != STATE_P25) {
+#endif
+    M17_pin(modemState   == STATE_M17);
+#if defined(USE_ALTERNATE_M17_LEDS)
   }
 #endif
 }

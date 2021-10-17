@@ -1,5 +1,6 @@
 /*
  *   Copyright (C) 2017,2018,2019,2020 by Andy Uribe CA6JAU
+ *   Copyright (C) 2020,2021 by Jonathan Naylor G4KLX
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -23,9 +24,9 @@
 #include "ADF7021.h"
 
 #define VER_MAJOR       "1"
-#define VER_MINOR       "5"
-#define VER_REV         "2"
-#define VERSION_DATE    "20201108"
+#define VER_MINOR       "6"
+#define VER_REV         "0"
+#define VERSION_DATE    "20210919"
 
 #if defined(ZUMSPOT_ADF7021)
 #define BOARD_INFO      "ZUMspot"
