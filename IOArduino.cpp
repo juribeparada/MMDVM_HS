@@ -28,7 +28,7 @@
 
 // STM32F1 pin definitions, using STM32duino
 
-#if defined(ZUMSPOT_ADF7021) || defined(SKYBRIDGE_HS)
+#if defined(ZUMSPOT_ADF7021) || defined(LONESTAR_USB) || defined(SKYBRIDGE_HS)
 
 #define PIN_SCLK       PB5
 #define PIN_SREAD      PB6
@@ -81,7 +81,7 @@
 #define PIN_COS_LED    PB15
 
 #else
-#error "Either ZUMSPOT_ADF7021, LIBRE_KIT_ADF7021, MMDVM_HS_HAT_REV12, MMDVM_HS_DUAL_HAT_REV10, NANO_HOTSPOT, NANO_DV_REV10 or SKYBRIDGE_HS need to be defined"
+#error "Either ZUMSPOT_ADF7021, LONESTAR_USB, LIBRE_KIT_ADF7021, MMDVM_HS_HAT_REV12, MMDVM_HS_DUAL_HAT_REV10, NANO_HOTSPOT, NANO_DV_REV10 or SKYBRIDGE_HS need to be defined"
 #endif
 
 #elif defined(__MK20DX256__) || defined(__MK64FX512__) || defined(__MK66FX1M0__)
@@ -156,7 +156,7 @@ void CIO::Init()
 {
 #if defined (__STM32F1__)
 
-#if defined(ZUMSPOT_ADF7021) || defined(LIBRE_KIT_ADF7021) || defined(MMDVM_HS_HAT_REV12) || defined(MMDVM_HS_DUAL_HAT_REV10) || defined(NANO_HOTSPOT) || defined(NANO_DV_REV10) || defined(SKYBRIDGE_HS)
+#if defined(ZUMSPOT_ADF7021) || defined(LONESTAR_USB) || defined(LIBRE_KIT_ADF7021) || defined(MMDVM_HS_HAT_REV12) || defined(MMDVM_HS_DUAL_HAT_REV10) || defined(NANO_HOTSPOT) || defined(NANO_DV_REV10) || defined(SKYBRIDGE_HS)
   afio_cfg_debug_ports(AFIO_DEBUG_SW_ONLY);
 #endif
 

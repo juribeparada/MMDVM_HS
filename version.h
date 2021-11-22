@@ -42,6 +42,8 @@
 #define BOARD_INFO      "D2RG_MMDVM_HS"
 #elif defined(SKYBRIDGE_HS)
 #define BOARD_INFO      "SkyBridge"
+#elif defined(LONESTAR_USB)
+#define BOARD_INFO      "LS_USB_STICK"
 #else
 #define BOARD_INFO      "MMDVM_HS"
 #endif

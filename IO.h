@@ -125,7 +125,7 @@ public:
   uint32_t  getWatchdog(void);
   void      getIntCounter(uint16_t &int1, uint16_t &int2);
   void      selfTest(void);
-#if defined(ZUMSPOT_ADF7021) || defined(SKYBRIDGE_HS)
+#if defined(ZUMSPOT_ADF7021) || defined(LONESTAR_USB) || defined(SKYBRIDGE_HS)
   void      checkBand(uint32_t frequency_rx, uint32_t frequency_tx);
   uint8_t   checkZUMspot(uint32_t frequency_rx, uint32_t frequency_tx);
   void      setBandVHF(bool vhf_on);

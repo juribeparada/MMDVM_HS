@@ -176,4 +176,13 @@ make -j4
 mv ~/MMDVM_HS/bin/mmdvm_f1.bin ~/MMDVM_HS/bin/skybridge_rpi_fw.bin
 make clean
 
+# Building LoneStar USB
+echo "*************************************************"
+echo "********* Building LoneStar USB firmware *********"
+echo "*************************************************"
+cp ~/MMDVM_HS/configs/LoneStar_USB.h ~/MMDVM_HS/Config.h
+make -j4 bl
+mv ~/MMDVM_HS/bin/mmdvm_f1bl.bin ~/MMDVM_HS/bin/lonestar_usb_fw.bin
+make clean
+
 cp ~/MMDVM_HS/configs/ZUMspot_Libre.h ~/MMDVM_HS/Config.h

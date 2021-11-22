@@ -318,7 +318,7 @@ bool CIO::hasRXOverflow()
   return m_rxBuffer.hasOverflowed();
 }
 
-#if defined(ZUMSPOT_ADF7021) || defined(SKYBRIDGE_HS)
+#if defined(ZUMSPOT_ADF7021) || defined(LONESTAR_USB) || defined(SKYBRIDGE_HS)
 void CIO::checkBand(uint32_t frequency_rx, uint32_t frequency_tx) {
   if (!(io.hasSingleADF7021())) {
     // There are two ADF7021s on the board
@@ -391,7 +391,7 @@ uint8_t CIO::setFreq(uint32_t frequency_rx, uint32_t frequency_tx, uint8_t rf_po
 #endif
 
 // Check if we have a single, dualband or duplex board
-#if defined(ZUMSPOT_ADF7021) || defined(SKYBRIDGE_HS)
+#if defined(ZUMSPOT_ADF7021) || defined(LONESTAR_USB) || defined(SKYBRIDGE_HS)
   if (checkZUMspot(frequency_rx, frequency_tx) > 0) {
     return 4U;
   }
