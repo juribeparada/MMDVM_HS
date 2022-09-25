@@ -426,7 +426,7 @@ void CIO::setMode(MMDVM_STATE modemState)
 #if defined(USE_ALTERNATE_M17_LEDS)
   if (modemState != STATE_M17) {
 #endif
-    YSF_pin(modemState    == STATE_DSTAR);
+    YSF_pin(modemState    == STATE_YSF);
     P25_pin(modemState    == STATE_P25);
 #if defined(USE_ALTERNATE_M17_LEDS)
   }
