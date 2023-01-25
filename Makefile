@@ -16,22 +16,22 @@
 #  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 # MMDVM source files
-MMDVM_HS_PATH=.
+MMDVM_HS_PATH = .
 
 # STM32 library paths
-F1_LIB_PATH=./STM32F10X_Lib
-F4_LIB_PATH=./STM32F4XX_Lib
-F7_LIB_PATH=./STM32F7XX_Lib
+F1_LIB_PATH = ./STM32F10X_Lib
+F4_LIB_PATH = ./STM32F4XX_Lib
+F7_LIB_PATH = ./STM32F7XX_Lib
 
 # MCU external clock frequency (Hz)
-CLK_PI_F4=12000000
-CLK_DEF=8000000
+CLK_PI_F4 = 12000000
+CLK_DEF   = 8000000
 
 # Directory Structure
-BINDIR=bin
-OBJDIR_F1=obj_f1
-OBJDIR_F4=obj_f4
-OBJDIR_F7=obj_f7
+BINDIR    = bin
+OBJDIR_F1 = obj_f1
+OBJDIR_F4 = obj_f4
+OBJDIR_F7 = obj_f7
 
 # Output files
 BINELF_F1=mmdvm_f1.elf
@@ -51,33 +51,33 @@ BINHEX_F7=mmdvm_f7.hex
 BINBIN_F7=mmdvm_f7.bin
 
 # Header directories
-INC_F1= . $(F1_LIB_PATH)/CMSIS/ $(F1_LIB_PATH)/Device/ $(F1_LIB_PATH)/STM32F10x_StdPeriph_Driver/inc/ $(F1_LIB_PATH)/usb/inc/
-INCLUDES_F1=$(INC_F1:%=-I%)
-INC_F4= . $(F4_LIB_PATH)/CMSIS/Include/ $(F4_LIB_PATH)/Device/ $(F4_LIB_PATH)/STM32F4xx_StdPeriph_Driver/include/
-INCLUDES_F4=$(INC_F4:%=-I%)
-INC_F7= . $(F7_LIB_PATH)/CMSIS/Include/ $(F7_LIB_PATH)/Device/ $(F7_LIB_PATH)/STM32F7xx_StdPeriph_Driver/inc/
-INCLUDES_F7=$(INC_F7:%=-I%)
+INC_F1 = . $(F1_LIB_PATH)/CMSIS/ $(F1_LIB_PATH)/Device/ $(F1_LIB_PATH)/STM32F10x_StdPeriph_Driver/inc/ $(F1_LIB_PATH)/usb/inc/
+INCLUDES_F1 = $(INC_F1:%=-I%)
+INC_F4 = . $(F4_LIB_PATH)/CMSIS/Include/ $(F4_LIB_PATH)/Device/ $(F4_LIB_PATH)/STM32F4xx_StdPeriph_Driver/include/
+INCLUDES_F4 = $(INC_F4:%=-I%)
+INC_F7 = . $(F7_LIB_PATH)/CMSIS/Include/ $(F7_LIB_PATH)/Device/ $(F7_LIB_PATH)/STM32F7xx_StdPeriph_Driver/inc/
+INCLUDES_F7 = $(INC_F7:%=-I%)
 
 # CMSIS libraries
-INCLUDES_LIBS_F1=
-INCLUDES_LIBS_F4=$(F4_LIB_PATH)/CMSIS/Lib/GCC/libarm_cortexM4lf_math.a
-INCLUDES_LIBS_F7=$(F7_LIB_PATH)/CMSIS/Lib/GCC/libarm_cortexM7lfsp_math.a
+INCLUDES_LIBS_F1 =
+INCLUDES_LIBS_F4 = $(F4_LIB_PATH)/CMSIS/Lib/GCC/libarm_cortexM4lf_math.a
+INCLUDES_LIBS_F7 = $(F7_LIB_PATH)/CMSIS/Lib/GCC/libarm_cortexM7lfsp_math.a
 
 # STM32F1 Standard Peripheral Libraries source path
-STD_LIB_F1=$(F1_LIB_PATH)/STM32F10x_StdPeriph_Driver/src
+STD_LIB_F1 = $(F1_LIB_PATH)/STM32F10x_StdPeriph_Driver/src
 
 # STM32F1 USB support source path
-USB_F1=$(F1_LIB_PATH)/usb
+USB_F1 = $(F1_LIB_PATH)/usb
 
 # STM32F4 Standard Peripheral Libraries source path
-STD_LIB_F4=$(F4_LIB_PATH)/STM32F4xx_StdPeriph_Driver/source
+STD_LIB_F4 = $(F4_LIB_PATH)/STM32F4xx_StdPeriph_Driver/source
 
 # STM32F7 Standard Peripheral Libraries source path
-STD_LIB_F7=$(F7_LIB_PATH)/STM32F7xx_StdPeriph_Driver/src
+STD_LIB_F7 = $(F7_LIB_PATH)/STM32F7xx_StdPeriph_Driver/src
 
 # STM32F1 system source path
-SYS_DIR_F1=$(F1_LIB_PATH)/Device
-STARTUP_DIR_F1=$(F1_LIB_PATH)/Device/startup
+SYS_DIR_F1     = $(F1_LIB_PATH)/Device
+STARTUP_DIR_F1 = $(F1_LIB_PATH)/Device/startup
 
 # STM32F4 system source path
 SYS_DIR_F4=$(F4_LIB_PATH)/Device
@@ -88,16 +88,18 @@ SYS_DIR_F7=$(F7_LIB_PATH)/Device
 STARTUP_DIR_F7=$(F7_LIB_PATH)/Device/startup
 
 # GNU ARM Embedded Toolchain
-CC=arm-none-eabi-gcc
-CXX=arm-none-eabi-g++
-LD=arm-none-eabi-ld
-AR=arm-none-eabi-ar
-AS=arm-none-eabi-as
-CP=arm-none-eabi-objcopy
-OD=arm-none-eabi-objdump
-NM=arm-none-eabi-nm
-SIZE=arm-none-eabi-size
-A2L=arm-none-eabi-addr2line
+CROSS := arm-none-eabi-
+
+CC   := $(CROSS)gcc
+CXX  := $(CROSS)g++
+LD   := arm-none-eabi-ld
+AR   := arm-none-eabi-ar
+AS   := arm-none-eabi-as
+CP   := arm-none-eabi-objcopy
+OD   := arm-none-eabi-objdump
+NM   := arm-none-eabi-nm
+SIZE := arm-none-eabi-size
+A2L  := arm-none-eabi-addr2line
 
 # Configure vars depending on OS
 ifeq ($(OS),Windows_NT)
@@ -185,9 +187,9 @@ OBJ_F4=$(CXXSRC:$(MMDVM_HS_PATH)/%.cpp=$(OBJDIR_F4)/%.o) $(CSRC_STD_F4:$(STD_LIB
 OBJ_F7=$(CXXSRC:$(MMDVM_HS_PATH)/%.cpp=$(OBJDIR_F7)/%.o) $(CSRC_STD_F7:$(STD_LIB_F7)/%.c=$(OBJDIR_F7)/%.o) $(SYS_F7:$(SYS_DIR_F7)/%.c=$(OBJDIR_F7)/%.o) $(STARTUP_F7:$(STARTUP_DIR_F7)/%.c=$(OBJDIR_F7)/%.o)
 
 # MCU flags
-MCFLAGS_F1=-mcpu=cortex-m3 -march=armv7-m -mthumb -Wall -Wextra
-MCFLAGS_F4=-mcpu=cortex-m4 -mthumb -mlittle-endian -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb-interwork
-MCFLAGS_F7=-mcpu=cortex-m7 -mthumb -mlittle-endian -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb-interwork
+MCFLAGS_F1 = -mcpu=cortex-m3 -march=armv7-m -mthumb -Wall -Wextra
+MCFLAGS_F4 = -mcpu=cortex-m4 -mthumb -mlittle-endian -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb-interwork
+MCFLAGS_F7 = -mcpu=cortex-m7 -mthumb -mlittle-endian -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb-interwork
 
 # Compile flags
 DEFS_F1_HS=-DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DHSE_VALUE=$(OSC) -DVECT_TAB_OFFSET=0x0 -DMADEBYMAKEFILE
@@ -200,23 +202,23 @@ DEFS_F446=-DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DSTM32F446xx -DSTM32F4_NUCLEO -DHS
 DEFS_F767=-DUSE_HAL_DRIVER -DSTM32F767xx -DSTM32F7XX -DSTM32F7_NUCLEO -DHSE_VALUE=$(OSC) -DMADEBYMAKEFILE
 
 # Build compiler flags
-CFLAGS_F1=-c $(MCFLAGS_F1) $(INCLUDES_F1)
-CXXFLAGS_F1=-c $(MCFLAGS_F1) $(INCLUDES_F1)
-CFLAGS_F4=-c $(MCFLAGS_F4) $(INCLUDES_F4)
-CXXFLAGS_F4=-c $(MCFLAGS_F4) $(INCLUDES_F4)
-CFLAGS_F7=-c $(MCFLAGS_F7) $(INCLUDES_F7)
-CXXFLAGS_F7=-c $(MCFLAGS_F7) $(INCLUDES_F7)
+CFLAGS_F1   = -c $(MCFLAGS_F1) $(INCLUDES_F1)
+CXXFLAGS_F1 = -c $(MCFLAGS_F1) $(INCLUDES_F1)
+CFLAGS_F4   = -c $(MCFLAGS_F4) $(INCLUDES_F4)
+CXXFLAGS_F4 = -c $(MCFLAGS_F4) $(INCLUDES_F4)
+CFLAGS_F7   = -c $(MCFLAGS_F7) $(INCLUDES_F7)
+CXXFLAGS_F7 = -c $(MCFLAGS_F7) $(INCLUDES_F7)
 
 # Linker flags
-LDFLAGS_F1_N =-T normal.ld $(MCFLAGS_F1) $(INCLUDES_LIBS_F1)
-LDFLAGS_F1_BL =-T bootloader.ld $(MCFLAGS_F1) $(INCLUDES_LIBS_F1)
-LDFLAGS_F4 =-T stm32f4xx_link.ld $(MCFLAGS_F4) $(INCLUDES_LIBS_F4)
-LDFLAGS_F7 =-T stm32f7xx_link.ld $(MCFLAGS_F7) $(INCLUDES_LIBS_F7)
+LDFLAGS_F1_N  = -T normal.ld $(MCFLAGS_F1) $(INCLUDES_LIBS_F1)
+LDFLAGS_F1_BL = -T bootloader.ld $(MCFLAGS_F1) $(INCLUDES_LIBS_F1)
+LDFLAGS_F4    = -T stm32f4xx_link.ld $(MCFLAGS_F4) $(INCLUDES_LIBS_F4)
+LDFLAGS_F7    = -T stm32f7xx_link.ld $(MCFLAGS_F7) $(INCLUDES_LIBS_F7)
 
 # Common flags
-CFLAGS=-Os -ffunction-sections -fdata-sections -nostdlib -DCUSTOM_NEW -DNO_EXCEPTIONS -Wno-unused-parameter -nostdlib
-CXXFLAGS=-Os -fno-exceptions -ffunction-sections -fdata-sections -nostdlib -fno-rtti -DCUSTOM_NEW -DNO_EXCEPTIONS -Wno-unused-parameter
-LDFLAGS=-Os --specs=nano.specs --specs=nosys.specs
+CFLAGS   = -Os -ffunction-sections -fdata-sections -nostdlib -DCUSTOM_NEW -DNO_EXCEPTIONS -Wno-unused-parameter -nostdlib
+CXXFLAGS = -Os -fno-exceptions -ffunction-sections -fdata-sections -nostdlib -fno-rtti -DCUSTOM_NEW -DNO_EXCEPTIONS -Wno-unused-parameter
+LDFLAGS  = -Os --specs=nano.specs --specs=nosys.specs
 
 # Build Rules
 .PHONY: all release_f1 release_f4 release_f7 hs bl nobl pi-f4 f446 f767 clean

@@ -18,37 +18,39 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#if !defined(POCSAGTX_H)
-#define  POCSAGTX_H
+#if !defined(POCSAGTX_H_)
+#define POCSAGTX_H_
+
 
 class CPOCSAGTX {
 public:
-  CPOCSAGTX();
+	CPOCSAGTX();
 
-  uint8_t writeData(const uint8_t* data, uint8_t length);
+	uint8_t writeData(const uint8_t *data, uint8_t length);
 
-  void setTXDelay(uint8_t delay);
+	void setTXDelay(uint8_t delay);
 
-  uint8_t setCal(const uint8_t* data, uint8_t length);
+	uint8_t setCal(const uint8_t *data, uint8_t length);
 
-  void createCal();
+	void createCal();
 
-  uint8_t getSpace() const;
+	uint8_t getSpace() const;
 
-  void process();
+	void process();
 
-  bool busy();
+	bool busy();
 
 private:
-  CSerialRB        m_buffer;
-  uint8_t          m_poBuffer[200U];
-  uint16_t         m_poLen;
-  uint16_t         m_poPtr;
-  uint16_t         m_txDelay;
-  bool             m_delay;
-  bool             m_cal;
+	CSerialRB m_buffer;
+	uint8_t m_poBuffer[200U];
+	uint16_t m_poLen;
+	uint16_t m_poPtr;
+	uint16_t m_txDelay;
+	bool m_delay;
+	bool m_cal;
 
-  void writeByte(uint8_t c);
+	void writeByte(uint8_t c);
+
 };
 
-#endif
+#endif	/* !POCSAGTX_H_ */
