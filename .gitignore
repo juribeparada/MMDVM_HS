@@ -1,8 +1,21 @@
+#
+# .gitignore
+#
+
+## BACKUP & TEMPORARY FILES ##
+
+*~
+*.bak
+*.tmp
+
+
+## BUILD ARTIFACTS ##
 
 *.o
-
 bin/
-
 GitVersion\.h
+
+
+## IDEs ##
 
 .vscode/
