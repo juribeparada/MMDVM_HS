@@ -25,12 +25,14 @@
 
 #define VER_MAJOR       "1"
 #define VER_MINOR       "6"
-#define VER_REV         "0"
-#define VERSION_DATE    "20210919"
+#define VER_REV         "1"
+#define VERSION_DATE    "20230201"
 
 #if defined(ZUMSPOT_ADF7021)
 #define BOARD_INFO      "ZUMspot"
-#elif defined(MMDVM_HS_HAT_REV12)
+#elif defined(MMDVM_HS_HAT_REV12) && defined(DUPLEX)
+#define BOARD_INFO      "MMDVM_HS_Dual_Hat"
+#elif defined(MMDVM_HS_HAT_REV12) && !defined(DUPLEX)
 #define BOARD_INFO      "MMDVM_HS_Hat"
 #elif defined(MMDVM_HS_DUAL_HAT_REV10)
 #define BOARD_INFO      "MMDVM_HS_Dual_Hat"
