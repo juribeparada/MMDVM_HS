@@ -21,6 +21,7 @@
 #include "Globals.h"
 #include "M17RX.h"
 #include "Utils.h"
+#include <stdio.h>
 
 const uint8_t MAX_SYNC_BIT_START_ERRS = 0U;
 const uint8_t MAX_SYNC_BIT_RUN_ERRS   = 2U;
@@ -55,6 +56,7 @@ void CM17RX::databit(bool bit)
   switch (m_state)  {
     case M17RXS_LINK_SETUP:
     case M17RXS_STREAM:
+    case M17RXS_PACKET:
       processData(bit);
       break;
     default:
@@ -68,6 +70,21 @@ void CM17RX::processNone(bool bit)
   m_bitBuffer <<= 1;
   if (bit)
     m_bitBuffer |= 0x01U;
+
+  // Exact matching of the packet sync bit sequence
+  if (countBits16(m_bitBuffer ^ M17_PACKET_SYNC_BITS) <= MAX_SYNC_BIT_START_ERRS) {
+    DEBUG1("M17RX: packet sync found in None");
+    for (uint8_t i = 0U; i < M17_SYNC_BYTES_LENGTH; i++)
+      m_buffer[i] = M17_PACKET_SYNC_BYTES[i];
+
+    m_lostCount = MAX_SYNC_FRAMES;
+    m_bufferPtr = M17_SYNC_LENGTH_BITS;
+    m_state     = M17RXS_PACKET;
+
+    io.setDecode(true);
+
+    return;
+  }
 
   // Exact matching of the link setup sync bit sequence
   if (countBits16(m_bitBuffer ^ M17_LINK_SETUP_SYNC_BITS) <= MAX_SYNC_BIT_START_ERRS) {
@@ -114,6 +131,15 @@ void CM17RX::processData(bool bit)
 
   // Only search for the syncs in the right place +-1 bit
   if (m_bufferPtr >= (M17_SYNC_LENGTH_BITS - 1U) && m_bufferPtr <= (M17_SYNC_LENGTH_BITS + 1U)) {
+    // Fuzzy matching of the packet sync bit sequence
+    if (countBits16(m_bitBuffer ^ M17_PACKET_SYNC_BITS) <= MAX_SYNC_BIT_RUN_ERRS) {
+      DEBUG2("M17RX: found packet sync, pos", m_bufferPtr - M17_SYNC_LENGTH_BITS);
+      m_lostCount = MAX_SYNC_FRAMES;
+      m_bufferPtr = M17_SYNC_LENGTH_BITS;
+      m_state     = M17RXS_PACKET;
+      return;
+    }
+
     // Fuzzy matching of the link setup sync bit sequence
     if (countBits16(m_bitBuffer ^ M17_LINK_SETUP_SYNC_BITS) <= MAX_SYNC_BIT_RUN_ERRS) {
       DEBUG2("M17RX: found link setup sync, pos", m_bufferPtr - M17_SYNC_LENGTH_BITS);
@@ -129,6 +155,15 @@ void CM17RX::processData(bool bit)
       m_lostCount = MAX_SYNC_FRAMES;
       m_bufferPtr = M17_SYNC_LENGTH_BITS;
       m_state     = M17RXS_STREAM;
+      return;
+    }
+
+    // Fuzzy matching of the packet sync bit sequence
+    if (countBits16(m_bitBuffer ^ M17_PACKET_SYNC_BITS) <= MAX_SYNC_BIT_RUN_ERRS) {
+      DEBUG2("M17RX: found packet sync, pos", m_bufferPtr - M17_SYNC_LENGTH_BITS);
+      m_lostCount = MAX_SYNC_FRAMES;
+      m_bufferPtr = M17_SYNC_LENGTH_BITS;
+      m_state     = M17RXS_PACKET;
       return;
     }
 
@@ -161,6 +196,9 @@ void CM17RX::processData(bool bit)
           break;
         case M17RXS_STREAM:
           writeRSSIStream(m_outBuffer);
+          break;
+        case M17RXS_PACKET:
+          writeRSSIPacket(m_outBuffer);
           break;
         default:
           break;
@@ -201,3 +239,16 @@ void CM17RX::writeRSSIStream(uint8_t* data)
 #endif
 }
 
+void CM17RX::writeRSSIPacket(uint8_t* data)
+{
+#if defined(SEND_RSSI_DATA)
+  uint16_t rssi = io.readRSSI();
+
+  data[49U] = (rssi >> 8) & 0xFFU;
+  data[50U] = (rssi >> 0) & 0xFFU;
+
+  serial.writeM17Packet(data, M17_FRAME_LENGTH_BYTES + 3U);
+#else
+  serial.writeM17Packet(data, M17_FRAME_LENGTH_BYTES + 1U);
+#endif
+}
