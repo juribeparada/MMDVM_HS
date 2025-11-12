@@ -69,6 +69,7 @@ void CP25RX::databit(bool bit)
       processNone(bit);
       break;
   }
+  io.setDecode(m_state != P25RXS_NONE);
 }
 
 void CP25RX::processNone(bool bit)
