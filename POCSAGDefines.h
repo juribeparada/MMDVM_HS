@@ -17,11 +17,13 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#if !defined(POCSAGDEFINES_H)
-#define  POCSAGDEFINES_H
+#if !defined(POCSAGDEFINES_H_)
+#define POCSAGDEFINES_H_
+
 
 const uint16_t POCSAG_PREAMBLE_LENGTH_BYTES = 18U * sizeof(uint32_t);
 const uint16_t POCSAG_FRAME_LENGTH_BYTES = 17U * sizeof(uint32_t);
-const uint8_t  POCSAG_SYNC = 0xAAU;
+const uint8_t POCSAG_SYNC = 0xAAU;
 
-#endif
+
+#endif	/* !POCSAGDEFINES_H_ */
