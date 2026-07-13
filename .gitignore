@@ -1,8 +1,30 @@
+#
+# .gitignore
+#
+
+## BACKUP & TEMPORARY FILES ##
+
+*~
+*.bak
+*.tmp
+*.swp
+
+
+## BUILD ARTIFACTS ##
 
 *.o
-
+*.elf
+*.hex
+*.bin
+*.map
+*.lst
 bin/
-
+obj_f1/
+obj_f4/
+obj_f7/
 GitVersion\.h
+
+
+## IDEs ##
 
 .vscode/

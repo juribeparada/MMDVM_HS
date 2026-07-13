@@ -26,10 +26,9 @@ ENTRY(Reset_Handler)
 /* Stack start address (end of 20K RAM) */
 _estack = ORIGIN(RAM) + LENGTH(RAM);
 
-SECTIONS
-{
-	.text : 
-	{ 
+
+SECTIONS {
+	.text : {
 		/* The interrupt vector table */
 		. = ALIGN(4);
 		KEEP(*(.isr_vector .isr_vector.*))
@@ -65,10 +64,9 @@ SECTIONS
 		KEEP (*(.fini_array))
 		KEEP (*(SORT(.fini_array.*)))
 		__fini_array_end = .;
-
 	} > ROM
  
- 	/* ARM sections containing exception unwinding information */
+	/* ARM sections containing exception unwinding information */
 	.ARM.extab : {
 		__extab_start = .;
 		*(.ARM.extab* .gnu.linkonce.armextab.*) 
@@ -86,19 +84,17 @@ SECTIONS
 	_sidata = .;
 
 	/* The .data section (initialized data) */
-	.data : AT ( _sidata )
-	{
+	.data : AT(_sidata) {
 		. = ALIGN(4);
-		_sdata = . ;       /* Start address for the .data section */
+		_sdata = .;       /* Start address for the .data section */
 		*(.data .data*)
 		
 		. = ALIGN(4);
-		_edata = . ;       /* End address for the .data section */
+		_edata = .;       /* End address for the .data section */
 	} > RAM
 
 	/* The .bss section (uninitialized data) */
-	.bss :
-	{
+	.bss : {
 		. = ALIGN(4);
 		_sbss = .;         /* Start address for the .bss section */
 		__bss_start__ = _sbss;
@@ -108,23 +104,21 @@ SECTIONS
 		
 		. = ALIGN(4);
 		_ebss = . ;        /* End address for the .bss section */
-    	__bss_end__ = _ebss;
+		__bss_end__ = _ebss;
 	} > RAM
 
 	/* Space for heap and stack */
-	.heap_stack :
-	{
-		end = . ;		  		 /* 'end' symbol defines heap location */
-		_end = end ;
+	.heap_stack : {
+		end = .;				 /* 'end' symbol defines heap location */
+		_end = end;
 		. = . + _min_heap_size;  /* Additional space for heap and stack */
 		. = . + _min_stack_size;
 	} > RAM
 
 	/* Remove information from the standard libraries */
-	/DISCARD/ :
-	{
-		libc.a ( * )
-		libm.a ( * )
-		libgcc.a ( * )
+	/DISCARD/ : {
+		libc.a(*)
+		libm.a(*)
+		libgcc.a(*)
 	}
 }
