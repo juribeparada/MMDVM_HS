@@ -68,7 +68,14 @@ void CM17TX::process()
       
       if (m_poPtr >= m_poLen) {
         if (m_delay) {
+          // Three more preamble bytes. This came from NXDNTX, where a separate
+          // state sends a 3-byte preamble here; without one, m_poBuffer still
+          // held the previous transmission's last frame (an EOT), which went
+          // out just before the LSF sync and broke LSF detection.
           m_delay = false;
+          m_poBuffer[0U] = M17_PREAMBLE;
+          m_poBuffer[1U] = M17_PREAMBLE;
+          m_poBuffer[2U] = M17_PREAMBLE;
           m_poPtr = 0U;
           m_poLen = 3U;
         } else {
