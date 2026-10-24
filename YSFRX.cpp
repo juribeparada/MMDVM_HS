@@ -22,7 +22,7 @@
 #include "YSFRX.h"
 #include "Utils.h"
 
-const uint8_t SYNC_BIT_START_ERRS = 2U;
+const uint8_t SYNC_BIT_START_ERRS = 3U;
 const uint8_t SYNC_BIT_RUN_ERRS   = 4U;
 
 const unsigned int MAX_SYNC_FRAMES = 1U + 1U;
