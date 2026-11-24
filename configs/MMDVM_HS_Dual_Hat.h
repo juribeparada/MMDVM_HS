@@ -51,9 +51,9 @@
 
 // Configure receiver gain for ADF7021
 // AGC automatic, default settings:
-#define AD7021_GAIN_AUTO
+// #define AD7021_GAIN_AUTO
 // AGC automatic with high LNA linearity:
-// #define AD7021_GAIN_AUTO_LIN
+#define AD7021_GAIN_AUTO_LIN
 // AGC OFF, lowest gain: 
 // #define AD7021_GAIN_LOW
 // AGC OFF, highest gain:
