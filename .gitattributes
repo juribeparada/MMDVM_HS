@@ -1,0 +1,57 @@
+#
+# .gitattributes
+#
+
+## GENERIC ##
+
+*				text=auto
+
+
+## SOURCE CODE ##
+
+*.c				eol=lf diff=cpp
+*.h				eol=lf diff=cpp
+*.cpp			eol=lf diff=cpp
+*.hpp			eol=lf diff=cpp
+*.cxx			eol=lf diff=cpp
+*.hxx			eol=lf diff=cpp
+*.cc			eol=lf diff=cpp
+*.hh			eol=lf diff=cpp
+*.c++			eol=lf diff=cpp
+*.h++			eol=lf diff=cpp
+*.ino			eol=lf diff=cpp
+*.pde			eol=lf diff=cpp
+
+
+## SCRIPTS ##
+
+*.sh			eol=lf
+*.bat			eol=crlf
+*.cmd			eol=crlf
+*.ps1			eol=crlf
+*.py			eol=lf diff=python
+*.ld			eol=lf
+Makefile		eol=lf
+*.mk			eol=lf
+*.make			eol=lf
+*.makefile		eol=lf
+
+
+## TEXT & MARKUP ##
+
+*.txt			eol=crlf
+*.log			eol=crlf
+*.md			eol=crlf diff=markdown
+*.mkdn			eol=crlf diff=markdown
+*.markdown		eol=crlf diff=markdown
+*.rst			eol=crlf
+*.adoc			eol=crlf
+README			eol=lf
+LICENSE			eol=lf
+INSTALL			eol=lf
+COPYING			eol=lf
+HOWTO			eol=lf
+BUILD			eol=lf
+HACKING			eol=lf
+CHANGES			eol=lf
+CHANGELOG		eol=lf

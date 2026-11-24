@@ -23,132 +23,129 @@
 #include "POCSAGTX.h"
 #include "POCSAGDefines.h"
 
-CPOCSAGTX::CPOCSAGTX() :
-m_buffer(1000U),
-m_poBuffer(),
-m_poLen(0U),
-m_poPtr(0U),
-m_txDelay(POCSAG_PREAMBLE_LENGTH_BYTES),
-m_delay(false),
-m_cal(false)
-{
+
+
+CPOCSAGTX::CPOCSAGTX(): m_buffer(1000U),
+		m_poBuffer(),
+		m_poLen(0U),
+		m_poPtr(0U),
+		m_txDelay(POCSAG_PREAMBLE_LENGTH_BYTES),
+		m_delay(false),
+		m_cal(false) {
 }
 
-void CPOCSAGTX::process()
-{
-  if (m_cal) {
-    m_delay = false;
-    createCal();
-  }
+void CPOCSAGTX::process() {
+	if (m_cal) {
+		m_delay = false;
+		createCal();
+	}
 
-  if (m_poLen == 0U && m_buffer.getData() > 0U) {
-    if (!m_tx) {
-      m_delay = true;
-      m_poLen = m_txDelay;
-    } else {
-      m_delay = false;
-      for (uint8_t i = 0U; i < POCSAG_FRAME_LENGTH_BYTES; i++)
-        m_poBuffer[i] = m_buffer.get();
+	if (m_poLen == 0U && m_buffer.getData() > 0U) {
+		if (!m_tx) {
+			m_delay = true;
+			m_poLen = m_txDelay;
+		} else {
+			m_delay = false;
+			for (uint8_t i = 0U; i < POCSAG_FRAME_LENGTH_BYTES; i++) {
+				m_poBuffer[i] = m_buffer.get();
+			}
 
-      m_poLen = POCSAG_FRAME_LENGTH_BYTES;
-    }
-    m_poPtr = 0U;
-  }
+			m_poLen = POCSAG_FRAME_LENGTH_BYTES;
+		}
+		m_poPtr = 0U;
+	}
 
-  if (m_poLen > 0U) {
-    uint16_t space = io.getSpace();
+	if (m_poLen > 0U) {
+		uint16_t space = io.getSpace();
 
-    while (space > 8U) {
-      if (m_delay) {
-        m_poPtr++;
-        writeByte(POCSAG_SYNC);
-      } else
-          writeByte(m_poBuffer[m_poPtr++]); 
+		while (space > 8U) {
+			if (m_delay) {
+				m_poPtr++;
+				writeByte(POCSAG_SYNC);
+			} else {
+				writeByte(m_poBuffer[m_poPtr++]);
+			}
 
-      space -= 8U;
+			space -= 8U;
 
-      if (m_poPtr >= m_poLen) {
-        m_poPtr = 0U;
-        m_poLen = 0U;
-        m_delay = false;
-        return;
-      }
-    }
-  }
+			if (m_poPtr >= m_poLen) {
+				m_poPtr = 0U;
+				m_poLen = 0U;
+				m_delay = false;
+				return;
+			}
+		}
+	}
 }
 
-bool CPOCSAGTX::busy()
-{
-  if (m_poLen > 0U || m_buffer.getData() > 0U)
-    return true;
-  else
-    return false;
+bool CPOCSAGTX::busy() {
+	if (m_poLen > 0U || m_buffer.getData() > 0U) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
-uint8_t CPOCSAGTX::writeData(const uint8_t* data, uint8_t length)
-{
-  if (length != POCSAG_FRAME_LENGTH_BYTES)
-    return 4U;
+uint8_t CPOCSAGTX::writeData(const uint8_t* data, uint8_t length) {
+	if (length != POCSAG_FRAME_LENGTH_BYTES)
+		return 4U;
 
-  uint16_t space = m_buffer.getSpace();
-  if (space < POCSAG_FRAME_LENGTH_BYTES)
-    return 5U;
+	uint16_t space = m_buffer.getSpace();
+	if (space < POCSAG_FRAME_LENGTH_BYTES)
+		return 5U;
 
-  for (uint8_t i = 0U; i < POCSAG_FRAME_LENGTH_BYTES; i++)
-    m_buffer.put(data[i]);
+	for (uint8_t i = 0U; i < POCSAG_FRAME_LENGTH_BYTES; i++)
+		m_buffer.put(data[i]);
 
-  return 0U;
+	return 0U;
 }
 
-void CPOCSAGTX::writeByte(uint8_t c)
-{
-  uint8_t bit;
-  uint8_t mask = 0x80U;
+void CPOCSAGTX::writeByte(uint8_t c) {
+	uint8_t bit;
+	uint8_t mask = 0x80U;
 
-  for (uint8_t i = 0U; i < 8U; i++, c <<= 1) {
-    if ((c & mask) == mask)
-      bit = 1U;
-    else
-      bit = 0U;
+	for (uint8_t i = 0U; i < 8U; i++, c <<= 1) {
+		if ((c & mask) == mask) {
+			bit = 1U;
+		} else {
+			bit = 0U;
+		}
 
-    io.write(&bit, 1);
-  }
+		io.write(&bit, 1);
+	}
 }
 
-void CPOCSAGTX::setTXDelay(uint8_t delay)
-{
-  m_txDelay = POCSAG_PREAMBLE_LENGTH_BYTES + (delay * 3U) / 2U;
+void CPOCSAGTX::setTXDelay(uint8_t delay) {
+	m_txDelay = POCSAG_PREAMBLE_LENGTH_BYTES + (delay * 3U) / 2U;
 
-  if (m_txDelay > 150U)
-    m_txDelay = 150U;
+	if (m_txDelay > 150U) {
+		m_txDelay = 150U;
+	}
 }
 
-uint8_t CPOCSAGTX::getSpace() const
-{
-  return m_buffer.getSpace() / POCSAG_FRAME_LENGTH_BYTES;
+uint8_t CPOCSAGTX::getSpace() const {
+	return m_buffer.getSpace() / POCSAG_FRAME_LENGTH_BYTES;
 }
 
-uint8_t CPOCSAGTX::setCal(const uint8_t* data, uint8_t length)
-{
-  if (length != 1U)
-    return 4U;
+uint8_t CPOCSAGTX::setCal(const uint8_t* data, uint8_t length) {
+	if (length != 1U)
+		return 4U;
 
-  m_cal = data[0U] == 1U;
+	m_cal = data[0U] == 1U;
 
-  if (m_cal)
-    io.ifConf(STATE_POCSAG, true);
+	if (m_cal)
+		io.ifConf(STATE_POCSAG, true);
 
-  return 0U;
+	return 0U;
 }
 
-void CPOCSAGTX::createCal()
-{
-  // 600 Hz square wave generation
-  for (unsigned int i = 0U; i < POCSAG_FRAME_LENGTH_BYTES; i++) {
-    m_poBuffer[i]   = 0xAAU;
-  }
+void CPOCSAGTX::createCal() {
+	// 600 Hz square wave generation
+	for (unsigned int i = 0U; i < POCSAG_FRAME_LENGTH_BYTES; i++) {
+		m_poBuffer[i] = 0xAAU;
+	}
 
-  m_poLen = POCSAG_FRAME_LENGTH_BYTES;
+	m_poLen = POCSAG_FRAME_LENGTH_BYTES;
 
-  m_poPtr = 0U;
+	m_poPtr = 0U;
 }
